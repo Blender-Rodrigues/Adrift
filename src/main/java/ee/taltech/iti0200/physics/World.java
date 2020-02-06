@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class World {
+
     protected List<Body> movableBodies = new ArrayList<>();
     protected List<Body> imMovableBodies = new ArrayList<>();
     protected double xMin;
@@ -45,4 +46,5 @@ public class World {
             addImMovableBody(body);
         }
     }
+
 }

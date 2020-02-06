@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.physics;
 
 public class Body {
+
     protected double mass;
     protected double inverseMass;
     protected double xSpeed;
@@ -28,4 +29,5 @@ public class Body {
         yMin += ySpeed * timeToMove;
         yMax += ySpeed * timeToMove;
     }
+
 }
