@@ -1,15 +1,49 @@
+import org.gradle.internal.os.OperatingSystem
 
+// Specify repositories we'd like to fetch libraries from
 repositories {
+    mavenCentral()
     jcenter()
 }
 
+// Plugins so gradle would take some assumptions about the project setup
 apply plugin: "java"
 apply plugin: "idea"
 
+// Pick for which platform the build result is going to be applied to.
+switch (OperatingSystem.current()) {
+    case OperatingSystem.LINUX:
+        def osArch = System.getProperty("os.arch")
+        project.ext.lwjglNatives = (
+            osArch.startsWith("arm") || osArch.startsWith("aarch64")
+                ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
+                : "natives-linux"
+        )
+        break
+    case OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = "natives-windows"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+}
+
+
+project.ext.lwjglVersion = "3.2.3"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+    implementation "org.lwjgl:lwjgl-bom:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-opencl:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
 
     testRuntimeOnly "org.assertj:assertj-core:3.11.1"
