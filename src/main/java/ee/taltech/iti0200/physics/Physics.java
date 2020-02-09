@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.physics;
 
+import ee.taltech.iti0200.domain.World;
+
 public class Physics {
 
     private World world;
@@ -8,7 +10,7 @@ public class Physics {
         this.world = world;
     }
 
-    public void step() {
+    public void step(long tick) {
         world.moveBodies();
         checkOutOfBounds();
     }
