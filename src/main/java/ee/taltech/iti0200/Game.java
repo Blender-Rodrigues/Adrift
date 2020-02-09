@@ -22,7 +22,7 @@ public class Game {
         physics = new Physics(world);
         network = new Network();
         input = new Input();
-        timer = new Timer(10F);
+        timer = new Timer(20F);
 
         initialize();
         loop();
