@@ -1,4 +1,6 @@
-package ee.taltech.iti0200.physics;
+package ee.taltech.iti0200.domain;
+
+import ee.taltech.iti0200.physics.Body;
 
 import java.util.ArrayList;
 import java.util.List;
