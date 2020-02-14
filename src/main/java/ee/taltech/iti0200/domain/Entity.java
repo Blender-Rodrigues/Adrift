@@ -2,6 +2,7 @@ package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.physics.Body;
 
+import javax.vecmath.Vector2d;
 import java.util.List;
 
 public class Entity extends Body {
@@ -9,16 +10,14 @@ public class Entity extends Body {
     private List<Body> components;
 
     public Entity(List<Body> components) {
-        super(0.0, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        super(0.0, new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
 
         this.components = components;
 
         for (Body component: components) {
             this.mass += component.getMass();
-            this.xMin = Math.min(this.xMin, component.getxMin());
-            this.yMin = Math.min(this.yMin, component.getyMin());
-            this.xMax = Math.max(this.xMax, component.getxMax());
-            this.yMax = Math.max(this.yMax, component.getyMax());
+            min = new Vector2d(Math.min(min.getX(), component.getMin().getX()), Math.min(min.getY(), component.getMin().getY()));
+            max = new Vector2d(Math.min(max.getX(), component.getMax().getX()), Math.min(max.getY(), component.getMax().getY()));
         }
 
         this.inverseMass = 1 / this.mass;

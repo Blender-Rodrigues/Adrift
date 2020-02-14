@@ -8,46 +8,32 @@ public class Body {
 
     protected double inverseMass;
     protected Vector2d speed;
-    protected double xMin;
-    protected double xMax;
-    protected double yMin;
-    protected double yMax;
+    protected Vector2d min;
+    protected Vector2d max;
     protected boolean moved;
-    public Body(double mass, double xMin, double xMax, double yMin, double yMax) {
+    public Body(double mass, Vector2d min, Vector2d max) {
         this.mass = mass;
         this.speed = new Vector2d(0.0, 0.0);
         this.inverseMass = 1 / mass;
-        this.xMin = xMin;
-        this.xMax = xMax;
-        this.yMin = yMin;
-        this.yMax = yMax;
+        this.min = min;
+        this.max = max;
     }
 
     public void move(double timeToMove) {
-        xMin += speed.getX() * timeToMove;
-        xMax += speed.getX() * timeToMove;
-        yMin += speed.getY() * timeToMove;
-        yMax += speed.getY() * timeToMove;
+        min.scaleAdd(timeToMove, speed, min);
+        max.scaleAdd(timeToMove, speed, max);
     }
 
     public double getMass() {
         return mass;
     }
 
-    public double getXMin() {
-        return xMin;
+    public Vector2d getMin() {
+        return min;
     }
 
-    public double getXMax() {
-        return xMax;
-    }
-
-    public double getYMin() {
-        return yMin;
-    }
-
-    public double getYMax() {
-        return yMax;
+    public Vector2d getMax() {
+        return max;
     }
 
 }
