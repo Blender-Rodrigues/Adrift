@@ -1,12 +1,13 @@
 package ee.taltech.iti0200.physics;
 
+import javax.vecmath.Vector2d;
+
 public class Body {
 
     protected double mass;
 
     protected double inverseMass;
-    protected double xSpeed;
-    protected double ySpeed;
+    protected Vector2d speed;
     protected double xMin;
     protected double xMax;
     protected double yMin;
@@ -14,8 +15,7 @@ public class Body {
     protected boolean moved;
     public Body(double mass, double xMin, double xMax, double yMin, double yMax) {
         this.mass = mass;
-        this.xSpeed = 0.0;
-        this.ySpeed = 0.0;
+        this.speed = new Vector2d(0.0, 0.0);
         this.inverseMass = 1 / mass;
         this.xMin = xMin;
         this.xMax = xMax;
@@ -24,29 +24,29 @@ public class Body {
     }
 
     public void move(double timeToMove) {
-        xMin += xSpeed * timeToMove;
-        xMax += xSpeed * timeToMove;
-        yMin += ySpeed * timeToMove;
-        yMax += ySpeed * timeToMove;
+        xMin += speed.getX() * timeToMove;
+        xMax += speed.getX() * timeToMove;
+        yMin += speed.getY() * timeToMove;
+        yMax += speed.getY() * timeToMove;
     }
 
     public double getMass() {
         return mass;
     }
 
-    public double getxMin() {
+    public double getXMin() {
         return xMin;
     }
 
-    public double getxMax() {
+    public double getXMax() {
         return xMax;
     }
 
-    public double getyMin() {
+    public double getYMin() {
         return yMin;
     }
 
-    public double getyMax() {
+    public double getYMax() {
         return yMax;
     }
 
