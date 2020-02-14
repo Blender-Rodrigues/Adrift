@@ -1,10 +1,13 @@
 package ee.taltech.iti0200;
 
+import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.physics.Physics;
+
+import javax.vecmath.Vector2d;
 
 public class Game {
 
@@ -32,6 +35,11 @@ public class Game {
     private void initialize() {
         timer.initialize();
         graphics.initialize();
+        initializeBasicWorld();
+    }
+
+    private void initializeBasicWorld() {
+        world.addBody(new Player(new Vector2d(20.0, 4.0)), true);
     }
 
     private void loop() {
