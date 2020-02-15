@@ -6,7 +6,7 @@ import javax.vecmath.Vector2d;
 import java.util.Arrays;
 import java.util.List;
 
-public class Player extends Entity{
+public class Player extends Entity {
 
     private static final Vector2d size = new Vector2d(1.5, 1.5);
     private static final double mass = 70.0;
