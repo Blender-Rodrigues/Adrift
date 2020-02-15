@@ -20,7 +20,10 @@ public class Entity extends Body {
 
         for (Body component: components) {
             this.mass += component.getMass();
-            min = new Vector2d(Math.min(min.getX(), component.getMin().getX()), Math.min(min.getY(), component.getMin().getY()));
+            min = new Vector2d(
+                Math.min(min.getX(), component.getMin().getX()),
+                Math.min(min.getY(), component.getMin().getY())
+            );
             max = new Vector2d(Math.min(max.getX(), component.getMax().getX()), Math.min(max.getY(), component.getMax().getY()));
         }
 
