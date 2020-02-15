@@ -24,7 +24,10 @@ public class Entity extends Body {
                 Math.min(min.getX(), component.getMin().getX()),
                 Math.min(min.getY(), component.getMin().getY())
             );
-            max = new Vector2d(Math.min(max.getX(), component.getMax().getX()), Math.min(max.getY(), component.getMax().getY()));
+            max = new Vector2d(
+                Math.min(max.getX(), component.getMax().getX()),
+                Math.min(max.getY(), component.getMax().getY())
+            );
         }
 
         this.inverseMass = 1 / this.mass;
