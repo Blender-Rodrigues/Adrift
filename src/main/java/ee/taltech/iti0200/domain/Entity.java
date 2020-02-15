@@ -13,7 +13,7 @@ public class Entity extends Body {
         super(
             0.0,
             new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
-            new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY)
+            new Vector2d(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY)
         );
 
         this.components = components;
@@ -25,8 +25,8 @@ public class Entity extends Body {
                 Math.min(min.getY(), component.getMin().getY())
             );
             max = new Vector2d(
-                Math.min(max.getX(), component.getMax().getX()),
-                Math.min(max.getY(), component.getMax().getY())
+                Math.max(max.getX(), component.getMax().getX()),
+                Math.max(max.getY(), component.getMax().getY())
             );
         }
 
