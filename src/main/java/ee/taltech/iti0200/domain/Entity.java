@@ -10,14 +10,24 @@ public class Entity extends Body {
     private List<Body> components;
 
     public Entity(List<Body> components) {
-        super(0.0, new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+        super(
+            0.0,
+            new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
+            new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY)
+        );
 
         this.components = components;
 
         for (Body component: components) {
             this.mass += component.getMass();
-            min = new Vector2d(Math.min(min.getX(), component.getMin().getX()), Math.min(min.getY(), component.getMin().getY()));
-            max = new Vector2d(Math.min(max.getX(), component.getMax().getX()), Math.min(max.getY(), component.getMax().getY()));
+            min = new Vector2d(
+                Math.min(min.getX(), component.getMin().getX()),
+                Math.min(min.getY(), component.getMin().getY())
+            );
+            max = new Vector2d(
+                Math.min(max.getX(), component.getMax().getX()),
+                Math.min(max.getY(), component.getMax().getY())
+            );
         }
 
         this.inverseMass = 1 / this.mass;
