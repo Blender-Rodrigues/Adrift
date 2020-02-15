@@ -1,10 +1,14 @@
 package ee.taltech.iti0200;
 
+import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.Terrain;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.physics.Physics;
+
+import javax.vecmath.Vector2d;
 
 public class Game {
 
@@ -17,7 +21,7 @@ public class Game {
     private long tick = 0;
 
     private void run() {
-        world = new World(0, 0, 10000, 10000, 10);
+        world = new World(0.0, 40.0, 0.0, 40.0, 10);
         graphics = new Graphics(world);
         physics = new Physics(world);
         network = new Network();
@@ -32,6 +36,16 @@ public class Game {
     private void initialize() {
         timer.initialize();
         graphics.initialize();
+        initializeBasicWorld();
+    }
+
+    private void initializeBasicWorld() {
+        world.addBody(new Player(new Vector2d(20.0, 4.0)), true);
+        for (int i = 0; i < 20; i++) {
+            world.addBody(new Terrain(new Vector2d(i * 2.0 + 1.0, 1.0)), false);
+        }
+        world.addBody(new Terrain(new Vector2d(1.0, 3.0)), false);
+        world.addBody(new Terrain(new Vector2d(39.0, 3.0)), false);
     }
 
     private void loop() {
