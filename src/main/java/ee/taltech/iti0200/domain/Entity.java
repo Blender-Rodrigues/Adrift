@@ -10,7 +10,11 @@ public class Entity extends Body {
     private List<Body> components;
 
     public Entity(List<Body> components) {
-        super(0.0, new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+        super(
+            0.0,
+            new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
+            new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY)
+        );
 
         this.components = components;
 
