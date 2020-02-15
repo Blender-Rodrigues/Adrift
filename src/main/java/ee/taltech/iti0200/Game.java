@@ -1,5 +1,6 @@
 package ee.taltech.iti0200;
 
+import ee.taltech.iti0200.domain.Bot;
 import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.Terrain;
 import ee.taltech.iti0200.domain.World;
@@ -41,6 +42,8 @@ public class Game {
 
     private void initializeBasicWorld() {
         world.addBody(new Player(new Vector2d(20.0, 4.0)), true);
+        world.addBody(new Bot(new Vector2d(10.0, 4.0)), true);
+        world.addBody(new Bot(new Vector2d(30.0, 4.0)), true);
         for (int i = 0; i < 20; i++) {
             world.addBody(new Terrain(new Vector2d(i * 2.0 + 1.0, 1.0)), false);
         }
