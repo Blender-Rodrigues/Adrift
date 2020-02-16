@@ -38,6 +38,11 @@ public class Body {
         max.scaleAdd(timeToMove, speed, max);
     }
 
+    public void move(Vector2d moveDelta) {
+        min.add(moveDelta);
+        max.add(moveDelta);
+    }
+
     public double getMass() {
         return mass;
     }
