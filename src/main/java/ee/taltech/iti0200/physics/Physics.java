@@ -22,7 +22,15 @@ public class Physics {
     private void checkForCollisions(List<Body> movingBodies, List<Body> stationaryBodies) {
         for (Body movingBody: movingBodies) {
             for (Body stationaryBody: stationaryBodies) {
-
+                if (!movingBody.isCollideable() && !stationaryBody.isCollideable()) {
+                    continue;
+                }
+                if (movingBody.getMin().getX() < stationaryBody.getMax().getX() &&
+                        movingBody.getMax().getX() > stationaryBody.getMin().getX() &&
+                        movingBody.getMin().getY() < stationaryBody.getMax().getY() &&
+                        movingBody.getMax().getY() > stationaryBody.getMin().getY()) {
+                    movingBody.onCollide(stationaryBody);
+                }
             }
         }
     }
