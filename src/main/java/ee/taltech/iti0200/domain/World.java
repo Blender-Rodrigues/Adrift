@@ -27,12 +27,6 @@ public class World {
         return timeStep;
     }
 
-    public void moveBodies() {
-        for (Body body: movableBodies) {
-            body.move(timeStep);
-        }
-    }
-
     private void addMovableBody(Body body) {
         movableBodies.add(body);
     }
@@ -47,6 +41,14 @@ public class World {
         } else {
             addImMovableBody(body);
         }
+    }
+
+    public List<Body> getMovableBodies() {
+        return movableBodies;
+    }
+
+    public List<Body> getImMovableBodies() {
+        return imMovableBodies;
     }
 
 }
