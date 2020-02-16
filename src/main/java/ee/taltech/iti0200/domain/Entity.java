@@ -8,17 +8,16 @@ import java.util.List;
 public class Entity extends Body {
 
     private List<Body> components;
-    private boolean collideable;
 
     public Entity(List<Body> components, boolean collideable) {
         super(
             0.0,
             new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
-            new Vector2d(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY)
+            new Vector2d(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY),
+                collideable
         );
 
         this.components = components;
-        this.collideable = collideable;
 
         for (Body component: components) {
             this.mass += component.getMass();
@@ -40,10 +39,6 @@ public class Entity extends Body {
      */
     public void update(long tick) {
 
-    }
-
-    public boolean isCollideable() {
-        return collideable;
     }
 
 }

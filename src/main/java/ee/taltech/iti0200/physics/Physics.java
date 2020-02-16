@@ -16,11 +16,15 @@ public class Physics {
         List<Body> movableBodies = world.getMovableBodies();
         List<Body> imMovableBodies = world.getImMovableBodies();
         moveBodies(movableBodies, world.getTimeStep());
-        checkOutOfBounds();
+        checkForCollisions(movableBodies, imMovableBodies);
     }
 
-    private void checkOutOfBounds() {
+    private void checkForCollisions(List<Body> movingBodies, List<Body> stationaryBodies) {
+        for (Body movingBody: movingBodies) {
+            for (Body stationaryBody: stationaryBodies) {
 
+            }
+        }
     }
 
     private void moveBodies(List<Body> bodiesToMove, double timeStep) {

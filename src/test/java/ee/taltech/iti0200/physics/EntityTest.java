@@ -14,8 +14,8 @@ class EntityTest {
     @Test
     void entityGrowsToMassAndSizeOfComponentsOnCreation() {
         List<Body> components = asList(
-                new Body(1, new Vector2d(3, 5), new Vector2d(7, 9)),
-                new Body(10, new Vector2d(20, 30), new Vector2d(40, 50))
+                new Body(1, new Vector2d(3, 5), new Vector2d(7, 9), true),
+                new Body(10, new Vector2d(20, 30), new Vector2d(40, 50), true)
         );
 
         Entity entity = new Entity(components, true);
