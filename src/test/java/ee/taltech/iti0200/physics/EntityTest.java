@@ -18,7 +18,7 @@ class EntityTest {
                 new Body(10, new Vector2d(20, 30), new Vector2d(40, 50))
         );
 
-        Entity entity = new Entity(components);
+        Entity entity = new Entity(components, true);
 
         assertThat(entity.mass).isEqualTo(11);
         assertThat(entity.min.getX()).isEqualTo(3);
