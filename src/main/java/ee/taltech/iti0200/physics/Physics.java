@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.physics;
 
+import ee.taltech.iti0200.domain.Entity;
 import ee.taltech.iti0200.domain.World;
 
 import java.util.List;
@@ -13,15 +14,15 @@ public class Physics {
     }
 
     public void step(long tick) {
-        List<Body> movableBodies = world.getMovableBodies();
-        List<Body> imMovableBodies = world.getImMovableBodies();
+        List<Entity> movableBodies = world.getMovableBodies();
+        List<Entity> imMovableBodies = world.getImMovableBodies();
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
     }
 
-    private void checkForCollisions(List<Body> movingBodies, List<Body> stationaryBodies) {
-        for (Body movingBody: movingBodies) {
-            for (Body stationaryBody: stationaryBodies) {
+    private void checkForCollisions(List<Entity> movingBodies, List<Entity> stationaryBodies) {
+        for (Entity movingBody: movingBodies) {
+            for (Entity stationaryBody: stationaryBodies) {
                 if (!movingBody.isCollideable() && !stationaryBody.isCollideable()) {
                     continue;
                 }
@@ -35,8 +36,8 @@ public class Physics {
         }
     }
 
-    private void moveBodies(List<Body> bodiesToMove, double timeStep) {
-        for (Body body: bodiesToMove) {
+    private void moveBodies(List<Entity> bodiesToMove, double timeStep) {
+        for (Entity body: bodiesToMove) {
             body.move(timeStep);
         }
     }
