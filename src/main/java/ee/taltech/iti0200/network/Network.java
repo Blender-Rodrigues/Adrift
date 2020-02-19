@@ -1,13 +1,31 @@
 package ee.taltech.iti0200.network;
 
-public class Network {
+import ee.taltech.iti0200.domain.World;
 
-    public void update(long tick) {
+import java.io.IOException;
 
+abstract public class Network {
+
+    public static final int UPSTREAM_PORT = 8880;
+    public static final int DOWNSTREAM_PORT = 8881;
+    public static final String HOST = "localhost";
+
+    protected World world;
+
+    protected final Messenger messenger = new Messenger();
+
+    public Network(World world) {
+        this.world = world;
     }
 
-    public void propagate(long tick) {
+    abstract public void initialize() throws IOException;
 
+    abstract public void update(long tick);
+
+    abstract public void propagate(long tick);
+
+    public void terminate() {
+        messenger.terminate();
     }
 
 }
