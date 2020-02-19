@@ -1,4 +1,4 @@
-# Java game project (name pending)
+# Escape from Eros
 
 ## Project setup locally
 
