@@ -1,5 +1,8 @@
 package ee.taltech.iti0200;
 
+import ee.taltech.iti0200.domain.Bot;
+import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.Terrain;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
@@ -9,6 +12,8 @@ import ee.taltech.iti0200.network.ServerNetwork;
 import ee.taltech.iti0200.physics.Physics;
 
 import java.io.IOException;
+
+import javax.vecmath.Vector2d;
 
 public class Game {
 
@@ -42,6 +47,18 @@ public class Game {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        initializeBasicWorld();
+    }
+
+    private void initializeBasicWorld() {
+        world.addBody(new Player(new Vector2d(20.0, 4.0)), true);
+        world.addBody(new Bot(new Vector2d(10.0, 4.0)), true);
+        world.addBody(new Bot(new Vector2d(30.0, 4.0)), true);
+        for (int i = 0; i < 20; i++) {
+            world.addBody(new Terrain(new Vector2d(i * 2.0 + 1.0, 1.0)), false);
+        }
+        world.addBody(new Terrain(new Vector2d(1.0, 3.0)), false);
+        world.addBody(new Terrain(new Vector2d(39.0, 3.0)), false);
     }
 
     private void loop() {
@@ -66,7 +83,7 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        World world = new World(0, 0, 10000, 10000, 10);
+        World world = new World(0.0, 40.0, 0.0, 40.0, 10);
         boolean isServer = args.length >= 1 && args[0].equalsIgnoreCase("server");
 
         try {
