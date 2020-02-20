@@ -14,7 +14,7 @@ public class Entity extends Body {
             0.0,
             new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
             new Vector2d(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY),
-                collideable
+            collideable
         );
 
         this.components = components;
