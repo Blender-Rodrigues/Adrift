@@ -47,6 +47,7 @@ public class Graphics {
 
     private long window;
     private World world;
+    private Model model;
     private Texture tex;
 
     public Graphics(World world) {
@@ -115,6 +116,28 @@ public class Graphics {
 
         glEnable(GL_TEXTURE_2D);
 
+        float[] vertices = new float[] {
+                -0.5f, 0.5f,
+                0.5f, 0.5f,
+                0.5f, -0.5f,
+
+                0.3f, -0.5f,
+                -0.5f, -0.5f,
+                -0.5f, 0.5f
+        };
+
+        float[] texture = new float[] {
+                0, 0,
+                1, 0,
+                1, 1,
+
+                1, 1,
+                0, 1,
+                0, 0
+        };
+
+        model = new Model(vertices, texture);
+
         try {
             tex = new Texture("./build/resources/main/smile.png");
         } catch (IOException e) {
@@ -146,21 +169,9 @@ public class Graphics {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
+        model.render();
+
         tex.bind();
-
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex2f(-0.5f, 0.5f);
-
-        glTexCoord2f(1, 0);
-        glVertex2f(0.5f, 0.5f);
-
-        glTexCoord2f(1, 1);
-        glVertex2f(0.5f, -0.5f);
-
-        glTexCoord2f(0, 1);
-        glVertex2f(-0.5f, -0.5f);
-        glEnd();
 
         glfwSwapBuffers(window); // swap the color buffers
     }
