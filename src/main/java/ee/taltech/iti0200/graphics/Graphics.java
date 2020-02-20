@@ -120,23 +120,25 @@ public class Graphics {
                 -0.5f, 0.5f,
                 0.5f, 0.5f,
                 0.5f, -0.5f,
-
-                0.3f, -0.5f,
                 -0.5f, -0.5f,
-                -0.5f, 0.5f
+                0.3f, -0.5f, //delete this
         };
 
         float[] texture = new float[] {
                 0, 0,
                 1, 0,
                 1, 1,
-
-                1, 1,
                 0, 1,
-                0, 0
+                1, 1, //delete this
+
         };
 
-        model = new Model(vertices, texture);
+        int[] indices = new int[] {
+                0, 1, 2,
+                4, 3, 0 //change 4 to 2
+        };
+
+        model = new Model(vertices, texture, indices);
 
         try {
             tex = new Texture("./build/resources/main/smile.png");
