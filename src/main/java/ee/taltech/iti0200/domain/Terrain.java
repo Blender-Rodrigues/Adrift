@@ -11,7 +11,7 @@ public class Terrain extends Entity {
     private static final double mass = Double.POSITIVE_INFINITY;
 
     public Terrain(Vector2d position) {
-        super(Arrays.asList(new Body(mass, size, position, true)), true);;
+        super(Arrays.asList(new Body(mass, size, position, true)), true);
     }
 
 }
