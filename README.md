@@ -17,4 +17,4 @@ for that.
 
 ## Network flow chart
 
-![Network flow chart](networkflow.svg)
+![Network flow chart](networkflow.png)
