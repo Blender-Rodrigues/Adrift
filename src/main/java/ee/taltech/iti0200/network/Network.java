@@ -2,8 +2,6 @@ package ee.taltech.iti0200.network;
 
 import ee.taltech.iti0200.domain.World;
 
-import java.io.IOException;
-
 abstract public class Network {
 
     public static final int UPSTREAM_PORT = 8880;
@@ -18,7 +16,7 @@ abstract public class Network {
         this.world = world;
     }
 
-    abstract public void initialize() throws IOException;
+    abstract public void initialize();
 
     abstract public void update(long tick);
 

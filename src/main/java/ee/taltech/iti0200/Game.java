@@ -11,8 +11,6 @@ import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.ServerNetwork;
 import ee.taltech.iti0200.physics.Physics;
 
-import java.io.IOException;
-
 import javax.vecmath.Vector2d;
 
 public class Game {
@@ -32,7 +30,7 @@ public class Game {
 
         this.network = network;
         input = new Input();
-        timer = new Timer(10F);
+        timer = new Timer(20F);
 
         initialize();
         loop();
@@ -42,11 +40,7 @@ public class Game {
     private void initialize() {
         timer.initialize();
         graphics.initialize();
-        try {
-            network.initialize();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        network.initialize();
         initializeBasicWorld();
     }
 
