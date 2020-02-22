@@ -15,3 +15,6 @@ or a similar guide for to get the ideas what should be and shouldn't be covered 
 But P.S. - do keep the issue reference at the start of the message please, makes much more sense to have a fixed position
 for that. 
 
+## Network flow chart
+
+![Network flow chart](networkflow.svg)
