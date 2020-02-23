@@ -6,7 +6,9 @@ import ee.taltech.iti0200.domain.Terrain;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
+import ee.taltech.iti0200.network.ClientNetwork;
 import ee.taltech.iti0200.network.Network;
+import ee.taltech.iti0200.network.ServerNetwork;
 import ee.taltech.iti0200.physics.Physics;
 
 import javax.vecmath.Vector2d;
@@ -21,11 +23,11 @@ public class Game {
     private Timer timer;
     private long tick = 0;
 
-    private void run() {
-        world = new World(0.0, 40.0, 0.0, 40.0, 10);
+    private void run(World world, Network network) {
+        this.world = world;
         graphics = new Graphics(world);
         physics = new Physics(world);
-        network = new Network();
+        this.network = network;
         input = new Input();
         timer = new Timer(20F);
 
@@ -40,6 +42,7 @@ public class Game {
         timer.initialize();
         long window = graphics.initialize();
         input.initialize(window, player);
+        network.initialize();
         initializeBasicWorld(player);
     }
 
@@ -72,10 +75,14 @@ public class Game {
 
     private void terminate() {
         graphics.terminate();
+        network.terminate();
     }
 
     public static void main(String[] args) {
-        new Game().run();
+        World world = new World(0.0, 40.0, 0.0, 40.0, 10);
+        boolean isServer = args.length >= 1 && args[0].equalsIgnoreCase("server");
+
+        new Game().run(world, isServer ? new ServerNetwork(world) : new ClientNetwork(world));
     }
 
 }
