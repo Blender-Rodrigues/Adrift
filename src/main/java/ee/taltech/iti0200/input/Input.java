@@ -57,12 +57,12 @@ public class Input {
     }
 
     private void movePlayerLeft() {
-        player.setSpeed(new Vector2d(-2.0, 0.0));
+        player.accelerate(new Vector2d(-1.0, 0.0));
         logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
     private void movePlayerRight() {
-        player.setSpeed(new Vector2d(2.0, 0.0));
+        player.accelerate(new Vector2d(1.0, 0.0));
         logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 

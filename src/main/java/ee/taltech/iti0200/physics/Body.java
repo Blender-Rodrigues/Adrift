@@ -1,12 +1,10 @@
 package ee.taltech.iti0200.physics;
 
-
 import javax.vecmath.Vector2d;
 
 public class Body {
 
     protected double mass;
-
     protected double inverseMass;
     protected Vector2d speed;
     protected AABB boundingBox;
@@ -45,8 +43,8 @@ public class Body {
         this.boundingBox.move(moveDelta);
     }
 
-    public void setSpeed(Vector2d speed) {
-        this.speed = speed;
+    public void accelerate(Vector2d accelerateDelta) {
+        this.speed.add(accelerateDelta);
     }
 
     public double getMass() {
