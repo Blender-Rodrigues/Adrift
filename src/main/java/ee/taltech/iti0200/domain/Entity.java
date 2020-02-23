@@ -48,25 +48,7 @@ public class Entity extends Body {
     }
 
     public void onCollide(Entity otherEntity) {
-        double overLap;
-        if (min.getX() < otherEntity.getMax().getX() &&
-                max.getX() > otherEntity.getMin().getX()) {
-            if (speed.getX() > 0) {
-                overLap = otherEntity.getMin().getX() - max.getX();
-            } else {
-                overLap = otherEntity.getMax().getX() - min.getX();
-            }
-            move(new Vector2d(overLap, 0));
-            speed = new Vector2d(0, speed.getY());
-        } else {
-            if (speed.getY() > 0) {
-                overLap = otherEntity.getMin().getY() - max.getY();
-            } else {
-                overLap = otherEntity.getMax().getY() - min.getY();
-            }
-            move(new Vector2d(0, overLap));
-            speed = new Vector2d(speed.getX(), 0);
-        }
+
     }
 
 }

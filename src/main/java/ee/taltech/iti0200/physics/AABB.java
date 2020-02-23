@@ -38,6 +38,16 @@ public class AABB {
         return distance.getX() < 0 || distance.getY() < 0;
     }
 
+    public Vector2d getOverLap(AABB otherBoundingBox) {
+        Vector2d distance = new Vector2d(
+                abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
+                abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
+        );
+        distance.sub(this.size);
+        distance.sub(otherBoundingBox.size);
+        return distance;
+    }
+
     public Vector2d getCentre() {
         return this.centre;
     }

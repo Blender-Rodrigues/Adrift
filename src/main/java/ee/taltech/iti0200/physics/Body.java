@@ -55,4 +55,12 @@ public class Body {
         return collideable;
     }
 
+    public void setXSpeed(double speed) {
+        this.speed = new Vector2d(speed, this.speed.getY());
+    }
+
+    public void setYSpeed(double speed) {
+        this.speed = new Vector2d(this.speed.getX(), speed);
+    }
+
 }
