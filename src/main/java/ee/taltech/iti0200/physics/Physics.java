@@ -26,10 +26,7 @@ public class Physics {
                 if (!movingBody.isCollideable() && !stationaryBody.isCollideable()) {
                     continue;
                 }
-                if (movingBody.getMin().getX() < stationaryBody.getMax().getX() &&
-                        movingBody.getMax().getX() > stationaryBody.getMin().getX() &&
-                        movingBody.getMin().getY() < stationaryBody.getMax().getY() &&
-                        movingBody.getMax().getY() > stationaryBody.getMin().getY()) {
+                if (movingBody.intersects(stationaryBody)) {
                     movingBody.onCollide(stationaryBody);
                 }
             }
