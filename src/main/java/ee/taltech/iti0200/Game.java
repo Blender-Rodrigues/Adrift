@@ -35,13 +35,16 @@ public class Game {
     }
 
     private void initialize() {
+        Player player = new Player(new Vector2d(20.0, 4.0));
+
         timer.initialize();
-        graphics.initialize();
-        initializeBasicWorld();
+        long window = graphics.initialize();
+        input.initialize(window, player);
+        initializeBasicWorld(player);
     }
 
-    private void initializeBasicWorld() {
-        world.addBody(new Player(new Vector2d(20.0, 4.0)), true);
+    private void initializeBasicWorld(Player player) {
+        world.addBody(player, true);
         world.addBody(new Bot(new Vector2d(10.0, 4.0)), true);
         world.addBody(new Bot(new Vector2d(30.0, 4.0)), true);
         for (int i = 0; i < 20; i++) {

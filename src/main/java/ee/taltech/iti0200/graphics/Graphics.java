@@ -54,7 +54,7 @@ public class Graphics {
         this.world = world;
     }
 
-    public void initialize() {
+    public long initialize() {
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -73,12 +73,6 @@ public class Graphics {
         window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
-
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-        });
 
         // Get the thread stack and push a new frame
         try ( MemoryStack stack = stackPush() ) {
@@ -116,6 +110,8 @@ public class Graphics {
 
         // Set the clear color
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+
+        return window;
     }
 
     public void terminate() {

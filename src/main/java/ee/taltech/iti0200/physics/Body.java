@@ -35,6 +35,10 @@ public class Body {
         max.scaleAdd(timeToMove, speed, max);
     }
 
+    public void setSpeed(Vector2d speed) {
+        this.speed = speed;
+    }
+
     public double getMass() {
         return mass;
     }
