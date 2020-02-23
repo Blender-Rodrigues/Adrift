@@ -21,7 +21,13 @@ public class Body {
         this.collideable = collideable;
     }
 
-    public Body(double mass, Vector2d size, Vector2d position, boolean collideable, boolean usingPositionAndSize) {
+    public Body(
+        double mass,
+        Vector2d size,
+        Vector2d position,
+        boolean collideable,
+        boolean usingPositionAndSize
+    ) {
         this.mass = mass;
         this.speed = new Vector2d(0.0, 0.0);
         this.inverseMass = 1 / mass;
