@@ -45,6 +45,10 @@ public class Body {
         this.boundingBox.move(moveDelta);
     }
 
+    public void accelerate(Vector2d accelerateDelta) {
+        this.speed.add(accelerateDelta);
+    }
+
     public double getMass() {
         return mass;
     }
