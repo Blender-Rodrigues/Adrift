@@ -10,6 +10,12 @@ public class Physics {
 
     private World world;
 
+    private static final Vector2d gravity;
+
+    static {
+        gravity = new Vector2d(0, -9.81);
+    }
+
     public Physics(World world) {
         this.world = world;
     }
@@ -19,6 +25,15 @@ public class Physics {
         List<Entity> imMovableBodies = world.getImMovableBodies();
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
+        applyGravity(movableBodies);
+    }
+
+    private void applyGravity(List<Entity> entities) {
+        Vector2d accelerateDelta = gravity;
+        accelerateDelta.scale(world.getTimeStep());
+        for (Entity entity: entities) {
+            entity.accelerate(accelerateDelta);
+        }
     }
 
     private void checkForCollisions(List<Entity> movingBodies, List<Entity> stationaryBodies) {
