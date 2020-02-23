@@ -31,7 +31,7 @@ public class Entity extends Body {
             );
             max = new Vector2d(
                 Math.max(max.getX(), component.getBoundingBox().getMaxX()),
-                Math.max(max.getY(), component.getBoundingBox().getMaxX())
+                Math.max(max.getY(), component.getBoundingBox().getMaxY())
             );
         }
 
