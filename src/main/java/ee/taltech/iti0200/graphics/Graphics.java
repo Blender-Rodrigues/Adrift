@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import java.io.IOException;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -34,10 +35,7 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -49,6 +47,8 @@ public class Graphics {
 
     private long window;
     private World world;
+    private Model model;
+    private Texture tex;
 
     public Graphics(World world) {
         this.world = world;
@@ -70,7 +70,7 @@ public class Graphics {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(600, 400, "Hello World!", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -108,9 +108,39 @@ public class Graphics {
         // bindings available for use.
         GL.createCapabilities();
 
-        // Set the clear color
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glEnable(GL_TEXTURE_2D);
 
+        float[] vertices = new float[] {
+                -0.5f, 0.5f,
+                0.5f, 0.5f,
+                0.5f, -0.5f,
+                -0.5f, -0.5f,
+                0.3f, -0.5f, //delete this
+        };
+
+        float[] texture = new float[] {
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1,
+                1, 1, //delete this
+
+        };
+
+        int[] indices = new int[] {
+                0, 1, 2,
+                4, 3, 0 //change 4 to 2
+        };
+
+        model = new Model(vertices, texture, indices);
+
+        try {
+            tex = new Texture("./build/resources/main/smile.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        glClearColor(0.0f, 0.0f, 0.3f, 0.0f);
         return window;
     }
 
@@ -129,13 +159,15 @@ public class Graphics {
     }
 
     public void render(long time) {
+        glfwPollEvents();
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-        glfwSwapBuffers(window); // swap the color buffers
+        model.render();
 
-        // Poll for window events. The key callback above will only be
-        // invoked during this call.
-        glfwPollEvents();
+        tex.bind();
+
+        glfwSwapBuffers(window); // swap the color buffers
     }
 
 }
