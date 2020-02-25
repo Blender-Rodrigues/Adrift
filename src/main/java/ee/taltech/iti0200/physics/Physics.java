@@ -10,11 +10,7 @@ public class Physics {
 
     private World world;
 
-    private static final Vector2d gravity;
-
-    static {
-        gravity = new Vector2d(0, -9.81);
-    }
+    private static final Vector2d GRAVITY = new Vector2d(0, -9.81);
 
     public Physics(World world) {
         this.world = world;
@@ -29,7 +25,7 @@ public class Physics {
     }
 
     private void applyGravity(List<Entity> entities) {
-        Vector2d accelerateDelta = gravity;
+        Vector2d accelerateDelta = GRAVITY;
         accelerateDelta.scale(world.getTimeStep());
         for (Entity entity: entities) {
             entity.accelerate(accelerateDelta);
@@ -54,14 +50,16 @@ public class Physics {
         Vector2d overLap = movingBody.getBoundingBox().getOverLap(stationaryBody.getBoundingBox());
         double toMoveX = (overLap.getX() < 0) ?  overLap.getX() : 0;
         double toMoveY = (overLap.getY() < 0) ?  overLap.getY() : 0;
+
         double directionX = (
-                movingBody.getBoundingBox().getCentre().getX()
-                > stationaryBody.getBoundingBox().getCentre().getX())
-                ? -1 : 1;
+            movingBody.getBoundingBox().getCentre().getX()
+            > stationaryBody.getBoundingBox().getCentre().getX()
+        ) ? -1 : 1;
+
         double directionY = (
-                movingBody.getBoundingBox().getCentre().getY()
-                > stationaryBody.getBoundingBox().getCentre().getY())
-                ? -1 : 1;
+            movingBody.getBoundingBox().getCentre().getY()
+            > stationaryBody.getBoundingBox().getCentre().getY()
+        ) ? -1 : 1;
 
         movingBody.move(new Vector2d(toMoveX * directionX, toMoveY * directionY));
 

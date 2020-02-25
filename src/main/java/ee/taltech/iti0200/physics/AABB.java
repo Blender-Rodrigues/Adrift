@@ -5,6 +5,7 @@ import javax.vecmath.Vector2d;
 import static java.lang.Math.abs;
 
 public class AABB {
+
     protected Vector2d centre;
     protected Vector2d size;
 
@@ -67,4 +68,5 @@ public class AABB {
     public double getMaxY() {
         return this.centre.getY() + this.size.getY();
     }
+
 }

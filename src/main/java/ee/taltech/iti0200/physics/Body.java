@@ -1,12 +1,10 @@
 package ee.taltech.iti0200.physics;
 
-
 import javax.vecmath.Vector2d;
 
 public class Body {
 
     protected double mass;
-
     protected double inverseMass;
     protected Vector2d speed;
     protected AABB boundingBox;
