@@ -13,7 +13,7 @@ public class Bot extends Entity {
     private static final Random random = new Random();
 
     public Bot(Vector2d position) {
-        super(Arrays.asList(new Body(mass, size, position, true)));
+        super(Arrays.asList(new Body(mass, size, position, true)), false);
     }
 
     public void update(long tick) {

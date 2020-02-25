@@ -4,8 +4,8 @@ import javax.vecmath.Vector2d;
 
 public class Box extends Body {
 
-    public Box(double mass, Vector2d min, Vector2d max) {
-        super(mass, min, max);
+    public Box(double mass, Vector2d min, Vector2d max, boolean collideable) {
+        super(mass, min, max, collideable);
     }
 
 }
