@@ -1,12 +1,14 @@
-package ee.taltech.iti0200.physics;
+package ee.taltech.iti0200.domain;
+
+import ee.taltech.iti0200.physics.Body;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class World {
 
-    protected List<Body> movableBodies = new ArrayList<>();
-    protected List<Body> imMovableBodies = new ArrayList<>();
+    protected List<Entity> movableBodies = new ArrayList<>();
+    protected List<Entity> imMovableBodies = new ArrayList<>();
     protected double xMin;
     protected double xMax;
     protected double yMin;
@@ -25,26 +27,28 @@ public class World {
         return timeStep;
     }
 
-    public void moveBodies() {
-        for (Body body: movableBodies) {
-            body.move(timeStep);
-        }
-    }
-
-    private void addMovableBody(Body body) {
+    private void addMovableBody(Entity body) {
         movableBodies.add(body);
     }
 
-    private void addImMovableBody(Body body) {
+    private void addImMovableBody(Entity body) {
         imMovableBodies.add(body);
     }
 
-    public void addBody(Body body, boolean movable) {
+    public void addBody(Entity body, boolean movable) {
         if (movable) {
             addMovableBody(body);
         } else {
             addImMovableBody(body);
         }
+    }
+
+    public List<Entity> getMovableBodies() {
+        return movableBodies;
+    }
+
+    public List<Entity> getImMovableBodies() {
+        return imMovableBodies;
     }
 
 }

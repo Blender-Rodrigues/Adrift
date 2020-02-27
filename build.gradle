@@ -1,17 +1,73 @@
+import org.gradle.internal.os.OperatingSystem
 
+// Specify repositories we'd like to fetch libraries from
 repositories {
+    mavenCentral()
     jcenter()
 }
 
+// Plugins so gradle would take some assumptions about the project setup
 apply plugin: "java"
 apply plugin: "idea"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+// Pick for which platform the build result is going to be applied to.
+switch (OperatingSystem.current()) {
+    case OperatingSystem.LINUX:
+        def osArch = System.getProperty("os.arch")
+        project.ext.lwjglNatives = (
+            osArch.startsWith("arm") || osArch.startsWith("aarch64")
+                ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
+                : "natives-linux"
+        )
+        break
+    case OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = "natives-windows"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+}
+
+project.ext.lwjglVersion = "3.2.3"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+sourceSets.main.java.srcDirs = ['src/main/java']
+sourceSets.test.java.srcDirs = ['src/test/java']
+
+test {
+    useJUnitPlatform()
+    testLogging.info.events = ["FAILED", "SKIPPED", "PASSED", "STANDARD_OUT", "STANDARD_ERROR"]
+}
 
 dependencies {
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
+    implementation "org.lwjgl:lwjgl-bom:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-opencl:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+    implementation "org.apache.logging.log4j:log4j-api:2.13.0"
+    implementation "org.apache.logging.log4j:log4j-core:2.13.0"
+    implementation "javax.vecmath:vecmath:1.5.2"
 
-    testRuntimeOnly "org.assertj:assertj-core:3.11.1"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.1"
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+
+    testImplementation "org.assertj:assertj-core:3.11.1"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.0"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.6.0"
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "ee.taltech.iti0200.Game"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

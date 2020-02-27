@@ -1,33 +1,74 @@
 package ee.taltech.iti0200.physics;
 
+import javax.vecmath.Vector2d;
+
 public class Body {
 
     protected double mass;
     protected double inverseMass;
-    protected double xSpeed;
-    protected double ySpeed;
-    protected double xMin;
-    protected double xMax;
-    protected double yMin;
-    protected double yMax;
+    protected Vector2d speed;
+    protected AABB boundingBox;
     protected boolean moved;
+    private boolean collideable;
 
-    public Body(double mass, double xMin, double xMax, double yMin, double yMax) {
+    public Body(double mass, Vector2d min, Vector2d max, boolean collideable) {
         this.mass = mass;
-        this.xSpeed = 0.0;
-        this.ySpeed = 0.0;
+        this.speed = new Vector2d(0.0, 0.0);
         this.inverseMass = 1 / mass;
-        this.xMin = xMin;
-        this.xMax = xMax;
-        this.yMin = yMin;
-        this.yMax = yMax;
+        this.boundingBox = new AABB(min, max);
+        this.collideable = collideable;
+    }
+
+    public Body(
+        double mass,
+        Vector2d size,
+        Vector2d position,
+        boolean collideable,
+        boolean usingPositionAndSize
+    ) {
+        this.mass = mass;
+        this.speed = new Vector2d(0.0, 0.0);
+        this.inverseMass = 1 / mass;
+        this.collideable = collideable;
+        this.boundingBox = new AABB(position, size, usingPositionAndSize);
     }
 
     public void move(double timeToMove) {
-        xMin += xSpeed * timeToMove;
-        xMax += xSpeed * timeToMove;
-        yMin += ySpeed * timeToMove;
-        yMax += ySpeed * timeToMove;
+        Vector2d moveDelta = new Vector2d(this.speed);
+        moveDelta.scale(timeToMove);
+        this.move(moveDelta);
+    }
+
+    public void move(Vector2d moveDelta) {
+        this.boundingBox.move(moveDelta);
+    }
+
+    public void accelerate(Vector2d accelerateDelta) {
+        this.speed.add(accelerateDelta);
+    }
+
+    public double getMass() {
+        return mass;
+    }
+
+    public AABB getBoundingBox() {
+        return boundingBox;
+    }
+
+    public boolean intersects(Body otherBody) {
+        return this.boundingBox.intersects(otherBody.getBoundingBox());
+    }
+
+    public boolean isCollideable() {
+        return collideable;
+    }
+
+    public void setXSpeed(double speed) {
+        this.speed = new Vector2d(speed, this.speed.getY());
+    }
+
+    public void setYSpeed(double speed) {
+        this.speed = new Vector2d(this.speed.getX(), speed);
     }
 
 }
