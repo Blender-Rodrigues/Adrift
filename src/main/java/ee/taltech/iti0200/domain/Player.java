@@ -11,6 +11,6 @@ public class Player extends Entity {
     private static final double mass = 70.0;
 
     public Player(Vector2d position) {
-        super(Arrays.asList(new Body(mass, size, position, true)), false);
+        super(Arrays.asList(new Body(mass, size, position, true, true)), false);
     }
 }
