@@ -1,4 +1,4 @@
-package ee.taltech.iti0200;
+package ee.taltech.iti0200.application;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -64,7 +64,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "ee.taltech.iti0200.Game"
+        attributes "Main-Class": "ee.taltech.iti0200.application.Game"
     }
 
     from {

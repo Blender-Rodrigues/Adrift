@@ -1,12 +1,13 @@
 package ee.taltech.iti0200.physics;
 
+import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Entity;
 import ee.taltech.iti0200.domain.World;
 
 import javax.vecmath.Vector2d;
 import java.util.List;
 
-public class Physics {
+public class Physics implements Component {
 
     private World world;
 
@@ -16,7 +17,8 @@ public class Physics {
         this.world = world;
     }
 
-    public void step(long tick) {
+    @Override
+    public void update(long tick) {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
         moveBodies(movableBodies, world.getTimeStep());

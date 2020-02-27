@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.input;
 
+import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,16 +20,21 @@ import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-public class Input {
+public class Input implements Component {
 
     private Logger logger;
     private Player player;
+    private long window;
     private List<Runnable> events = new LinkedList<>();
     private Map<Integer, Map<Integer, Runnable>> bindings = new HashMap<>();
 
-    public Input() {
+    public Input(long window, Player player) {
         logger = LogManager.getLogger(Input.class);
+        this.player = player;
+        this.window = window;
+    }
 
+    public void initialize() {
         bindings.put(GLFW_KEY_A, new HashMap<>());
         bindings.get(GLFW_KEY_A).put(GLFW_PRESS, this::movePlayerLeft);
         bindings.get(GLFW_KEY_A).put(GLFW_REPEAT, this::movePlayerLeft);
@@ -36,14 +42,10 @@ public class Input {
         bindings.put(GLFW_KEY_D, new HashMap<>());
         bindings.get(GLFW_KEY_D).put(GLFW_PRESS, this::movePlayerRight);
         bindings.get(GLFW_KEY_D).put(GLFW_REPEAT, this::movePlayerRight);
-    }
 
-    public void initialize(long window, Player player) {
-        this.player = player;
-
-        glfwSetKeyCallback(window, (windowId, key, scanCode, action, mods) -> {
+        glfwSetKeyCallback(window, (window, key, scanCode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-                glfwSetWindowShouldClose(windowId, true);
+                glfwSetWindowShouldClose(window, true);
             }
             if (bindings.containsKey(key) && bindings.get(key).containsKey(action)) {
                 events.add(bindings.get(key).get(action));
