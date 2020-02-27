@@ -79,7 +79,7 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        World world = new World(0.0, 40.0, 0.0, 40.0, 10);
+        World world = new World(0.0, 40.0, 0.0, 40.0, 0.05);
         boolean isServer = args.length >= 1 && args[0].equalsIgnoreCase("server");
 
         new Game().run(world, isServer ? new ServerNetwork(world) : new ClientNetwork(world));
