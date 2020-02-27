@@ -18,3 +18,17 @@ for that.
 ## Network flow chart
 
 ![Network flow chart](networkflow.png)
+
+## Log file formatting
+
+Settings > Log Highlighting (Ideolog) > Add
+
+* Message pattern: `^(\[[A-Z ]+\]) (.{23}) (\[.+\]) (\w+) - (.*)$`
+* Message start: `^\[`
+* Time capture group: 2
+* Severity capture group: 1
+* Category capture group: 4
+
+And after that you can start adding formatting in the box left below,
+ 
+E.g. `^\[ERROR]` highlight line, foreground red etc

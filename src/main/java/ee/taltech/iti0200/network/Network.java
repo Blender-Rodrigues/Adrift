@@ -1,8 +1,9 @@
 package ee.taltech.iti0200.network;
 
+import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
 
-abstract public class Network {
+abstract public class Network implements Component {
 
     public static final int UPSTREAM_PORT = 8880;
     public static final int DOWNSTREAM_PORT = 8881;
@@ -16,12 +17,9 @@ abstract public class Network {
         this.world = world;
     }
 
-    abstract public void initialize();
-
-    abstract public void update(long tick);
-
     abstract public void propagate(long tick);
 
+    @Override
     public void terminate() {
         messenger.terminate();
     }

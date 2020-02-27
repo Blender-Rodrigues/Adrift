@@ -1,7 +1,6 @@
 package ee.taltech.iti0200.domain;
 
-import ee.taltech.iti0200.physics.Body;
-
+import javax.vecmath.Vector2d;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +20,16 @@ public class World {
         this.yMin = yMin;
         this.yMax = yMax;
         this.timeStep = timeStep;
+    }
+
+    public void initialize() {
+        addBody(new Bot(new Vector2d(10.0, 4.0)), true);
+        addBody(new Bot(new Vector2d(30.0, 4.0)), true);
+        for (int i = 0; i < 20; i++) {
+            addBody(new Terrain(new Vector2d(i * 2.0 + 1.0, 1.0)), false);
+        }
+        addBody(new Terrain(new Vector2d(1.0, 3.0)), false);
+        addBody(new Terrain(new Vector2d(39.0, 3.0)), false);
     }
 
     public double getTimeStep() {

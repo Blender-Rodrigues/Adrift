@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.graphics;
 
+import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -11,8 +12,6 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
@@ -26,9 +25,7 @@ import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -43,26 +40,24 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Mostly still the  hello-world example from https://www.lwjgl.org/guide just to get
  * a rough idea on how to start using LWJGL library
  */
-public class Graphics {
+public class Graphics implements Component {
 
     private long window;
+
     private World world;
     private Model model;
     private Texture tex;
-
     public Graphics(World world) {
         this.world = world;
-    }
-
-    public long initialize() {
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if ( !glfwInit() )
+        if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
+        }
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
@@ -71,9 +66,17 @@ public class Graphics {
 
         // Create the window
         window = glfwCreateWindow(600, 400, "Hello World!", NULL, NULL);
-        if ( window == NULL )
+        if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
+        }
+    }
 
+    public long getWindow() {
+        return window;
+    }
+
+    @Override
+    public void initialize() {
         // Get the thread stack and push a new frame
         try ( MemoryStack stack = stackPush() ) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
@@ -141,9 +144,9 @@ public class Graphics {
         }
 
         glClearColor(0.0f, 0.0f, 0.3f, 0.0f);
-        return window;
     }
 
+    @Override
     public void terminate() {
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
@@ -158,7 +161,8 @@ public class Graphics {
         return !glfwWindowShouldClose(window);
     }
 
-    public void render(long time) {
+    @Override
+    public void update(long time) {
         glfwPollEvents();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
