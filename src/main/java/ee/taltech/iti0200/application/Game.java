@@ -21,7 +21,7 @@ abstract public class Game {
     private Logger logger;
 
     public Game() {
-        world = new World(0.0, 40.0, 0.0, 40.0, 10);
+        world = new World(0.0, 40.0, 0.0, 40.0, 0.05);
         timer = new Timer(20F);
         components.add(new Physics(world));
         logger = LogManager.getLogger(Game.class);
