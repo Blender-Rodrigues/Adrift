@@ -11,12 +11,16 @@ public class Body {
     protected boolean moved;
     private boolean collideable;
 
-    public Body(double mass, Vector2d min, Vector2d max, boolean collideable) {
+    public Body(double mass, AABB boundingBox, boolean collideable) {
         this.mass = mass;
         this.speed = new Vector2d(0.0, 0.0);
         this.inverseMass = 1 / mass;
-        this.boundingBox = new AABB(min, max);
+        this.boundingBox = boundingBox;
         this.collideable = collideable;
+    }
+
+    public Body(double mass, Vector2d min, Vector2d max, boolean collideable) {
+        this(mass, new AABB(min, max), collideable);
     }
 
     public Body(
@@ -26,11 +30,7 @@ public class Body {
         boolean collideable,
         boolean usingPositionAndSize
     ) {
-        this.mass = mass;
-        this.speed = new Vector2d(0.0, 0.0);
-        this.inverseMass = 1 / mass;
-        this.collideable = collideable;
-        this.boundingBox = new AABB(position, size, usingPositionAndSize);
+        this(mass, new AABB(position, size, usingPositionAndSize), collideable);
     }
 
     public void move(double timeToMove) {

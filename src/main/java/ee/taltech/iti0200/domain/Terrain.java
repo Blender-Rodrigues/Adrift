@@ -3,7 +3,6 @@ package ee.taltech.iti0200.domain;
 import ee.taltech.iti0200.physics.Body;
 
 import javax.vecmath.Vector2d;
-import java.util.Arrays;
 
 public class Terrain extends Entity {
 
@@ -11,7 +10,7 @@ public class Terrain extends Entity {
     private static final double mass = Double.POSITIVE_INFINITY;
 
     public Terrain(Vector2d position) {
-        super(Arrays.asList(new Body(mass, size, position, true, true)), true);
+        super(new Body(mass, new Vector2d(size), position, true, true), true);
     }
 
 }

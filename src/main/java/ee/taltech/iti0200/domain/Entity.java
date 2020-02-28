@@ -4,6 +4,7 @@ import ee.taltech.iti0200.physics.AABB;
 import ee.taltech.iti0200.physics.Body;
 
 import javax.vecmath.Vector2d;
+import java.util.Arrays;
 import java.util.List;
 
 public class Entity extends Body {
@@ -40,6 +41,16 @@ public class Entity extends Body {
         this.inverseMass = 1 / this.mass;
     }
 
+    public Entity(Body component, boolean collideable) {
+        super(
+            component.getMass(),
+            component.getBoundingBox(),
+            collideable
+        );
+
+        this.components = Arrays.asList(component);
+    }
+
     /**
      * Called for living things on every game tick
      */
@@ -49,6 +60,10 @@ public class Entity extends Body {
 
     public void onCollide(Entity otherEntity) {
 
+    }
+
+    public List<Body> getComponents() {
+        return components;
     }
 
 }

@@ -35,8 +35,8 @@ public class AABB {
                 abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
         );
         distance.sub(this.size);
-        distance.sub(otherBoundingBox.size);
-        return distance.getX() < 0 || distance.getY() < 0;
+        distance.sub(otherBoundingBox.getSize());
+        return distance.getX() < 0 && distance.getY() < 0;
     }
 
     public Vector2d getOverLap(AABB otherBoundingBox) {
@@ -45,12 +45,16 @@ public class AABB {
                 abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
         );
         distance.sub(this.size);
-        distance.sub(otherBoundingBox.size);
+        distance.sub(otherBoundingBox.getSize());
         return distance;
     }
 
     public Vector2d getCentre() {
         return this.centre;
+    }
+
+    public Vector2d getSize() {
+        return this.size;
     }
 
     public double getMinX() {
