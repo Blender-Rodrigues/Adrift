@@ -51,4 +51,8 @@ public class Entity extends Body {
 
     }
 
+    public List<Body> getComponents() {
+        return components;
+    }
+
 }

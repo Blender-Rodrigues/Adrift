@@ -55,15 +55,16 @@ public class Physics implements Component {
     }
 
     private void resolveCollision(Body movingBody, Body stationaryBody) {
-        if (movingBody.getClass() == Player.class) {
-            logger.debug("Player at: " + movingBody.getBoundingBox().getCentre());
-            logger.debug("Collided with: " + stationaryBody.getClass());
-            logger.debug("At: " + stationaryBody.getBoundingBox().getCentre());
-            logger.debug("");
-        }
         Vector2d overLap = movingBody.getBoundingBox().getOverLap(stationaryBody.getBoundingBox());
-        double toMoveX = (overLap.getX() < 0) ?  overLap.getX() : 0;
-        double toMoveY = (overLap.getY() < 0) ?  overLap.getY() : 0;
+
+        boolean xOverLap = overLap.getX() < 0;
+        boolean yOverLap = overLap.getY() < 0;
+        boolean xSmallerOverLap = overLap.getX() > overLap.getY();
+        boolean ySmallerOverLap = overLap.getY() > overLap.getX();
+        boolean xCollision = xOverLap && xSmallerOverLap;
+        boolean yCollision = yOverLap && ySmallerOverLap;
+        double toMoveX = (xCollision) ? overLap.getX() : 0;
+        double toMoveY = (yCollision) ? overLap.getY() : 0;
 
         double directionX = (
             movingBody.getBoundingBox().getCentre().getX()
@@ -77,11 +78,11 @@ public class Physics implements Component {
 
         movingBody.move(new Vector2d(toMoveX * directionX, toMoveY * directionY));
 
-        if (overLap.getX() < 0) {
+        if (xCollision) {
             movingBody.setXSpeed(0);
         }
 
-        if (overLap.getY() < 0) {
+        if (yCollision) {
             movingBody.setYSpeed(0);
         }
     }
