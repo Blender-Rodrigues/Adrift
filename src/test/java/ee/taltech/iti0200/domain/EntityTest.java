@@ -23,4 +23,5 @@ class EntityTest {
         assertEquals(0.0, entity.getBoundingBox().getCentre().getX());
         assertEquals(0.0, entity.getBoundingBox().getCentre().getY());
     }
+
 }

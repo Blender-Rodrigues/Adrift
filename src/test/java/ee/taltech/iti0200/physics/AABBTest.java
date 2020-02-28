@@ -55,4 +55,5 @@ class AABBTest {
         assertTrue(player.intersects(terrain));
         assertTrue(terrain.intersects(player));
     }
+
 }

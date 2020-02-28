@@ -14,4 +14,5 @@ class TerrainTest {
         assertEquals(1.0, terrain.getBoundingBox().getSize().getX());
         assertEquals(1.0, terrain.getBoundingBox().getSize().getY());
     }
+
 }
