@@ -46,6 +46,16 @@ public class Physics implements Component {
                 if (!movingBody.isCollideable() && !stationaryBody.isCollideable()) {
                     continue;
                 }
+                if (movingBody.getClass() == Player.class) {
+                    if (stationaryBody.getBoundingBox().getCentre().getX() == 19.0) {
+                        logger.debug("Player at: " + movingBody.getBoundingBox().getCentre());
+                        logger.debug("Player size: " + movingBody.getBoundingBox().getSize());
+                        logger.debug("Terrain at: " + stationaryBody.getBoundingBox().getCentre());
+                        logger.debug("Terrain size: " + stationaryBody.getBoundingBox().getSize());
+                        logger.debug(movingBody.intersects(stationaryBody));
+                        logger.debug("");
+                    }
+                }
                 if (movingBody.intersects(stationaryBody)) {
                     movingBody.onCollide(stationaryBody);
                     resolveCollision(movingBody, stationaryBody);
@@ -55,6 +65,12 @@ public class Physics implements Component {
     }
 
     private void resolveCollision(Body movingBody, Body stationaryBody) {
+        if (movingBody.getClass() == Player.class) {
+            logger.debug("Player at: " + movingBody.getBoundingBox().getCentre());
+            logger.debug("Collided with: " + stationaryBody.getClass());
+            logger.debug("At: " + stationaryBody.getBoundingBox().getCentre());
+            logger.debug("");
+        }
         Vector2d overLap = movingBody.getBoundingBox().getOverLap(stationaryBody.getBoundingBox());
         double toMoveX = (overLap.getX() < 0) ?  overLap.getX() : 0;
         double toMoveY = (overLap.getY() < 0) ?  overLap.getY() : 0;
@@ -82,6 +98,9 @@ public class Physics implements Component {
 
     private void moveBodies(List<Entity> bodiesToMove, double timeStep) {
         for (Entity body: bodiesToMove) {
+            if (body.getClass() == Player.class) {
+                logger.debug("Player at: " + body.getBoundingBox().getCentre());
+            }
             body.move(timeStep);
         }
     }
