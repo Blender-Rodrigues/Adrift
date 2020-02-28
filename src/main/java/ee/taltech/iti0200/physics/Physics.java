@@ -61,8 +61,8 @@ public class Physics implements Component {
         boolean ySmallerOverLap = overLap.getY() > overLap.getX();
         boolean xCollision = xOverLap && xSmallerOverLap;
         boolean yCollision = yOverLap && ySmallerOverLap;
-        double toMoveX = (xCollision) ? overLap.getX() : 0;
-        double toMoveY = (yCollision) ? overLap.getY() : 0;
+        double toMoveX = xCollision ? overLap.getX() : 0;
+        double toMoveY = yCollision ? overLap.getY() : 0;
 
         double directionX = (
             movingBody.getBoundingBox().getCentre().getX()
