@@ -17,8 +17,10 @@ class EntityTest {
                 new Vector2d(2.0, 2.0),
                 new Vector2d(0.0, 0.0),
                 true,
-                true),
-            true);
+                true
+            ),
+            true
+        );
         assertEquals(0.0, entity.getBoundingBox().getCentre().getX());
         assertEquals(0.0, entity.getBoundingBox().getCentre().getY());
     }
