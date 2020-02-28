@@ -4,6 +4,8 @@ import ee.taltech.iti0200.physics.AABB;
 import ee.taltech.iti0200.physics.Body;
 
 import javax.vecmath.Vector2d;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Entity extends Body {
@@ -38,6 +40,16 @@ public class Entity extends Body {
         this.boundingBox = new AABB(min, max);
 
         this.inverseMass = 1 / this.mass;
+    }
+
+    public Entity(Body component, boolean collideable) {
+        super(
+            component.getMass(),
+            component.getBoundingBox(),
+            collideable
+        );
+
+        this.components = Collections.singletonList(component);
     }
 
     /**

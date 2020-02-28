@@ -19,6 +19,14 @@ public class Body {
         this.collideable = collideable;
     }
 
+    public Body(double mass, AABB boundingBox, boolean collideable) {
+        this.mass = mass;
+        this.speed = new Vector2d(0.0, 0.0);
+        this.inverseMass = 1 / mass;
+        this.boundingBox = boundingBox;
+        this.collideable = collideable;
+    }
+
     public Body(
         double mass,
         Vector2d size,
