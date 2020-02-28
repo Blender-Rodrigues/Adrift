@@ -51,6 +51,10 @@ public class Body {
         return mass;
     }
 
+    public Vector2d getSpeed() {
+        return speed;
+    }
+
     public AABB getBoundingBox() {
         return boundingBox;
     }

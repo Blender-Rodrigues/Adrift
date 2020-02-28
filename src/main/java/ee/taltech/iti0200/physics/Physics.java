@@ -2,7 +2,11 @@ package ee.taltech.iti0200.physics;
 
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Entity;
+import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.input.Input;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.vecmath.Vector2d;
 import java.util.List;
@@ -10,10 +14,12 @@ import java.util.List;
 public class Physics implements Component {
 
     private World world;
+    private Logger logger;
 
     private static final Vector2d GRAVITY = new Vector2d(0, -9.81);
 
     public Physics(World world) {
+        logger = LogManager.getLogger(Physics.class);
         this.world = world;
     }
 
@@ -27,7 +33,7 @@ public class Physics implements Component {
     }
 
     private void applyGravity(List<Entity> entities) {
-        Vector2d accelerateDelta = GRAVITY;
+        Vector2d accelerateDelta = new Vector2d(GRAVITY);
         accelerateDelta.scale(world.getTimeStep());
         for (Entity entity: entities) {
             entity.accelerate(accelerateDelta);
