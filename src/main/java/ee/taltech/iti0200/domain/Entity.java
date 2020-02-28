@@ -5,7 +5,6 @@ import ee.taltech.iti0200.physics.Body;
 
 import javax.vecmath.Vector2d;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Entity extends Body {
@@ -49,7 +48,7 @@ public class Entity extends Body {
             collideable
         );
 
-        this.components = Collections.singletonList(component);
+        this.components = Arrays.asList(component);
     }
 
     /**

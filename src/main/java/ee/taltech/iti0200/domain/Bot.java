@@ -3,7 +3,6 @@ package ee.taltech.iti0200.domain;
 import ee.taltech.iti0200.physics.Body;
 
 import javax.vecmath.Vector2d;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Bot extends Entity {

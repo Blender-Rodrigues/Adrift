@@ -4,7 +4,6 @@ import ee.taltech.iti0200.physics.Body;
 import org.junit.jupiter.api.Test;
 
 import javax.vecmath.Vector2d;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
