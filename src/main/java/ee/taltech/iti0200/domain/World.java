@@ -1,5 +1,10 @@
 package ee.taltech.iti0200.domain;
 
+import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.Physics;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.vecmath.Vector2d;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +19,11 @@ public class World {
     protected double yMax;
     protected double timeStep;
 
+    private Logger logger;
+
     public World(double xMin, double xMax, double yMin, double yMax, double timeStep) {
+        logger = LogManager.getLogger(Physics.class);
+
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
