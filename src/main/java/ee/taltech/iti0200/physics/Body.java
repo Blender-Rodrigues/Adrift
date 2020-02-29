@@ -9,6 +9,7 @@ public class Body {
     protected Vector2d speed;
     protected AABB boundingBox;
     protected boolean moved;
+    protected double elasticity;
     private boolean collideable;
 
     public Body(double mass, AABB boundingBox, boolean collideable) {
@@ -17,6 +18,7 @@ public class Body {
         this.inverseMass = 1 / mass;
         this.boundingBox = boundingBox;
         this.collideable = collideable;
+        this.elasticity = 1;
     }
 
     public Body(double mass, Vector2d min, Vector2d max, boolean collideable) {
@@ -73,6 +75,14 @@ public class Body {
 
     public void setYSpeed(double speed) {
         this.speed = new Vector2d(this.speed.getX(), speed);
+    }
+
+    public void setElasticity(double elasticity) {
+        this.elasticity = elasticity;
+    }
+
+    public double getElasticity() {
+        return this.elasticity;
     }
 
 }

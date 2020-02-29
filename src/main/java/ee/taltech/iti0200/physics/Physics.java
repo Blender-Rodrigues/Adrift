@@ -2,6 +2,7 @@ package ee.taltech.iti0200.physics;
 
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Entity;
+import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,11 +78,19 @@ public class Physics implements Component {
         movingBody.move(new Vector2d(toMoveX * directionX, toMoveY * directionY));
 
         if (xCollision) {
-            movingBody.setXSpeed(0);
+            movingBody.setXSpeed(
+                - movingBody.getSpeed().getX()
+                * movingBody.getElasticity()
+                * stationaryBody.getElasticity()
+            );
         }
 
         if (yCollision) {
-            movingBody.setYSpeed(0);
+            movingBody.setYSpeed(
+                - movingBody.getSpeed().getY()
+                * movingBody.getElasticity()
+                * stationaryBody.getElasticity()
+            );
         }
     }
 
