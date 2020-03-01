@@ -66,6 +66,10 @@ public class Physics implements Component {
             resolveStrategies
         );
         Vector2d bestResolveStrategy = getBestResolveStrategy(resolveStrategies, resolveStrategyResults);
+        movingBody.move(bestResolveStrategy);
+        if (getTotalOverLap(movingBody, collidingBodies) != 0) {
+            resolveCollision(movingBody, collidingBodies);
+        }
     }
 
     private Vector2d getBestResolveStrategy(
