@@ -65,13 +65,37 @@ public class Physics implements Component {
             collidingBodies,
             resolveStrategies
         );
+        Vector2d bestResolveStrategy = getBestResolveStrategy(resolveStrategies, resolveStrategyResults);
+    }
+
+    private Vector2d getBestResolveStrategy(
+        List<Vector2d> resolveStrategies,
+        List<Vector2d> resolveStrategyResults
+    ) {
+        int bestIndex = -1;
+        double bestValue = Double.NEGATIVE_INFINITY;
+        for (int i = 0; i < resolveStrategyResults.size(); i++) {
+            Vector2d resolveStrategyResult = resolveStrategyResults.get(i);
+            if (resolveStrategyResult.getX() > bestValue) {
+                bestValue = resolveStrategyResult.getX();
+                bestIndex = i * 2;
+            }
+            if (resolveStrategyResult.getY() > bestValue) {
+                bestValue = resolveStrategyResult.getY();
+                bestIndex = i * 2 + 1;
+            }
+        }
+        if (bestIndex % 2 == 0) {
+            return new Vector2d(resolveStrategies.get(bestIndex / 2).getX(), 0);
+        }
+        return new Vector2d(0, resolveStrategies.get(bestIndex / 2).getY());
     }
 
     private List<Vector2d> getResolveStrategyResults(
         Body movingBody,
         List<Body> collidingBodies,
         List<Vector2d> resolveStrategies
-        ){
+    ) {
         List<Vector2d> resolveStrategyResults = new ArrayList<>();
         double initialOverLap = getTotalOverLap(movingBody, collidingBodies);
         for (Vector2d resolveStrategy: resolveStrategies) {
@@ -82,7 +106,7 @@ public class Physics implements Component {
 
             double yMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
             movingBody.move(new Vector2d(0, - resolveStrategy.getY()));
-            
+
             double xMoveEfficiency = (initialOverLap - xMoveOverLap) / Math.abs(resolveStrategy.getX());
             double yMoveEfficiency = (initialOverLap - yMoveOverLap) / Math.abs(resolveStrategy.getY());
             resolveStrategyResults.add(new Vector2d(xMoveEfficiency, yMoveEfficiency));
