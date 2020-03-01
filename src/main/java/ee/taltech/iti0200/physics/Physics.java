@@ -65,7 +65,6 @@ public class Physics implements Component {
             collidingBodies,
             resolveStrategies
         );
-
     }
 
     private List<Vector2d> getResolveStrategyResults(
@@ -82,6 +81,8 @@ public class Physics implements Component {
 
             double yMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
             movingBody.move(new Vector2d(0, - resolveStrategy.getY()));
+
+            resolveStrategyResults.add(new Vector2d(xMoveOverLap, yMoveOverLap));
         }
         return resolveStrategyResults;
     }
