@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.vecmath.Vector2d;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Physics implements Component {
@@ -41,16 +42,47 @@ public class Physics implements Component {
 
     private void checkForCollisions(List<Entity> movingBodies, List<Entity> stationaryBodies) {
         for (Entity movingBody: movingBodies) {
+            List<Body> collidingEntities = new ArrayList<>();
             for (Entity stationaryBody: stationaryBodies) {
                 if (!movingBody.isCollideable() && !stationaryBody.isCollideable()) {
                     continue;
                 }
                 if (movingBody.intersects(stationaryBody)) {
+                    collidingEntities.add(stationaryBody);
                     movingBody.onCollide(stationaryBody);
-                    resolveCollision(movingBody, stationaryBody);
                 }
             }
+            if (collidingEntities.size() > 0) {
+                resolveCollision(movingBody, collidingEntities);
+            }
         }
+    }
+
+    private void resolveCollision(Body movingBody, List<Body> collidingBodies) {
+        List<Vector2d> resolveStrategies = getResolveStrategies(movingBody, collidingBodies);
+    }
+
+    private List<Vector2d> getResolveStrategies(Body movingBody, List<Body> collidingBodies) {
+        List<Vector2d> resolveStrategies = new ArrayList<>();
+        for (Body collidingBody: collidingBodies) {
+            Vector2d overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
+            double directionX = (
+                movingBody.getBoundingBox().getCentre().getX()
+                    > collidingBody.getBoundingBox().getCentre().getX()
+            ) ? -1 : 1;
+
+            double directionY = (
+                movingBody.getBoundingBox().getCentre().getY()
+                    > collidingBody.getBoundingBox().getCentre().getY()
+            ) ? -1 : 1;
+
+            Vector2d resolveStrategy = new Vector2d(
+                overLap.getX() * directionX,
+                overLap.getY() * directionY
+            );
+            resolveStrategies.add(resolveStrategy);
+        }
+        return resolveStrategies;
     }
 
     private void resolveCollision(Body movingBody, Body stationaryBody) {
