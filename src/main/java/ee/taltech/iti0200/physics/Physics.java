@@ -60,6 +60,39 @@ public class Physics implements Component {
 
     private void resolveCollision(Body movingBody, List<Body> collidingBodies) {
         List<Vector2d> resolveStrategies = getResolveStrategies(movingBody, collidingBodies);
+        List<Vector2d> resolveStrategyResults = getResolveStrategyResults(
+            movingBody,
+            collidingBodies,
+            resolveStrategies
+        );
+
+    }
+
+    private List<Vector2d> getResolveStrategyResults(
+        Body movingBody,
+        List<Body> collidingBodies,
+        List<Vector2d> resolveStrategies
+        ){
+        List<Vector2d> resolveStrategyResults = new ArrayList<>();
+        for (Vector2d resolveStrategy: resolveStrategies) {
+            movingBody.move(new Vector2d(resolveStrategy.getX(), 0));
+            double xMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
+
+            movingBody.move(new Vector2d(- resolveStrategy.getX(), resolveStrategy.getY()));
+
+            double yMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
+            movingBody.move(new Vector2d(0, - resolveStrategy.getY()));
+        }
+        return resolveStrategyResults;
+    }
+
+    private double getTotalOverLap(Body movingBody, List<Body> collidingBodies) {
+        double totalOverLap = 0;
+        for (Body collidingBody: collidingBodies) {
+            Vector2d overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
+            totalOverLap += Math.abs(overLap.getX()) + Math.abs(overLap.getY());
+        }
+        return totalOverLap;
     }
 
     private List<Vector2d> getResolveStrategies(Body movingBody, List<Body> collidingBodies) {
