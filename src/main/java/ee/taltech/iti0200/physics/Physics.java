@@ -198,12 +198,11 @@ public class Physics implements Component {
     }
 
     private double getTotalOverLap(Body movingBody, List<Body> collidingBodies) {
-        double totalOverLap = 0;
-        for (Body collidingBody: collidingBodies) {
-            Vector2d overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
-            totalOverLap += Math.abs(overLap.getX()) * Math.abs(overLap.getY());
-        }
-        return totalOverLap;
+        return collidingBodies.stream()
+            .map(Body::getBoundingBox)
+            .map(boundingBox -> movingBody.getBoundingBox().getOverLap(boundingBox))
+            .map(overLap -> Math.abs(overLap.getX()) * Math.abs(overLap.getY()))
+            .reduce(0D, Double::sum);
     }
 
     private List<Vector2d> getResolveStrategies(Body movingBody, List<Body> collidingBodies) {
