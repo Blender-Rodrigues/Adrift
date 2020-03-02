@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import javax.vecmath.Vector2d;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Physics implements Component {
 
@@ -138,13 +139,9 @@ public class Physics implements Component {
     }
 
     private List<Body> getBodiesThatAreStillColliding(Body movingBody, List<Body> collidingBodies) {
-        List<Body> stillCollidingBodies = new ArrayList<>();
-        for (Body collidingBody: collidingBodies) {
-            if (movingBody.intersects(collidingBody)) {
-                stillCollidingBodies.add(collidingBody);
-            }
-        }
-        return stillCollidingBodies;
+        return collidingBodies.stream()
+            .filter(body -> body.intersects(movingBody))
+            .collect(Collectors.toList());
     }
 
     private Vector2d getBestResolveStrategy(int bestIndex, List<Vector2d> resolveStrategies) {
