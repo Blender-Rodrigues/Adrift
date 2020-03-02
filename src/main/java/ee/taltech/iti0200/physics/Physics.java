@@ -59,9 +59,19 @@ public class Physics implements Component {
                     new Vector2d(0, 0),
                     new Vector2d(0, 0)
                 );
-                collisionElasticity.scale(movingBody.getElasticity());
+                updateBodySpeed(movingBody, collisionElasticity);
                 logger.debug("Elasticty: " + collisionElasticity);
             }
+        }
+    }
+
+    private void updateBodySpeed(Body movingBody, Vector2d collisionElasticity) {
+        collisionElasticity.scale(movingBody.getElasticity());
+        if (collisionElasticity.getX() != 0) {
+            movingBody.setXSpeed(- movingBody.getSpeed().getX() * collisionElasticity.getX());
+        }
+        if (collisionElasticity.getY() != 0) {
+            movingBody.setYSpeed(- movingBody.getSpeed().getY() * collisionElasticity.getY());
         }
     }
 
