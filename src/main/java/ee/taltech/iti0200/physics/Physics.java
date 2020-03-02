@@ -67,9 +67,30 @@ public class Physics implements Component {
         );
         Vector2d bestResolveStrategy = getBestResolveStrategy(resolveStrategies, resolveStrategyResults);
         movingBody.move(bestResolveStrategy);
-        if (getTotalOverLap(movingBody, collidingBodies) != 0) {
+        collidingBodies = getBodiesThatAreStillColliding(movingBody, collidingBodies);
+        double totalOverLap = getTotalOverLap(movingBody, collidingBodies);
+        logger.debug("Moving entity position: " + movingBody.getBoundingBox().getCentre());
+        for (Body collidingBody: collidingBodies) {
+            logger.debug("Colliding body position: " + collidingBody.getBoundingBox().getCentre());
+        }
+        logger.debug("Possible strategies: " + resolveStrategies);
+        logger.debug("Strategy results: " + resolveStrategyResults);
+        logger.debug("Moving by: " + bestResolveStrategy);
+        logger.debug("Total overlap: " + totalOverLap);
+        logger.debug(" ");
+        if (totalOverLap != 0) {
             resolveCollision(movingBody, collidingBodies);
         }
+    }
+
+    private List<Body> getBodiesThatAreStillColliding(Body movingBody, List<Body> collidingBodies) {
+        List<Body> stillCollidingBodies = new ArrayList<>();
+        for (Body collidingBody: collidingBodies) {
+            if (movingBody.intersects(collidingBody)) {
+                stillCollidingBodies.add(collidingBody);
+            }
+        }
+        return stillCollidingBodies;
     }
 
     private Vector2d getBestResolveStrategy(
