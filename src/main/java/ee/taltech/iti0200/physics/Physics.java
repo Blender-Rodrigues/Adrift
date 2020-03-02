@@ -48,25 +48,29 @@ public class Physics implements Component {
 
     private void checkForCollisions(List<Entity> movingBodies, List<Entity> stationaryBodies) {
         for (Entity movingBody: movingBodies) {
-            List<Body> collidingEntities = new ArrayList<>();
+            List<Body> collidingBodies = new ArrayList<>();
             for (Entity stationaryBody: stationaryBodies) {
                 if (!movingBody.isCollideable() && !stationaryBody.isCollideable()) {
                     continue;
                 }
                 if (movingBody.intersects(stationaryBody)) {
-                    collidingEntities.add(stationaryBody);
+                    collidingBodies.add(stationaryBody);
                     movingBody.onCollide(stationaryBody);
                 }
             }
-            if (collidingEntities.size() > 0) {
-                Vector2d collisionElasticity = resolveCollision(
-                    movingBody,
-                    collidingEntities,
-                    new Vector2d(0, 0),
-                    new Vector2d(0, 0)
-                );
-                updateBodySpeedAfterCollision(movingBody, collisionElasticity);
-            }
+            resolveCollision(movingBody, collidingBodies);
+        }
+    }
+
+    private void resolveCollision(Body movingBody, List<Body> collidingBodies) {
+        if (collidingBodies.size() > 0) {
+            Vector2d collisionElasticity = getStrategyForResolvingCollision(
+                movingBody,
+                collidingBodies,
+                new Vector2d(0, 0),
+                new Vector2d(0, 0)
+            );
+            updateBodySpeedAfterCollision(movingBody, collisionElasticity);
         }
     }
 
@@ -80,28 +84,35 @@ public class Physics implements Component {
         }
     }
 
-    private Vector2d resolveCollision(
+    private Vector2d getStrategyForResolvingCollision(
         Body movingBody,
         List<Body> collidingBodies,
         Vector2d movedSoFar,
         Vector2d elasticitySoFar
     ) {
+        // Get all possible ways of resolving the collision and how good those ways are.
         List<Vector2d> resolveStrategies = getResolveStrategies(movingBody, collidingBodies);
         List<Vector2d> resolveStrategyResults = getResolveStrategyResults(
             movingBody,
             collidingBodies,
             resolveStrategies
         );
+
+        // Get the best way of resolving the collision.
         int bestResolveStrategyIndex = getBestResolveStrategyIndex(resolveStrategies, resolveStrategyResults);
         Vector2d bestResolveStrategy = getBestResolveStrategy(bestResolveStrategyIndex, resolveStrategies);
+
+        // Move the body according to the chosen way and updated vectors that store how the body has been moved earlier during the same collision resolution.
         double collidingBodyElasticity = getCollidingBodyElasticity(bestResolveStrategyIndex, collidingBodies);
         movingBody.move(bestResolveStrategy);
         elasticitySoFar = getNewElasticityOfCollision(elasticitySoFar, movedSoFar, bestResolveStrategy, collidingBodyElasticity);
         movedSoFar.add(bestResolveStrategy);
+
+        // Check if the body is still colliding with something.
         collidingBodies = getBodiesThatAreStillColliding(movingBody, collidingBodies);
         double totalOverLap = getTotalOverLap(movingBody, collidingBodies);
         if (totalOverLap != 0) {
-            return resolveCollision(movingBody, collidingBodies, movedSoFar, elasticitySoFar);
+            return getStrategyForResolvingCollision(movingBody, collidingBodies, movedSoFar, elasticitySoFar);
         }
         return elasticitySoFar;
     }
@@ -112,12 +123,18 @@ public class Physics implements Component {
         Vector2d currentMove,
         double currentElasticity
     ) {
+        // Get the average elasticity of the collision with respect to how much the body has been moved in each direction.
         Vector2d totalElasticityValue = elementWiseMultiple(elasticitySoFar, movedSoFar);
+
         Vector2d currentMoveElasticityValue = new Vector2d();
         Vector2d movedAfterThisCollision = new Vector2d();
+
+        // Calculate the change in weighted elasticity with the current move.
         currentMoveElasticityValue.scale(currentElasticity, currentMove);
+        // Add the change to the previous weighted elasticity.
         totalElasticityValue.add(currentMoveElasticityValue);
         movedAfterThisCollision.add(movedSoFar, currentMove);
+        // Divide the weighted elasticity with how much the body has been moved, to get the average elasticity in each direction.
         return elementWiseDivide(totalElasticityValue, movedAfterThisCollision);
     }
 
@@ -179,14 +196,18 @@ public class Physics implements Component {
         List<Vector2d> resolveStrategyResults = new ArrayList<>();
         double initialOverLap = getTotalOverLap(movingBody, collidingBodies);
         for (Vector2d resolveStrategy: resolveStrategies) {
+            // Try moving the body along the x axis and find the overlap after that move.
             movingBody.move(new Vector2d(resolveStrategy.getX(), 0));
             double xMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
 
+            // Move the body back along the x axis and try moving in the y axis.
             movingBody.move(new Vector2d(- resolveStrategy.getX(), resolveStrategy.getY()));
 
+            // Get the overlap and move body back along y axis.
             double yMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
             movingBody.move(new Vector2d(0, - resolveStrategy.getY()));
 
+            // Calculate efficiencies of each move by dividing the change in overlap by how much movement was necessary for that change.
             double xMoveEfficiency = (initialOverLap - xMoveOverLap) / Math.abs(resolveStrategy.getX());
             double yMoveEfficiency = (initialOverLap - yMoveOverLap) / Math.abs(resolveStrategy.getY());
             resolveStrategyResults.add(new Vector2d(xMoveEfficiency, yMoveEfficiency));
@@ -208,12 +229,12 @@ public class Physics implements Component {
             Vector2d overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
             double directionX = (
                 movingBody.getBoundingBox().getCentre().getX()
-                    > collidingBody.getBoundingBox().getCentre().getX()
+                > collidingBody.getBoundingBox().getCentre().getX()
             ) ? -1 : 1;
 
             double directionY = (
                 movingBody.getBoundingBox().getCentre().getY()
-                    > collidingBody.getBoundingBox().getCentre().getY()
+                > collidingBody.getBoundingBox().getCentre().getY()
             ) ? -1 : 1;
 
             Vector2d resolveStrategy = new Vector2d(
