@@ -228,47 +228,6 @@ public class Physics implements Component {
         return resolveStrategies;
     }
 
-    private void resolveCollision(Body movingBody, Body stationaryBody) {
-        Vector2d overLap = movingBody.getBoundingBox().getOverLap(stationaryBody.getBoundingBox());
-
-        boolean xOverLap = overLap.getX() < 0;
-        boolean yOverLap = overLap.getY() < 0;
-        boolean xSmallerOverLap = overLap.getX() > overLap.getY();
-        boolean ySmallerOverLap = overLap.getY() > overLap.getX();
-        boolean xCollision = xOverLap && xSmallerOverLap;
-        boolean yCollision = yOverLap && ySmallerOverLap;
-        double toMoveX = xCollision ? overLap.getX() : 0;
-        double toMoveY = yCollision ? overLap.getY() : 0;
-
-        double directionX = (
-            movingBody.getBoundingBox().getCentre().getX()
-            > stationaryBody.getBoundingBox().getCentre().getX()
-        ) ? -1 : 1;
-
-        double directionY = (
-            movingBody.getBoundingBox().getCentre().getY()
-            > stationaryBody.getBoundingBox().getCentre().getY()
-        ) ? -1 : 1;
-
-        movingBody.move(new Vector2d(toMoveX * directionX, toMoveY * directionY));
-
-        if (xCollision) {
-            movingBody.setXSpeed(
-                - movingBody.getSpeed().getX()
-                * movingBody.getElasticity()
-                * stationaryBody.getElasticity()
-            );
-        }
-
-        if (yCollision) {
-            movingBody.setYSpeed(
-                - movingBody.getSpeed().getY()
-                * movingBody.getElasticity()
-                * stationaryBody.getElasticity()
-            );
-        }
-    }
-
     private void moveBodies(List<Entity> bodiesToMove, double timeStep) {
         for (Entity body: bodiesToMove) {
             body.move(timeStep);
