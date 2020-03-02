@@ -27,6 +27,11 @@ public class Physics implements Component {
     public void update(long tick) {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
+        for (Entity player: movableBodies) {
+            if (player.getClass() == Player.class) {
+                logger.debug("Player at: " + player.getBoundingBox().getCentre());
+            }
+        }
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
         applyGravity(movableBodies);
@@ -59,13 +64,12 @@ public class Physics implements Component {
                     new Vector2d(0, 0),
                     new Vector2d(0, 0)
                 );
-                updateBodySpeed(movingBody, collisionElasticity);
-                logger.debug("Elasticty: " + collisionElasticity);
+                updateBodySpeedAfterCollision(movingBody, collisionElasticity);
             }
         }
     }
 
-    private void updateBodySpeed(Body movingBody, Vector2d collisionElasticity) {
+    private void updateBodySpeedAfterCollision(Body movingBody, Vector2d collisionElasticity) {
         collisionElasticity.scale(movingBody.getElasticity());
         if (collisionElasticity.getX() != 0) {
             movingBody.setXSpeed(- movingBody.getSpeed().getX() * collisionElasticity.getX());
@@ -95,15 +99,6 @@ public class Physics implements Component {
         movedSoFar.add(bestResolveStrategy);
         collidingBodies = getBodiesThatAreStillColliding(movingBody, collidingBodies);
         double totalOverLap = getTotalOverLap(movingBody, collidingBodies);
-        logger.debug("Moving entity position: " + movingBody.getBoundingBox().getCentre());
-        for (Body collidingBody: collidingBodies) {
-            logger.debug("Colliding body position: " + collidingBody.getBoundingBox().getCentre());
-        }
-        logger.debug("Possible strategies: " + resolveStrategies);
-        logger.debug("Strategy results: " + resolveStrategyResults);
-        logger.debug("Moving by: " + bestResolveStrategy);
-        logger.debug("Total overlap: " + totalOverLap);
-        logger.debug(" ");
         if (totalOverLap != 0) {
             return resolveCollision(movingBody, collidingBodies, movedSoFar, elasticitySoFar);
         }
@@ -206,7 +201,7 @@ public class Physics implements Component {
         double totalOverLap = 0;
         for (Body collidingBody: collidingBodies) {
             Vector2d overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
-            totalOverLap += Math.abs(overLap.getX()) + Math.abs(overLap.getY());
+            totalOverLap += Math.abs(overLap.getX()) * Math.abs(overLap.getY());
         }
         return totalOverLap;
     }
