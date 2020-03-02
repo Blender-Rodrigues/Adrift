@@ -53,20 +53,36 @@ public class Physics implements Component {
                 }
             }
             if (collidingEntities.size() > 0) {
-                resolveCollision(movingBody, collidingEntities);
+                Vector2d collisionElasticity = resolveCollision(
+                    movingBody,
+                    collidingEntities,
+                    new Vector2d(0, 0),
+                    new Vector2d(0, 0)
+                );
+                collisionElasticity.scale(movingBody.getElasticity());
+                logger.debug("Elasticty: " + collisionElasticity);
             }
         }
     }
 
-    private void resolveCollision(Body movingBody, List<Body> collidingBodies) {
+    private Vector2d resolveCollision(
+        Body movingBody,
+        List<Body> collidingBodies,
+        Vector2d movedSoFar,
+        Vector2d elasticitySoFar
+    ) {
         List<Vector2d> resolveStrategies = getResolveStrategies(movingBody, collidingBodies);
         List<Vector2d> resolveStrategyResults = getResolveStrategyResults(
             movingBody,
             collidingBodies,
             resolveStrategies
         );
-        Vector2d bestResolveStrategy = getBestResolveStrategy(resolveStrategies, resolveStrategyResults);
+        int bestResolveStrategyIndex = getBestResolveStrategyIndex(resolveStrategies, resolveStrategyResults);
+        Vector2d bestResolveStrategy = getBestResolveStrategy(bestResolveStrategyIndex, resolveStrategies);
+        double collidingBodyElasticity = getCollidingBodyElasticity(bestResolveStrategyIndex, collidingBodies);
         movingBody.move(bestResolveStrategy);
+        elasticitySoFar = getNewElasticityOfCollision(elasticitySoFar, movedSoFar, bestResolveStrategy, collidingBodyElasticity);
+        movedSoFar.add(bestResolveStrategy);
         collidingBodies = getBodiesThatAreStillColliding(movingBody, collidingBodies);
         double totalOverLap = getTotalOverLap(movingBody, collidingBodies);
         logger.debug("Moving entity position: " + movingBody.getBoundingBox().getCentre());
@@ -79,8 +95,41 @@ public class Physics implements Component {
         logger.debug("Total overlap: " + totalOverLap);
         logger.debug(" ");
         if (totalOverLap != 0) {
-            resolveCollision(movingBody, collidingBodies);
+            return resolveCollision(movingBody, collidingBodies, movedSoFar, elasticitySoFar);
         }
+        return elasticitySoFar;
+    }
+
+    private Vector2d getNewElasticityOfCollision(
+        Vector2d elasticitySoFar,
+        Vector2d movedSoFar,
+        Vector2d currentMove,
+        double currentElasticity
+    ) {
+        Vector2d totalElasticityValue = elementWiseMultiple(elasticitySoFar, movedSoFar);
+        Vector2d currentMoveElasticityValue = new Vector2d();
+        Vector2d movedAfterThisCollision = new Vector2d();
+        currentMoveElasticityValue.scale(currentElasticity, currentMove);
+        totalElasticityValue.add(currentMoveElasticityValue);
+        movedAfterThisCollision.add(movedSoFar, currentMove);
+        return elementWiseDivide(totalElasticityValue, movedAfterThisCollision);
+    }
+
+    private Vector2d elementWiseDivide(Vector2d toDivide, Vector2d divisor) {
+        double newX = (divisor.getX() == 0) ? 0 : toDivide.getX() / divisor.getX();
+        double newY = (divisor.getY() == 0) ? 0 : toDivide.getY() / divisor.getY();
+        return new Vector2d(newX, newY);
+    }
+
+    private Vector2d elementWiseMultiple(Vector2d vector1, Vector2d vector2) {
+        return new Vector2d(
+            vector1.getX() * vector2.getX(),
+            vector1.getY() * vector2.getY()
+        );
+    }
+
+    private double getCollidingBodyElasticity(int bestResolveStrategyIndex, List<Body> collidingBodies) {
+        return collidingBodies.get(bestResolveStrategyIndex / 2).getElasticity();
     }
 
     private List<Body> getBodiesThatAreStillColliding(Body movingBody, List<Body> collidingBodies) {
@@ -93,7 +142,14 @@ public class Physics implements Component {
         return stillCollidingBodies;
     }
 
-    private Vector2d getBestResolveStrategy(
+    private Vector2d getBestResolveStrategy(int bestIndex, List<Vector2d> resolveStrategies) {
+        if (bestIndex % 2 == 0) {
+            return new Vector2d(resolveStrategies.get(bestIndex / 2).getX(), 0);
+        }
+        return new Vector2d(0, resolveStrategies.get(bestIndex / 2).getY());
+    }
+
+    private int getBestResolveStrategyIndex(
         List<Vector2d> resolveStrategies,
         List<Vector2d> resolveStrategyResults
     ) {
@@ -110,10 +166,7 @@ public class Physics implements Component {
                 bestIndex = i * 2 + 1;
             }
         }
-        if (bestIndex % 2 == 0) {
-            return new Vector2d(resolveStrategies.get(bestIndex / 2).getX(), 0);
-        }
-        return new Vector2d(0, resolveStrategies.get(bestIndex / 2).getY());
+        return bestIndex;
     }
 
     private List<Vector2d> getResolveStrategyResults(
