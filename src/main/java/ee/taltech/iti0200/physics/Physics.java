@@ -210,15 +210,9 @@ public class Physics implements Component {
         List<Vector> resolveStrategies = new ArrayList<>();
         for (Body collidingBody: collidingBodies) {
             Vector overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
-            double directionX = (
-                movingBody.getBoundingBox().getCentre().getX()
-                > collidingBody.getBoundingBox().getCentre().getX()
-            ) ? -1 : 1;
 
-            double directionY = (
-                movingBody.getBoundingBox().getCentre().getY()
-                > collidingBody.getBoundingBox().getCentre().getY()
-            ) ? -1 : 1;
+            double directionX = movingBody.getBoundingBox().getCentreXDirection(collidingBody.getBoundingBox());
+            double directionY = movingBody.getBoundingBox().getCentreYDirection(collidingBody.getBoundingBox());
 
             Vector resolveStrategy = new Vector(
                 overLap.getX() * directionX,

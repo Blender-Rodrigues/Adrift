@@ -47,6 +47,20 @@ public class BoundingBox {
         return distance;
     }
 
+    public double getCentreXDirection(BoundingBox otherBoundingBox) {
+        return (
+            this.getCentre().getX()
+            > otherBoundingBox.getCentre().getX()
+        ) ? -1 : 1;
+    }
+
+    public double getCentreYDirection(BoundingBox otherBoundingBox) {
+        return (
+            this.getCentre().getY()
+            > otherBoundingBox.getCentre().getY()
+        ) ? -1 : 1;
+    }
+
     public Vector getCentre() {
         return this.centre;
     }
