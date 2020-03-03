@@ -10,12 +10,12 @@ class AABBTest {
 
     @Test
     void testIntersectSamePosition() {
-        AABB box1 = new AABB(
+        BoundingBox box1 = new BoundingBox(
             new Vector2d(5.0, 5.0),
             new Vector2d(1.0, 1.0),
             true
         );
-        AABB box2 = new AABB(
+        BoundingBox box2 = new BoundingBox(
             new Vector2d(5.0, 5.0),
             new Vector2d(2.0, 2.0),
             true
@@ -26,12 +26,12 @@ class AABBTest {
 
     @Test
     void testIntersectCenterOutsideOtherBoxButIntersecting() {
-        AABB box1 = new AABB(
+        BoundingBox box1 = new BoundingBox(
             new Vector2d(5.0, 5.0),
             new Vector2d(1.0, 1.0),
             true
         );
-        AABB box2 = new AABB(
+        BoundingBox box2 = new BoundingBox(
             new Vector2d(5.75, 5.75),
             new Vector2d(2.0, 2.0),
             true
@@ -42,12 +42,12 @@ class AABBTest {
 
     @Test
     void testIntersectPlayerFallingThroughFloorClosest() {
-        AABB player = new AABB(
+        BoundingBox player = new BoundingBox(
             new Vector2d(20.0, 1.05),
             new Vector2d(1.5, 1.5),
             true
         );
-        AABB terrain = new AABB(
+        BoundingBox terrain = new BoundingBox(
             new Vector2d(19.0, 1.0),
             new Vector2d(2.0, 2.0),
             true

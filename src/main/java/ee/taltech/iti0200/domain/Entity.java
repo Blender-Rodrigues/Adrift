@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.domain;
 
-import ee.taltech.iti0200.physics.AABB;
+import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -36,7 +36,7 @@ public class Entity extends Body {
             );
         }
 
-        this.boundingBox = new AABB(min, max);
+        this.boundingBox = new BoundingBox(min, max);
 
         this.inverseMass = 1 / this.mass;
     }

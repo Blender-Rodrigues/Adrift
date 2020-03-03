@@ -2,12 +2,12 @@ package ee.taltech.iti0200.physics;
 
 import static java.lang.Math.abs;
 
-public class AABB {
+public class BoundingBox {
 
     protected Vector centre;
     protected Vector size;
 
-    public AABB(Vector min, Vector max) {
+    public BoundingBox(Vector min, Vector max) {
         this.size = new Vector(max);
         this.size.sub(min);
         this.size.scale(0.5);
@@ -17,7 +17,7 @@ public class AABB {
         this.centre.scale(0.5);
     }
 
-    public AABB(Vector position, Vector size, boolean usingPositionAndSize) {
+    public BoundingBox(Vector position, Vector size, boolean usingPositionAndSize) {
         this.centre = position;
         this.size = size;
         this.size.scale(0.5);
@@ -27,7 +27,7 @@ public class AABB {
         this.centre.add(moveDelta);
     }
 
-    public boolean intersects(AABB otherBoundingBox) {
+    public boolean intersects(BoundingBox otherBoundingBox) {
         Vector distance = new Vector(
                 abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
                 abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
@@ -37,7 +37,7 @@ public class AABB {
         return distance.getX() < 0 && distance.getY() < 0;
     }
 
-    public Vector getOverLap(AABB otherBoundingBox) {
+    public Vector getOverLap(BoundingBox otherBoundingBox) {
         Vector distance = new Vector(
                 abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
                 abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
