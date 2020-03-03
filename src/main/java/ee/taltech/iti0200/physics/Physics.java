@@ -58,15 +58,16 @@ public class Physics implements Component {
     }
 
     private void resolveCollision(Body movingBody, List<Body> collidingBodies) {
-        if (collidingBodies.size() > 0) {
-            Vector2d collisionElasticity = getStrategyForResolvingCollision(
-                movingBody,
-                collidingBodies,
-                new Vector2d(0, 0),
-                new Vector2d(0, 0)
-            );
-            updateBodySpeedAfterCollision(movingBody, collisionElasticity);
+        if (collidingBodies.size() <= 0) {
+            return;
         }
+        Vector2d collisionElasticity = getStrategyForResolvingCollision(
+            movingBody,
+            collidingBodies,
+            new Vector2d(0, 0),
+            new Vector2d(0, 0)
+        );
+        updateBodySpeedAfterCollision(movingBody, collisionElasticity);
     }
 
     private void updateBodySpeedAfterCollision(Body movingBody, Vector2d collisionElasticity) {
