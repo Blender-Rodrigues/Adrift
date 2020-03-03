@@ -1,12 +1,10 @@
 package ee.taltech.iti0200.physics;
 
-import javax.vecmath.Vector2d;
-
 public class Body {
 
     protected double mass;
     protected double inverseMass;
-    protected Vector2d speed;
+    protected Vector speed;
     protected AABB boundingBox;
     protected boolean moved;
     protected double elasticity;
@@ -14,21 +12,21 @@ public class Body {
 
     public Body(double mass, AABB boundingBox, boolean collideable) {
         this.mass = mass;
-        this.speed = new Vector2d(0.0, 0.0);
+        this.speed = new Vector(0.0, 0.0);
         this.inverseMass = 1 / mass;
         this.boundingBox = boundingBox;
         this.collideable = collideable;
         this.elasticity = 1;
     }
 
-    public Body(double mass, Vector2d min, Vector2d max, boolean collideable) {
+    public Body(double mass, Vector min, Vector max, boolean collideable) {
         this(mass, new AABB(min, max), collideable);
     }
 
     public Body(
         double mass,
-        Vector2d size,
-        Vector2d position,
+        Vector size,
+        Vector position,
         boolean collideable,
         boolean usingPositionAndSize
     ) {
@@ -36,16 +34,16 @@ public class Body {
     }
 
     public void move(double timeToMove) {
-        Vector2d moveDelta = new Vector2d(this.speed);
+        Vector moveDelta = new Vector(this.speed);
         moveDelta.scale(timeToMove);
         this.move(moveDelta);
     }
 
-    public void move(Vector2d moveDelta) {
+    public void move(Vector moveDelta) {
         this.boundingBox.move(moveDelta);
     }
 
-    public void accelerate(Vector2d accelerateDelta) {
+    public void accelerate(Vector accelerateDelta) {
         this.speed.add(accelerateDelta);
     }
 
@@ -53,7 +51,7 @@ public class Body {
         return mass;
     }
 
-    public Vector2d getSpeed() {
+    public Vector getSpeed() {
         return speed;
     }
 
@@ -70,11 +68,11 @@ public class Body {
     }
 
     public void setXSpeed(double speed) {
-        this.speed = new Vector2d(speed, this.speed.getY());
+        this.speed = new Vector(speed, this.speed.getY());
     }
 
     public void setYSpeed(double speed) {
-        this.speed = new Vector2d(this.speed.getX(), speed);
+        this.speed = new Vector(this.speed.getX(), speed);
     }
 
     public void setElasticity(double elasticity) {

@@ -7,7 +7,6 @@ import ee.taltech.iti0200.domain.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.vecmath.Vector2d;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ public class Physics implements Component {
     private World world;
     private Logger logger;
 
-    private static final Vector2d GRAVITY = new Vector2d(0, -9.81);
+    private static final Vector GRAVITY = new Vector(0, -9.81);
 
     public Physics(World world) {
         logger = LogManager.getLogger(Physics.class);
@@ -39,7 +38,7 @@ public class Physics implements Component {
     }
 
     private void applyGravity(List<Entity> entities) {
-        Vector2d accelerateDelta = new Vector2d(GRAVITY);
+        Vector accelerateDelta = new Vector(GRAVITY);
         accelerateDelta.scale(world.getTimeStep());
         entities.forEach(entity -> entity.accelerate(accelerateDelta));
     }
@@ -61,16 +60,16 @@ public class Physics implements Component {
         if (collidingBodies.size() <= 0) {
             return;
         }
-        Vector2d collisionElasticity = getStrategyForResolvingCollision(
+        Vector collisionElasticity = getStrategyForResolvingCollision(
             movingBody,
             collidingBodies,
-            new Vector2d(0, 0),
-            new Vector2d(0, 0)
+            new Vector(0, 0),
+            new Vector(0, 0)
         );
         updateBodySpeedAfterCollision(movingBody, collisionElasticity);
     }
 
-    private void updateBodySpeedAfterCollision(Body movingBody, Vector2d collisionElasticity) {
+    private void updateBodySpeedAfterCollision(Body movingBody, Vector collisionElasticity) {
         collisionElasticity.scale(movingBody.getElasticity());
         if (collisionElasticity.getX() != 0) {
             movingBody.setXSpeed(- movingBody.getSpeed().getX() * collisionElasticity.getX());
@@ -80,15 +79,15 @@ public class Physics implements Component {
         }
     }
 
-    private Vector2d getStrategyForResolvingCollision(
+    private Vector getStrategyForResolvingCollision(
         Body movingBody,
         List<Body> collidingBodies,
-        Vector2d movedSoFar,
-        Vector2d elasticitySoFar
+        Vector movedSoFar,
+        Vector elasticitySoFar
     ) {
         // Get all possible ways of resolving the collision and how good those ways are.
-        List<Vector2d> resolveStrategies = getResolveStrategies(movingBody, collidingBodies);
-        List<Vector2d> resolveStrategyResults = getResolveStrategyResults(
+        List<Vector> resolveStrategies = getResolveStrategies(movingBody, collidingBodies);
+        List<Vector> resolveStrategyResults = getResolveStrategyResults(
             movingBody,
             collidingBodies,
             resolveStrategies
@@ -96,7 +95,7 @@ public class Physics implements Component {
 
         // Get the best way of resolving the collision.
         int bestResolveStrategyIndex = getBestResolveStrategyIndex(resolveStrategies, resolveStrategyResults);
-        Vector2d bestResolveStrategy = getBestResolveStrategy(bestResolveStrategyIndex, resolveStrategies);
+        Vector bestResolveStrategy = getBestResolveStrategy(bestResolveStrategyIndex, resolveStrategies);
 
         // Move the body according to the chosen way and updated vectors that store how the body has been moved earlier during the same collision resolution.
         double collidingBodyElasticity = getCollidingBodyElasticity(bestResolveStrategyIndex, collidingBodies);
@@ -113,17 +112,18 @@ public class Physics implements Component {
         return elasticitySoFar;
     }
 
-    private Vector2d getNewElasticityOfCollision(
-        Vector2d elasticitySoFar,
-        Vector2d movedSoFar,
-        Vector2d currentMove,
+    private Vector getNewElasticityOfCollision(
+        Vector elasticitySoFar,
+        Vector movedSoFar,
+        Vector currentMove,
         double currentElasticity
     ) {
         // Get the average elasticity of the collision with respect to how much the body has been moved in each direction.
-        Vector2d totalElasticityValue = elementWiseMultiple(elasticitySoFar, movedSoFar);
+        Vector totalElasticityValue = new Vector(elasticitySoFar);
+        totalElasticityValue.elementWiseMultiple(movedSoFar);
 
-        Vector2d currentMoveElasticityValue = new Vector2d();
-        Vector2d movedAfterThisCollision = new Vector2d();
+        Vector currentMoveElasticityValue = new Vector();
+        Vector movedAfterThisCollision = new Vector();
 
         // Calculate the change in weighted elasticity with the current move.
         currentMoveElasticityValue.scale(currentElasticity, currentMove);
@@ -131,20 +131,8 @@ public class Physics implements Component {
         totalElasticityValue.add(currentMoveElasticityValue);
         movedAfterThisCollision.add(movedSoFar, currentMove);
         // Divide the weighted elasticity with how much the body has been moved, to get the average elasticity in each direction.
-        return elementWiseDivide(totalElasticityValue, movedAfterThisCollision);
-    }
-
-    private Vector2d elementWiseDivide(Vector2d toDivide, Vector2d divisor) {
-        double newX = (divisor.getX() == 0) ? 0 : toDivide.getX() / divisor.getX();
-        double newY = (divisor.getY() == 0) ? 0 : toDivide.getY() / divisor.getY();
-        return new Vector2d(newX, newY);
-    }
-
-    private Vector2d elementWiseMultiple(Vector2d vector1, Vector2d vector2) {
-        return new Vector2d(
-            vector1.getX() * vector2.getX(),
-            vector1.getY() * vector2.getY()
-        );
+        totalElasticityValue.elementWiseDivide(movedAfterThisCollision);
+        return totalElasticityValue;
     }
 
     private double getCollidingBodyElasticity(int bestResolveStrategyIndex, List<Body> collidingBodies) {
@@ -157,21 +145,21 @@ public class Physics implements Component {
             .collect(Collectors.toList());
     }
 
-    private Vector2d getBestResolveStrategy(int bestIndex, List<Vector2d> resolveStrategies) {
+    private Vector getBestResolveStrategy(int bestIndex, List<Vector> resolveStrategies) {
         if (bestIndex % 2 == 0) {
-            return new Vector2d(resolveStrategies.get(bestIndex / 2).getX(), 0);
+            return new Vector(resolveStrategies.get(bestIndex / 2).getX(), 0);
         }
-        return new Vector2d(0, resolveStrategies.get(bestIndex / 2).getY());
+        return new Vector(0, resolveStrategies.get(bestIndex / 2).getY());
     }
 
     private int getBestResolveStrategyIndex(
-        List<Vector2d> resolveStrategies,
-        List<Vector2d> resolveStrategyResults
+        List<Vector> resolveStrategies,
+        List<Vector> resolveStrategyResults
     ) {
         int bestIndex = -1;
         double bestValue = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < resolveStrategyResults.size(); i++) {
-            Vector2d resolveStrategyResult = resolveStrategyResults.get(i);
+            Vector resolveStrategyResult = resolveStrategyResults.get(i);
             if (resolveStrategyResult.getX() > bestValue) {
                 bestValue = resolveStrategyResult.getX();
                 bestIndex = i * 2;
@@ -184,29 +172,29 @@ public class Physics implements Component {
         return bestIndex;
     }
 
-    private List<Vector2d> getResolveStrategyResults(
+    private List<Vector> getResolveStrategyResults(
         Body movingBody,
         List<Body> collidingBodies,
-        List<Vector2d> resolveStrategies
+        List<Vector> resolveStrategies
     ) {
-        List<Vector2d> resolveStrategyResults = new ArrayList<>();
+        List<Vector> resolveStrategyResults = new ArrayList<>();
         double initialOverLap = getTotalOverLap(movingBody, collidingBodies);
-        for (Vector2d resolveStrategy: resolveStrategies) {
+        for (Vector resolveStrategy: resolveStrategies) {
             // Try moving the body along the x axis and find the overlap after that move.
-            movingBody.move(new Vector2d(resolveStrategy.getX(), 0));
+            movingBody.move(new Vector(resolveStrategy.getX(), 0));
             double xMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
 
             // Move the body back along the x axis and try moving in the y axis.
-            movingBody.move(new Vector2d(- resolveStrategy.getX(), resolveStrategy.getY()));
+            movingBody.move(new Vector(- resolveStrategy.getX(), resolveStrategy.getY()));
 
             // Get the overlap and move body back along y axis.
             double yMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
-            movingBody.move(new Vector2d(0, - resolveStrategy.getY()));
+            movingBody.move(new Vector(0, - resolveStrategy.getY()));
 
             // Calculate efficiencies of each move by dividing the change in overlap by how much movement was necessary for that change.
             double xMoveEfficiency = (initialOverLap - xMoveOverLap) / Math.abs(resolveStrategy.getX());
             double yMoveEfficiency = (initialOverLap - yMoveOverLap) / Math.abs(resolveStrategy.getY());
-            resolveStrategyResults.add(new Vector2d(xMoveEfficiency, yMoveEfficiency));
+            resolveStrategyResults.add(new Vector(xMoveEfficiency, yMoveEfficiency));
         }
         return resolveStrategyResults;
     }
@@ -219,10 +207,10 @@ public class Physics implements Component {
             .reduce(0D, Double::sum);
     }
 
-    private List<Vector2d> getResolveStrategies(Body movingBody, List<Body> collidingBodies) {
-        List<Vector2d> resolveStrategies = new ArrayList<>();
+    private List<Vector> getResolveStrategies(Body movingBody, List<Body> collidingBodies) {
+        List<Vector> resolveStrategies = new ArrayList<>();
         for (Body collidingBody: collidingBodies) {
-            Vector2d overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
+            Vector overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
             double directionX = (
                 movingBody.getBoundingBox().getCentre().getX()
                 > collidingBody.getBoundingBox().getCentre().getX()
@@ -233,7 +221,7 @@ public class Physics implements Component {
                 > collidingBody.getBoundingBox().getCentre().getY()
             ) ? -1 : 1;
 
-            Vector2d resolveStrategy = new Vector2d(
+            Vector resolveStrategy = new Vector(
                 overLap.getX() * directionX,
                 overLap.getY() * directionY
             );

@@ -2,10 +2,10 @@ package ee.taltech.iti0200.input;
 
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.physics.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.vecmath.Vector2d;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,12 +59,12 @@ public class Input implements Component {
     }
 
     private void movePlayerLeft() {
-        player.accelerate(new Vector2d(-1.0, 0.0));
+        player.accelerate(new Vector(-1.0, 0.0));
         logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
     private void movePlayerRight() {
-        player.accelerate(new Vector2d(1.0, 0.0));
+        player.accelerate(new Vector(1.0, 0.0));
         logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
