@@ -94,7 +94,7 @@ public class Physics implements Component {
         );
 
         // Get the best way of resolving the collision.
-        int bestResolveStrategyIndex = getBestResolveStrategyIndex(resolveStrategies, resolveStrategyResults);
+        int bestResolveStrategyIndex = getBestResolveStrategyIndex(resolveStrategyResults);
         Vector bestResolveStrategy = getBestResolveStrategy(bestResolveStrategyIndex, resolveStrategies);
 
         // Move the body according to the chosen way and updated vectors that store how the body has been moved earlier during the same collision resolution.
@@ -153,7 +153,6 @@ public class Physics implements Component {
     }
 
     private int getBestResolveStrategyIndex(
-        List<Vector> resolveStrategies,
         List<Vector> resolveStrategyResults
     ) {
         int bestIndex = -1;
