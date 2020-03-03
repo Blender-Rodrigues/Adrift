@@ -47,18 +47,15 @@ public class Physics implements Component {
     }
 
     private void checkForCollisions(List<Entity> movingBodies, List<Entity> stationaryBodies) {
-        for (Entity movingBody: movingBodies) {
-            List<Body> collidingBodies = new ArrayList<>();
-            for (Entity stationaryBody: stationaryBodies) {
-                if (!movingBody.isCollideable() && !stationaryBody.isCollideable()) {
-                    continue;
-                }
-                if (movingBody.intersects(stationaryBody)) {
-                    collidingBodies.add(stationaryBody);
-                    movingBody.onCollide(stationaryBody);
-                }
-            }
-            resolveCollision(movingBody, collidingBodies);
+       for (Entity moving: movingBodies) {
+           List<Body> colliding = stationaryBodies.stream()
+               .filter(stationary -> stationary.isCollideable() || moving.isCollideable())
+               .filter(moving::intersects)
+               .peek(moving::onCollide)
+               .map(entity -> (Body) entity)
+               .collect(Collectors.toList());
+
+           resolveCollision(moving, colliding);
         }
     }
 
