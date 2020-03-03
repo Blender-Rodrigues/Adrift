@@ -1,9 +1,9 @@
 package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.Test;
 
-import javax.vecmath.Vector2d;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,8 +14,8 @@ class EntityTest {
         Entity entity = new Entity(
             new Body(
                 1.0,
-                new Vector2d(2.0, 2.0),
-                new Vector2d(0.0, 0.0),
+                new Vector(2.0, 2.0),
+                new Vector(0.0, 0.0),
                 true,
                 true
             ),
