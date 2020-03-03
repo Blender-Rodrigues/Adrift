@@ -29,7 +29,7 @@ public class Physics implements Component {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
         for (Entity player: movableBodies) {
-            if (player.getClass() == Player.class) {
+            if (player instanceof Player) {
                 logger.debug("Player at: " + player.getBoundingBox().getCentre());
             }
         }
