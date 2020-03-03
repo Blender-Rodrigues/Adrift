@@ -1,9 +1,9 @@
 package ee.taltech.iti0200.domain;
 
-import ee.taltech.iti0200.physics.AABB;
+import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.Vector;
 
-import javax.vecmath.Vector2d;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,29 +14,29 @@ public class Entity extends Body {
     public Entity(List<Body> components, boolean collideable) {
         super(
             0.0,
-            new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
-            new Vector2d(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY),
+            new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
+            new Vector(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY),
             collideable
         );
 
         this.components = components;
 
-        Vector2d min = new Vector2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-        Vector2d max = new Vector2d(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        Vector min = new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        Vector max = new Vector(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
 
         for (Body component: components) {
             this.mass += component.getMass();
-            min = new Vector2d(
+            min = new Vector(
                 Math.min(min.getX(), component.getBoundingBox().getMinX()),
                 Math.min(min.getY(), component.getBoundingBox().getMinY())
             );
-            max = new Vector2d(
+            max = new Vector(
                 Math.max(max.getX(), component.getBoundingBox().getMaxX()),
                 Math.max(max.getY(), component.getBoundingBox().getMaxY())
             );
         }
 
-        this.boundingBox = new AABB(min, max);
+        this.boundingBox = new BoundingBox(min, max);
 
         this.inverseMass = 1 / this.mass;
     }

@@ -1,36 +1,34 @@
 package ee.taltech.iti0200.physics;
 
-import javax.vecmath.Vector2d;
-
 import static java.lang.Math.abs;
 
-public class AABB {
+public class BoundingBox {
 
-    protected Vector2d centre;
-    protected Vector2d size;
+    protected Vector centre;
+    protected Vector size;
 
-    public AABB(Vector2d min, Vector2d max) {
-        this.size = new Vector2d(max);
+    public BoundingBox(Vector min, Vector max) {
+        this.size = new Vector(max);
         this.size.sub(min);
         this.size.scale(0.5);
 
-        this.centre = new Vector2d(max);
+        this.centre = new Vector(max);
         this.centre.add(min);
         this.centre.scale(0.5);
     }
 
-    public AABB(Vector2d position, Vector2d size, boolean usingPositionAndSize) {
+    public BoundingBox(Vector position, Vector size, boolean usingPositionAndSize) {
         this.centre = position;
         this.size = size;
         this.size.scale(0.5);
     }
 
-    public void move(Vector2d moveDelta) {
+    public void move(Vector moveDelta) {
         this.centre.add(moveDelta);
     }
 
-    public boolean intersects(AABB otherBoundingBox) {
-        Vector2d distance = new Vector2d(
+    public boolean intersects(BoundingBox otherBoundingBox) {
+        Vector distance = new Vector(
                 abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
                 abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
         );
@@ -39,8 +37,8 @@ public class AABB {
         return distance.getX() < 0 && distance.getY() < 0;
     }
 
-    public Vector2d getOverLap(AABB otherBoundingBox) {
-        Vector2d distance = new Vector2d(
+    public Vector getOverLap(BoundingBox otherBoundingBox) {
+        Vector distance = new Vector(
                 abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
                 abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
         );
@@ -49,11 +47,25 @@ public class AABB {
         return distance;
     }
 
-    public Vector2d getCentre() {
+    public double getCentreXDirection(BoundingBox otherBoundingBox) {
+        return (
+            this.getCentre().getX()
+            > otherBoundingBox.getCentre().getX()
+        ) ? -1 : 1;
+    }
+
+    public double getCentreYDirection(BoundingBox otherBoundingBox) {
+        return (
+            this.getCentre().getY()
+            > otherBoundingBox.getCentre().getY()
+        ) ? -1 : 1;
+    }
+
+    public Vector getCentre() {
         return this.centre;
     }
 
-    public Vector2d getSize() {
+    public Vector getSize() {
         return this.size;
     }
 
