@@ -27,11 +27,12 @@ public class Vector extends Vector2d {
         this.setY(this.getY() * vector.getY());
     }
 
-    public static Vector roundVector(Vector2d vector) {
-        int xInt = (int) vector.getX() * 100;
-        int yInt = (int) vector.getY() * 100;
+    public Vector rounded() {
+        int xInt = (int) getX() * 100;
+        int yInt = (int) getY() * 100;
         double x = (double) xInt / 100d;
         double y = (double) yInt / 100d;
         return new Vector(x, y);
     }
+
 }
