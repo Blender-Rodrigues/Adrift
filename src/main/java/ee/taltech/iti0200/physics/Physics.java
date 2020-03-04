@@ -60,7 +60,9 @@ public class Physics implements Component {
     private void applyGravity(List<Entity> entities) {
         Vector accelerateDelta = new Vector(GRAVITY);
         accelerateDelta.scale(world.getTimeStep());
-        entities.forEach(entity -> entity.accelerate(accelerateDelta));
+        entities.stream()
+            .filter(entity -> !entity.isOnFloor())
+            .forEach(entity -> entity.accelerate(accelerateDelta));
     }
 
     private void checkForCollisions(List<Entity> movingBodies, List<Entity> stationaryBodies) {
