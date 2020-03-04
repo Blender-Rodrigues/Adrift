@@ -14,4 +14,8 @@ public class Terrain extends Entity {
         setElasticity(elasticity);
     }
 
+    public int getIntegerWidth() {
+        return (int) getBoundingBox().getSize().getX() * 100;
+    }
+
 }

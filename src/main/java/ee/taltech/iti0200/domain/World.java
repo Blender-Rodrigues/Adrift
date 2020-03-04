@@ -3,12 +3,15 @@ package ee.taltech.iti0200.domain;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class World {
 
     protected List<Entity> movableBodies = new ArrayList<>();
     protected List<Entity> imMovableBodies = new ArrayList<>();
+    protected Map<Vector, Terrain> terrainMap;
     protected double xMin;
     protected double xMax;
     protected double yMin;
@@ -31,6 +34,28 @@ public class World {
         }
         addBody(new Terrain(new Vector(1.0, 3.0)), false);
         addBody(new Terrain(new Vector(39.0, 3.0)), false);
+        mapTerrain();
+    }
+
+    public void mapTerrain() {
+        terrainMap = new HashMap<>();
+        for (Entity entity: imMovableBodies) {
+            if (entity.getClass() != Terrain.class) {
+                continue;
+            }
+            for (int i = 0; i < ((Terrain) entity).getIntegerWidth(); i++) {
+                Vector leftCoordinate = new Vector(
+                    entity.getBoundingBox().getCentre().getX() - i * 0.01,
+                    entity.getBoundingBox().getCentre().getY() + entity.getBoundingBox().getSize().getY()
+                );
+                Vector rightCoordinate = new Vector(
+                    entity.getBoundingBox().getCentre().getX() + i * 0.01,
+                    entity.getBoundingBox().getCentre().getY() + entity.getBoundingBox().getSize().getY()
+                );
+                terrainMap.put(leftCoordinate, (Terrain) entity);
+                terrainMap.put(rightCoordinate, (Terrain) entity);
+            }
+        }
     }
 
     public double getTimeStep() {
