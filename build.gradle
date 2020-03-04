@@ -2,8 +2,12 @@ import org.gradle.internal.os.OperatingSystem
 
 // Specify repositories we'd like to fetch libraries from
 repositories {
-    mavenCentral()
     jcenter()
+    mavenCentral()
+
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 // Plugins so gradle would take some assumptions about the project setup
@@ -29,6 +33,7 @@ switch (OperatingSystem.current()) {
 }
 
 project.ext.lwjglVersion = "3.2.3"
+project.ext.jomlVersion = "1.9.22"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -60,6 +65,8 @@ dependencies {
     testImplementation "org.assertj:assertj-core:3.11.1"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.0"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:5.6.0"
+
+    compile "org.joml:joml:${jomlVersion}"
 }
 
 jar {

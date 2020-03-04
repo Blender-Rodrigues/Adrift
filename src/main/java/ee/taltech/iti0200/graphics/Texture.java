@@ -2,6 +2,7 @@ package ee.taltech.iti0200.graphics;
 
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*; // needed for samplers, which are targets for textures
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -49,7 +50,10 @@ public class Texture {
     }
 
 
-    public void bind() {
-        glBindTexture(GL_TEXTURE_2D, id);
+    public void bind(int sampler) {
+        if(sampler >= 0 && sampler <= 31) {
+            glActiveTexture(GL_TEXTURE0 + sampler);
+            glBindTexture(GL_TEXTURE_2D, id);
+        }
     }
 }

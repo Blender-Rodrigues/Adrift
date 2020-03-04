@@ -10,6 +10,8 @@ import org.lwjgl.system.MemoryStack;
 import java.io.IOException;
 import java.nio.IntBuffer;
 
+import org.joml.*;
+
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
@@ -46,7 +48,13 @@ public class Graphics implements Component {
 
     private World world;
     private Model model;
+    private Shader shader;
     private Texture tex;
+    private Matrix4f projection;
+    private Matrix4f scale;
+    private Matrix4f target;
+    private Camera camera;
+
     public Graphics(World world) {
         this.world = world;
 
@@ -111,14 +119,15 @@ public class Graphics implements Component {
         // bindings available for use.
         GL.createCapabilities();
 
+        camera = new Camera(640, 480);
         glEnable(GL_TEXTURE_2D);
 
         float[] vertices = new float[] {
-                -0.5f, 0.5f,
-                0.5f, 0.5f,
-                0.5f, -0.5f,
-                -0.5f, -0.5f,
-                0.3f, -0.5f, //delete this
+                -0.5f, 0.5f, 0,
+                0.5f, 0.5f, 0,
+                0.5f, -0.5f, 0,
+                -0.5f, -0.5f, 0,
+                0.3f, -0.5f, 0//delete this
         };
 
         float[] texture = new float[] {
@@ -136,14 +145,27 @@ public class Graphics implements Component {
         };
 
         model = new Model(vertices, texture, indices);
+        shader = new Shader("shader");
 
         try {
-            tex = new Texture("./build/resources/main/smile.png");
+            tex = new Texture("./build/resources/main/background.jpg");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        glClearColor(0.0f, 0.0f, 0.3f, 0.0f);
+        projection = new Matrix4f()
+                .ortho2D(-640, 640, -480, 480);
+
+        scale = new Matrix4f()
+                .translate(new Vector3f(100, 0, 0)) // move to the right
+                .scale(512); //resize
+
+        target = new Matrix4f();
+
+        camera.setPosition(new Vector3f(-100, 0, 0));
+
+
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     @Override
@@ -162,14 +184,20 @@ public class Graphics implements Component {
     }
 
     @Override
-    public void update(long time) {
+    public void update(long tick) {
+//        camera.setPosition(new Vector3f(tick, 0, 0));
+
+        target = scale;
         glfwPollEvents();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
+        shader.bind();
+        shader.setUniform("sampler", 0);
+        shader.setUniform("projection", camera.getProjection().mul(target));
+        tex.bind(0);
         model.render();
 
-        tex.bind();
 
         glfwSwapBuffers(window); // swap the color buffers
     }
