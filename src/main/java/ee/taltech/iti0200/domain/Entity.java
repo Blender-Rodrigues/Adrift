@@ -11,6 +11,16 @@ public class Entity extends Body {
 
     private List<Body> components;
 
+    public boolean isOnFloor() {
+        return onFloor;
+    }
+
+    public void setOnFloor(boolean onFloor) {
+        this.onFloor = onFloor;
+    }
+
+    private boolean onFloor;
+
     public Entity(List<Body> components, boolean collideable) {
         super(
             0.0,

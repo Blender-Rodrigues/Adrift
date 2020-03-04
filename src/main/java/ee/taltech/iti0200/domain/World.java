@@ -58,6 +58,10 @@ public class World {
         }
     }
 
+    public Map<Vector, Terrain> getTerrainMap() {
+        return terrainMap;
+    }
+
     public double getTimeStep() {
         return timeStep;
     }

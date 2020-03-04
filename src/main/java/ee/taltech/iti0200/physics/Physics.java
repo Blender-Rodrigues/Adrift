@@ -3,12 +3,14 @@ package ee.taltech.iti0200.physics;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Entity;
 import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.Terrain;
 import ee.taltech.iti0200.domain.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Physics implements Component {
@@ -27,14 +29,32 @@ public class Physics implements Component {
     public void update(long tick) {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
+        Map<Vector, Terrain> terrainMap = world.getTerrainMap();
         for (Entity player: movableBodies) {
             if (player instanceof Player) {
                 logger.debug("Player at: " + player.getBoundingBox().getCentre());
             }
         }
+        checkForFloor(movableBodies, terrainMap);
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
         applyGravity(movableBodies);
+    }
+
+    private void checkForFloor(List<Entity> movingBodies, Map<Vector, Terrain> terrainMap) {
+        for (Entity moving: movingBodies) {
+            double minX = ((int) (moving.getBoundingBox().getMinX() * 100)) / 100d;
+            double centreX = ((int) (moving.getBoundingBox().getCentre().getX() * 100)) / 100d;
+            double maxX = ((int) (moving.getBoundingBox().getMaxX() * 100)) / 100d;
+            double minY = moving.getBoundingBox().getMinY();
+            if (
+                terrainMap.containsKey(new Vector(minX, minY))
+                || terrainMap.containsKey(new Vector(centreX, minY))
+                || terrainMap.containsKey(new Vector(maxX, minY))
+            ) {
+                moving.setOnFloor(true);
+            }
+        }
     }
 
     private void applyGravity(List<Entity> entities) {
