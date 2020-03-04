@@ -13,12 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static jdk.nashorn.internal.objects.NativeMath.round;
+
+
 public class Physics implements Component {
 
     private World world;
     private Logger logger;
 
     private static final Vector GRAVITY = new Vector(0, -9.81);
+    public static final double TERRAIN_BLOCK_RESOLUTION = 100;
     private static final double NO_BOUNCE_SPEED_LIMIT = 1;
 
     public Physics(World world) {
@@ -44,9 +48,9 @@ public class Physics implements Component {
 
     private void checkForFloor(List<Entity> movingBodies, Map<Vector, Terrain> terrainMap) {
         for (Entity moving: movingBodies) {
-            double minX = ((int) (moving.getBoundingBox().getMinX() * 100)) / 100d;
-            double centreX = ((int) (moving.getBoundingBox().getCentre().getX() * 100)) / 100d;
-            double maxX = ((int) (moving.getBoundingBox().getMaxX() * 100)) / 100d;
+            double minX = clamp(moving.getBoundingBox().getMinX());
+            double centreX = clamp(moving.getBoundingBox().getCentre().getX());
+            double maxX = clamp(moving.getBoundingBox().getMaxX());
             double minY = moving.getBoundingBox().getMinY();
 
             boolean intersects = terrainMap.containsKey(new Vector(minX, minY))
@@ -256,6 +260,10 @@ public class Physics implements Component {
         for (Entity body: bodiesToMove) {
             body.move(timeStep);
         }
+    }
+
+    private double clamp(double a) {
+        return Math.round(a * TERRAIN_BLOCK_RESOLUTION) / TERRAIN_BLOCK_RESOLUTION;
     }
 
 }
