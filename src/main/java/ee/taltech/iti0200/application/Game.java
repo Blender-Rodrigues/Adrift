@@ -28,13 +28,20 @@ abstract public class Game {
     }
 
     void run() {
-        world.initialize();
-        initialize();
-        timer.initialize();
+        try {
+            world.initialize();
+            initialize();
+            timer.initialize();
 
-        components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
+            components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
 
-        components.forEach(Component::initialize);
+            for (Component component1 : components) {
+                component1.initialize();
+            }
+        } catch (Exception e) {
+            logger.error("Initialization failed " + e.getMessage(), e);
+            return;
+        }
 
         logger.info("Finished initialization. Starting game loop.");
 
@@ -51,7 +58,7 @@ abstract public class Game {
 
     protected abstract void loop(long tick);
 
-    protected abstract void initialize();
+    protected abstract void initialize() throws Exception;
 
     protected abstract boolean isGameRunning();
 

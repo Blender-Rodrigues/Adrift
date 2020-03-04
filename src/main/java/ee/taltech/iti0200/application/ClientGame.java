@@ -3,7 +3,7 @@ package ee.taltech.iti0200.application;
 import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
-import ee.taltech.iti0200.network.ClientNetwork;
+import ee.taltech.iti0200.network.client.ClientNetwork;
 import ee.taltech.iti0200.network.Network;
 
 import javax.vecmath.Vector2d;
@@ -37,7 +37,7 @@ class ClientGame extends Game {
 
     @Override
     protected void initialize() {
-        network = new ClientNetwork(world);
+        network = new ClientNetwork(world, host, tcpPort);
         components.add(network);
         world.addBody(player, true);
     }
