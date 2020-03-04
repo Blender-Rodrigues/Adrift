@@ -44,18 +44,16 @@ public class Physics implements Component {
 
     private void checkForFloor(List<Entity> movingBodies, Map<Vector, Terrain> terrainMap) {
         for (Entity moving: movingBodies) {
-            moving.setOnFloor(false);
             double minX = ((int) (moving.getBoundingBox().getMinX() * 100)) / 100d;
             double centreX = ((int) (moving.getBoundingBox().getCentre().getX() * 100)) / 100d;
             double maxX = ((int) (moving.getBoundingBox().getMaxX() * 100)) / 100d;
             double minY = moving.getBoundingBox().getMinY();
-            if (
-                terrainMap.containsKey(new Vector(minX, minY))
+
+            boolean intersects = terrainMap.containsKey(new Vector(minX, minY))
                 || terrainMap.containsKey(new Vector(centreX, minY))
-                || terrainMap.containsKey(new Vector(maxX, minY))
-            ) {
-                moving.setOnFloor(true);
-            }
+                || terrainMap.containsKey(new Vector(maxX, minY));
+
+            moving.setOnFloor(intersects);
         }
     }
 
