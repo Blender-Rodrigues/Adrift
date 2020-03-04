@@ -2,10 +2,10 @@ package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.physics.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class World {
 
@@ -38,24 +38,14 @@ public class World {
     }
 
     public void mapTerrain() {
-        terrainMap = new HashMap<>();
-        for (Entity entity: imMovableBodies) {
-            if (entity.getClass() != Terrain.class) {
-                continue;
-            }
-            for (int i = 0; i < ((Terrain) entity).getIntegerWidth(); i++) {
-                Vector leftCoordinate = new Vector(
-                    entity.getBoundingBox().getCentre().getX() - i * 0.01,
-                    entity.getBoundingBox().getCentre().getY() + entity.getBoundingBox().getSize().getY()
-                );
-                Vector rightCoordinate = new Vector(
-                    entity.getBoundingBox().getCentre().getX() + i * 0.01,
-                    entity.getBoundingBox().getCentre().getY() + entity.getBoundingBox().getSize().getY()
-                );
-                terrainMap.put(leftCoordinate, (Terrain) entity);
-                terrainMap.put(rightCoordinate, (Terrain) entity);
-            }
-        }
+        terrainMap = imMovableBodies.stream()
+            .filter(entity -> entity instanceof Terrain)
+            .flatMap(entity -> {
+                double maxY = entity.getBoundingBox().getMaxY();
+                return entity.getBoundingBox().getAllXCoordinates().stream()
+                    .map(pos -> new SimpleEntry<>(new Vector(pos, maxY), (Terrain) entity));
+            })
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
     }
 
     public Map<Vector, Terrain> getTerrainMap() {

@@ -7,6 +7,7 @@ import ee.taltech.iti0200.physics.Vector;
 public class Terrain extends Entity {
 
     private static final Vector size = new Vector(2.00, 2.00);
+    public static final double TERRAIN_BLOCK_RESOLUTION = 100;
     private static final double mass = Double.POSITIVE_INFINITY;
     private static final double elasticity = 0.9;
 
@@ -16,7 +17,7 @@ public class Terrain extends Entity {
     }
 
     public int getIntegerWidth() {
-        return (int) getBoundingBox().getSize().getX() * (int) Physics.TERRAIN_BLOCK_RESOLUTION;
+        return (int) getBoundingBox().getSize().getX() * (int) TERRAIN_BLOCK_RESOLUTION;
     }
 
 }

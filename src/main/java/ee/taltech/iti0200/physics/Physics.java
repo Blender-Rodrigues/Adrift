@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static ee.taltech.iti0200.physics.BoundingBox.clamp;
 import static jdk.nashorn.internal.objects.NativeMath.round;
 
 
@@ -22,7 +23,6 @@ public class Physics implements Component {
     private Logger logger;
 
     private static final Vector GRAVITY = new Vector(0, -9.81);
-    public static final double TERRAIN_BLOCK_RESOLUTION = 100;
     private static final double NO_BOUNCE_SPEED_LIMIT = 1;
 
     public Physics(World world) {
@@ -260,10 +260,6 @@ public class Physics implements Component {
         for (Entity body: bodiesToMove) {
             body.move(timeStep);
         }
-    }
-
-    private double clamp(double a) {
-        return Math.round(a * TERRAIN_BLOCK_RESOLUTION) / TERRAIN_BLOCK_RESOLUTION;
     }
 
 }
