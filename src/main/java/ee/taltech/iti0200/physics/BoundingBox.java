@@ -1,5 +1,10 @@
 package ee.taltech.iti0200.physics;
 
+import ee.taltech.iti0200.domain.Terrain;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.lang.Math.abs;
 
 public class BoundingBox {
@@ -59,6 +64,20 @@ public class BoundingBox {
             this.getCentre().getY()
             > otherBoundingBox.getCentre().getY()
         ) ? -1 : 1;
+    }
+
+    public List<Double> getAllXCoordinates() {
+        List<Double> xCoordinates = new ArrayList<>();
+        int width = (int) (size.getX() * Terrain.TERRAIN_BLOCK_RESOLUTION * 2);
+        double minY = clamp(getMinX());
+        for (int i = 0; i < width; i++) {
+            xCoordinates.add(minY + i / Terrain.TERRAIN_BLOCK_RESOLUTION);
+        }
+        return xCoordinates;
+    }
+
+    public static double clamp(double a) {
+        return Math.round(a * Terrain.TERRAIN_BLOCK_RESOLUTION) / Terrain.TERRAIN_BLOCK_RESOLUTION;
     }
 
     public Vector getCentre() {

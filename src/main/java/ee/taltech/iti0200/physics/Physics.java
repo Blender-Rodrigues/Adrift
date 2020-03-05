@@ -3,13 +3,19 @@ package ee.taltech.iti0200.physics;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Entity;
 import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.Terrain;
 import ee.taltech.iti0200.domain.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static ee.taltech.iti0200.physics.BoundingBox.clamp;
+import static jdk.nashorn.internal.objects.NativeMath.round;
+
 
 public class Physics implements Component {
 
@@ -17,6 +23,7 @@ public class Physics implements Component {
     private Logger logger;
 
     private static final Vector GRAVITY = new Vector(0, -9.81);
+    private static final double NO_BOUNCE_SPEED_LIMIT = 1;
 
     public Physics(World world) {
         logger = LogManager.getLogger(Physics.class);
@@ -27,20 +34,39 @@ public class Physics implements Component {
     public void update(long tick) {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
+        Map<Vector, Terrain> terrainMap = world.getTerrainMap();
         for (Entity player: movableBodies) {
             if (player instanceof Player) {
                 logger.debug("Player at: " + player.getBoundingBox().getCentre());
             }
         }
+        checkForFloor(movableBodies, terrainMap);
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
         applyGravity(movableBodies);
     }
 
+    private void checkForFloor(List<Entity> movingBodies, Map<Vector, Terrain> terrainMap) {
+        for (Entity moving: movingBodies) {
+            double minX = clamp(moving.getBoundingBox().getMinX());
+            double centreX = clamp(moving.getBoundingBox().getCentre().getX());
+            double maxX = clamp(moving.getBoundingBox().getMaxX());
+            double minY = moving.getBoundingBox().getMinY();
+
+            boolean intersects = terrainMap.containsKey(new Vector(minX, minY))
+                || terrainMap.containsKey(new Vector(centreX, minY))
+                || terrainMap.containsKey(new Vector(maxX, minY));
+
+            moving.setOnFloor(intersects);
+        }
+    }
+
     private void applyGravity(List<Entity> entities) {
         Vector accelerateDelta = new Vector(GRAVITY);
         accelerateDelta.scale(world.getTimeStep());
-        entities.forEach(entity -> entity.accelerate(accelerateDelta));
+        entities.stream()
+            .filter(entity -> !entity.isOnFloor())
+            .forEach(entity -> entity.accelerate(accelerateDelta));
     }
 
     private void checkForCollisions(List<Entity> movingBodies, List<Entity> stationaryBodies) {
@@ -56,7 +82,7 @@ public class Physics implements Component {
         }
     }
 
-    private void resolveCollision(Body movingBody, List<Body> collidingBodies) {
+    private void resolveCollision(Entity movingBody, List<Body> collidingBodies) {
         if (collidingBodies.size() <= 0) {
             return;
         }
@@ -66,10 +92,16 @@ public class Physics implements Component {
             new Vector(0, 0),
             new Vector(0, 0)
         );
-        updateBodySpeedAfterCollision(movingBody, collisionElasticity);
+        double verticalSpeedAfterCollision = updateBodySpeedAfterCollision(movingBody, collisionElasticity);
+        if (verticalSpeedAfterCollision >= 0d && verticalSpeedAfterCollision < NO_BOUNCE_SPEED_LIMIT) {
+            movingBody.setYSpeed(0d);
+            movingBody.setOnFloor(true);
+        } else {
+            movingBody.setOnFloor(false);
+        }
     }
 
-    private void updateBodySpeedAfterCollision(Body movingBody, Vector collisionElasticity) {
+    private double updateBodySpeedAfterCollision(Body movingBody, Vector collisionElasticity) {
         collisionElasticity.scale(movingBody.getElasticity());
         if (collisionElasticity.getX() != 0) {
             movingBody.setXSpeed(- movingBody.getSpeed().getX() * collisionElasticity.getX());
@@ -77,6 +109,7 @@ public class Physics implements Component {
         if (collisionElasticity.getY() != 0) {
             movingBody.setYSpeed(- movingBody.getSpeed().getY() * collisionElasticity.getY());
         }
+        return movingBody.getSpeed().getY();
     }
 
     private Vector getStrategyForResolvingCollision(

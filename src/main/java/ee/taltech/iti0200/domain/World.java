@@ -2,13 +2,16 @@ package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.physics.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class World {
 
     protected List<Entity> movableBodies = new ArrayList<>();
     protected List<Entity> imMovableBodies = new ArrayList<>();
+    protected Map<Vector, Terrain> terrainMap;
     protected double xMin;
     protected double xMax;
     protected double yMin;
@@ -31,6 +34,22 @@ public class World {
         }
         addBody(new Terrain(new Vector(1.0, 3.0)), false);
         addBody(new Terrain(new Vector(39.0, 3.0)), false);
+        mapTerrain();
+    }
+
+    public void mapTerrain() {
+        terrainMap = imMovableBodies.stream()
+            .filter(entity -> entity instanceof Terrain)
+            .flatMap(entity -> {
+                double maxY = entity.getBoundingBox().getMaxY();
+                return entity.getBoundingBox().getAllXCoordinates().stream()
+                    .map(pos -> new SimpleEntry<>(new Vector(pos, maxY), (Terrain) entity));
+            })
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+    }
+
+    public Map<Vector, Terrain> getTerrainMap() {
+        return terrainMap;
     }
 
     public double getTimeStep() {
