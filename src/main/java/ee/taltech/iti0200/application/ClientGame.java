@@ -5,8 +5,7 @@ import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.ClientNetwork;
 import ee.taltech.iti0200.network.Network;
-
-import javax.vecmath.Vector2d;
+import ee.taltech.iti0200.physics.Vector;
 
 class ClientGame extends Game {
 
@@ -22,7 +21,7 @@ class ClientGame extends Game {
         this.tcpPort = tcpPort;
         this.host = host;
 
-        player = new Player(new Vector2d(20.0, 4.0));
+        player = new Player(new Vector(20.0, 40.0));
         graphics = new Graphics(world, player);
         input = new Input(graphics.getWindow(), player);
 
