@@ -15,10 +15,16 @@ public class Texture {
     private int width;
     private int height;
 
-    public Texture(String filename) throws IOException {
-        BufferedImage image;
+    public Texture(String filename) {
+        BufferedImage image = null; // TODO: not initializing here causes errors please help
 
-        image = ImageIO.read(new File(filename));
+        try {
+            image = ImageIO.read(new File("./build/resources/main/" + filename));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
         width = image.getWidth();
         height = image.getHeight();
 

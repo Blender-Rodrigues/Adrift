@@ -1,13 +1,13 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
-import java.io.IOException;
 import java.nio.IntBuffer;
 
 import org.joml.*;
@@ -47,16 +47,13 @@ public class Graphics implements Component {
     private long window;
 
     private World world;
-    private Model model;
     private Shader shader;
-    private Texture tex;
-    private Matrix4f projection;
-    private Matrix4f scale;
-    private Matrix4f target;
     private Camera camera;
+    private Player player;
 
-    public Graphics(World world) {
+    public Graphics(World world, Player player) {
         this.world = world;
+        this.player = player;
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -73,7 +70,7 @@ public class Graphics implements Component {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(600, 400, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(1200, 800, "Hello World!", NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -85,6 +82,7 @@ public class Graphics implements Component {
 
     @Override
     public void initialize() {
+
         // Get the thread stack and push a new frame
         try ( MemoryStack stack = stackPush() ) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
@@ -104,6 +102,7 @@ public class Graphics implements Component {
             );
         } // the stack frame is popped automatically
 
+
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
         // Enable v-sync
@@ -119,50 +118,15 @@ public class Graphics implements Component {
         // bindings available for use.
         GL.createCapabilities();
 
-        camera = new Camera(640, 480);
+        camera = new Camera(1200, 800);
         glEnable(GL_TEXTURE_2D);
 
-        float[] vertices = new float[] {
-                -0.5f, 0.5f, 0,
-                0.5f, 0.5f, 0,
-                0.5f, -0.5f, 0,
-                -0.5f, -0.5f, 0,
-                0.3f, -0.5f, 0//delete this
-        };
 
-        float[] texture = new float[] {
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1,
-                1, 1, //delete this
-
-        };
-
-        int[] indices = new int[] {
-                0, 1, 2,
-                4, 3, 0 //change 4 to 2
-        };
-
-        model = new Model(vertices, texture, indices);
         shader = new Shader("shader");
 
-        try {
-            tex = new Texture("./build/resources/main/background.jpg");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        projection = new Matrix4f()
-                .ortho2D(-640, 640, -480, 480);
-
-        scale = new Matrix4f()
-                .translate(new Vector3f(100, 0, 0)) // move to the right
-                .scale(512); //resize
-
-        target = new Matrix4f();
-
-        camera.setPosition(new Vector3f(-100, 0, 0));
+        camera.setPosition(new Vector3f(-400, 0, 0));
+        player.initialize();
 
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -185,19 +149,13 @@ public class Graphics implements Component {
 
     @Override
     public void update(long tick) {
-//        camera.setPosition(new Vector3f(tick, 0, 0));
+//        camera.setPosition(new Vector3f(-tick, -tick, 0));
 
-        target = scale;
         glfwPollEvents();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-        shader.bind();
-        shader.setUniform("sampler", 0);
-        shader.setUniform("projection", camera.getProjection().mul(target));
-        tex.bind(0);
-        model.render();
-
+        player.render(shader, camera);
 
         glfwSwapBuffers(window); // swap the color buffers
     }
