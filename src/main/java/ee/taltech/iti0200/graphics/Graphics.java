@@ -3,12 +3,15 @@ package ee.taltech.iti0200.graphics;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.physics.Body;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joml.*;
 
@@ -49,11 +52,11 @@ public class Graphics implements Component {
     private World world;
     private Shader shader;
     private Camera camera;
-    private Player player;
+    private List<Body> drawables;
 
-    public Graphics(World world, Player player) {
+    public Graphics(World world) {
         this.world = world;
-        this.player = player;
+        this.drawables = new ArrayList<Body>();
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -74,6 +77,14 @@ public class Graphics implements Component {
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
+    }
+
+    public void addDrawable(Body drawable) {
+        drawables.add(drawable);
+    }
+
+    public void removeDrawable(Body drawable) {
+        drawables.remove(drawable);
     }
 
     public long getWindow() {
@@ -121,13 +132,12 @@ public class Graphics implements Component {
         camera = new Camera(1200, 800);
         glEnable(GL_TEXTURE_2D);
 
-
         shader = new Shader("shader");
 
-
         camera.setPosition(new Vector3f(-400, 0, 0));
-        player.initialize();
-
+        for (Body drawable : drawables) {
+            drawable.initializeGraphics();
+        }
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -155,7 +165,9 @@ public class Graphics implements Component {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-        player.render(shader, camera);
+        for (Body drawable : drawables) {
+            drawable.render(shader, camera);
+        }
 
         glfwSwapBuffers(window); // swap the color buffers
     }

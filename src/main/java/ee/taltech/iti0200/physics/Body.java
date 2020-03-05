@@ -1,5 +1,8 @@
 package ee.taltech.iti0200.physics;
 
+import ee.taltech.iti0200.graphics.*;
+import org.joml.Vector3f;
+
 public class Body {
 
     protected double mass;
@@ -9,6 +12,10 @@ public class Body {
     protected boolean moved;
     protected double elasticity;
     private boolean collideable;
+
+    private Model model;
+    private Texture texture;
+    private Transform transform;
 
     public Body(double mass, BoundingBox boundingBox, boolean collideable) {
         this.mass = mass;
@@ -83,4 +90,41 @@ public class Body {
         return this.elasticity;
     }
 
+    public void initializeGraphics() {
+
+        float[] vertices = new float[] {
+                -1f, 1f, 0,
+                1f, 1f, 0,
+                1f, -1f, 0,
+                -1f, -1f, 0
+        };
+
+        float[] texture = new float[] {
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1
+        };
+
+        int[] indices = new int[] {
+                0, 1, 2,
+                2, 3, 0
+        };
+
+        model = new Model(vertices, texture, indices);
+        this.texture = new Texture("smile.png");
+
+        transform = new Transform();
+        transform.scale = new Vector3f(32, 32, 1);
+    }
+
+    public void render(Shader shader, Camera camera) {
+        transform.pos.set(new Vector3f((float)this.boundingBox.getCentre().x, (float)this.boundingBox.getCentre().y, 0));
+
+        shader.bind();
+        shader.setUniform("sampler", 0);
+        shader.setUniform("projection", transform.getProjection(camera.getProjection()));
+        texture.bind(0);
+        model.render();
+    }
 }

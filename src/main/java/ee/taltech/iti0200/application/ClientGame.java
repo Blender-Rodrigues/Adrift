@@ -21,12 +21,14 @@ class ClientGame extends Game {
         this.tcpPort = tcpPort;
         this.host = host;
 
+        graphics = new Graphics(world);
         player = new Player(new Vector(20.0, 40.0));
-        graphics = new Graphics(world, player);
         input = new Input(graphics.getWindow(), player);
 
         components.add(graphics);
         components.add(input);
+
+        graphics.addDrawable(player);
     }
 
     @Override
