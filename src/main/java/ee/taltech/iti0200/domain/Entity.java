@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.domain;
 
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.Vector;
@@ -76,4 +78,15 @@ public class Entity extends Body {
         return components;
     }
 
+    public void initializeGraphics() {
+        for (Body component : components) {
+            component.initializeGraphics();
+        }
+    }
+
+    public void render(Shader shader, Camera camera) {
+        for (Body component : components) {
+            component.render(shader, camera);
+        }
+    }
 }

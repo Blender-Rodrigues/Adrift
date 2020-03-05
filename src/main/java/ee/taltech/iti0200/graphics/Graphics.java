@@ -1,7 +1,6 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.application.Component;
-import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.physics.Body;
 import org.lwjgl.glfw.GLFWErrorCallback;
