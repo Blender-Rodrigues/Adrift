@@ -52,10 +52,12 @@ public class Graphics implements Component {
     private Shader shader;
     private Camera camera;
     private List<Body> drawables;
+    private boolean follow;
 
     public Graphics(World world) {
         this.world = world;
         this.drawables = new ArrayList<Body>();
+        this.follow = false;
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -76,15 +78,6 @@ public class Graphics implements Component {
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
-    }
-
-    public void addDrawable(Body drawable) {
-        drawables.add(drawable);
-        drawable.initializeGraphics();
-    }
-
-    public void removeDrawable(Body drawable) {
-        drawables.remove(drawable);
     }
 
     public long getWindow() {
@@ -134,7 +127,7 @@ public class Graphics implements Component {
 
         shader = new Shader("shader");
 
-        camera.setPosition(new Vector3f(-400, 0, 0));
+        camera.setPosition(new Vector3f(0, 0, 0));
 
         drawables.addAll(world.getImMovableBodies());
         drawables.addAll(world.getMovableBodies());
@@ -161,9 +154,33 @@ public class Graphics implements Component {
         return !glfwWindowShouldClose(window);
     }
 
+    public void addDrawable(Body drawable) {
+        drawables.add(drawable);
+        drawable.initializeGraphics();
+    }
+
+    public void removeDrawable(Body drawable) {
+        drawables.remove(drawable);
+    }
+
+    public void moveCameraLeft() {
+        camera.addPosition(new Vector3f(100, 0, 0));
+    }
+
+    public void moveCameraRight() {
+        camera.addPosition(new Vector3f(-100, 0, 0));
+    }
+
+    public void moveCameraUp() {
+        camera.addPosition(new Vector3f(0, -100, 0));
+    }
+
+    public void moveCameraDown() {
+        camera.addPosition(new Vector3f(0, 100, 0));
+    }
+
     @Override
     public void update(long tick) {
-//        camera.setPosition(new Vector3f(-tick, -tick, 0));
 
         glfwPollEvents();
 
