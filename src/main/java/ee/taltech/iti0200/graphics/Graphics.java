@@ -80,6 +80,7 @@ public class Graphics implements Component {
 
     public void addDrawable(Body drawable) {
         drawables.add(drawable);
+        drawable.initializeGraphics();
     }
 
     public void removeDrawable(Body drawable) {
@@ -134,11 +135,15 @@ public class Graphics implements Component {
         shader = new Shader("shader");
 
         camera.setPosition(new Vector3f(-400, 0, 0));
+
+        drawables.addAll(world.getImMovableBodies());
+        drawables.addAll(world.getMovableBodies());
+
         for (Body drawable : drawables) {
             drawable.initializeGraphics();
         }
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
     }
 
     @Override

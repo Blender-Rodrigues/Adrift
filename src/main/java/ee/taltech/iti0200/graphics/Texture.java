@@ -19,7 +19,7 @@ public class Texture {
         BufferedImage image = null; // TODO: not initializing here causes errors please help
 
         try {
-            image = ImageIO.read(new File("./build/resources/main/" + filename));
+            image = ImageIO.read(new File("./build/resources/main/textures/" + filename));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

@@ -112,10 +112,14 @@ public class Body {
         };
 
         model = new Model(vertices, texture, indices);
-        this.texture = new Texture("smile.png");
+        this.texture = new Texture("default.png");
 
         transform = new Transform();
         transform.scale = new Vector3f(32, 32, 1);
+    }
+
+    public void changeTexture(String filename) {
+        this.texture = new Texture(filename);
     }
 
     public void render(Shader shader, Camera camera) {
