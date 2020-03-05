@@ -33,7 +33,6 @@ switch (OperatingSystem.current()) {
 }
 
 project.ext.lwjglVersion = "3.2.3"
-project.ext.jomlVersion = ""
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
