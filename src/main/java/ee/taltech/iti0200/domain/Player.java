@@ -37,7 +37,7 @@ public class Player extends Entity {
     public void onCollide(Body otherBody) {
         if (otherBody instanceof Terrain) {
             boolean verticalCollision = getBoundingBox().getOverLap(otherBody.getBoundingBox()).getY() == 0;
-            boolean otherIsBelow = getBoundingBox().getCentre().getY() > otherBody.getBoundingBox().getCentre().getX();
+            boolean otherIsBelow = getBoundingBox().getCentre().getY() > otherBody.getBoundingBox().getCentre().getY();
             if (verticalCollision && otherIsBelow) {
                 setJumpsLeft(getJumpAmountLimit());
             }
