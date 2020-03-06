@@ -11,14 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
-import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Input implements Component {
 
@@ -43,6 +36,9 @@ public class Input implements Component {
         bindings.get(GLFW_KEY_D).put(GLFW_PRESS, this::movePlayerRight);
         bindings.get(GLFW_KEY_D).put(GLFW_REPEAT, this::movePlayerRight);
 
+        bindings.put(GLFW_KEY_W, new HashMap<>());
+        bindings.get(GLFW_KEY_W).put(GLFW_PRESS, this::jumpPlayer);
+
         glfwSetKeyCallback(window, (window, key, scanCode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true);
@@ -66,6 +62,10 @@ public class Input implements Component {
     private void movePlayerRight() {
         player.accelerate(new Vector(1.0, 0.0));
         logger.debug("Player at: " + player.getBoundingBox().getCentre());
+    }
+
+    private void jumpPlayer() {
+        
     }
 
 }
