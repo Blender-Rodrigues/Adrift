@@ -65,7 +65,10 @@ public class Input implements Component {
     }
 
     private void jumpPlayer() {
-        
+        if (player.getJumpsLeft() > 0) {
+            player.setJumpsLeft(player.getJumpsLeft() - 1);
+            player.accelerate(new Vector(0.0, player.getJumpDeltaV()));
+        }
     }
 
 }
