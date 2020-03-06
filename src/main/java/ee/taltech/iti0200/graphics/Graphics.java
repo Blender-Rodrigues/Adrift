@@ -50,7 +50,7 @@ public class Graphics implements Component {
 
     private World world;
     private Shader shader;
-    private Camera camera;
+    public Camera camera; // ok to have as public and control camera from Camera rather than Graphics?
     private List<Body> drawables;
     private boolean follow;
 
@@ -161,22 +161,6 @@ public class Graphics implements Component {
 
     public void removeDrawable(Body drawable) {
         drawables.remove(drawable);
-    }
-
-    public void moveCameraLeft() {
-        camera.addPosition(new Vector3f(100, 0, 0));
-    }
-
-    public void moveCameraRight() {
-        camera.addPosition(new Vector3f(-100, 0, 0));
-    }
-
-    public void moveCameraUp() {
-        camera.addPosition(new Vector3f(0, -100, 0));
-    }
-
-    public void moveCameraDown() {
-        camera.addPosition(new Vector3f(0, 100, 0));
     }
 
     @Override

@@ -51,6 +51,12 @@ public class Input implements Component {
         bindings.put(GLFW_KEY_DOWN, new HashMap<>());
         bindings.get(GLFW_KEY_DOWN).put(GLFW_PRESS, this::moveCameraDown);
 
+        bindings.put(GLFW_KEY_I, new HashMap<>());
+        bindings.get(GLFW_KEY_I).put(GLFW_PRESS, this::zoomCameraIn);
+
+        bindings.put(GLFW_KEY_O, new HashMap<>());
+        bindings.get(GLFW_KEY_O).put(GLFW_PRESS, this::zoomCameraOut);
+
 
         glfwSetKeyCallback(window, (window, key, scanCode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
@@ -78,19 +84,27 @@ public class Input implements Component {
     }
 
     private void moveCameraLeft() {
-        graphics.moveCameraLeft();
+        graphics.camera.moveLeft();
     }
 
     private void moveCameraRight() {
-        graphics.moveCameraRight();
+        graphics.camera.moveRight();
     }
 
     private void moveCameraUp() {
-        graphics.moveCameraUp();
+        graphics.camera.moveUp();
     }
 
     private void moveCameraDown() {
-        graphics.moveCameraDown();
+        graphics.camera.moveDown();
+    }
+
+    private void zoomCameraIn() {
+        graphics.camera.zoomIn();
+    }
+
+    private void zoomCameraOut() {
+        graphics.camera.zoomOut();
     }
 
 }
