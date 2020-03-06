@@ -1,18 +1,20 @@
 package ee.taltech.iti0200.network.server;
 
+import ee.taltech.iti0200.network.Listener;
 import ee.taltech.iti0200.network.Messenger;
-import ee.taltech.iti0200.network.TcpListener;
-import ee.taltech.iti0200.network.TcpSender;
+import ee.taltech.iti0200.network.PacketObjectInputStream;
+import ee.taltech.iti0200.network.PacketObjectOutputStream;
+import ee.taltech.iti0200.network.Sender;
 import ee.taltech.iti0200.network.message.Message;
-import ee.taltech.iti0200.network.message.Ping;
-import ee.taltech.iti0200.network.message.RegisterClientRequest;
-import ee.taltech.iti0200.network.message.RegisterClientResponse;
+import ee.taltech.iti0200.network.message.TcpRegistrationRequest;
+import ee.taltech.iti0200.network.message.TcpRegistrationResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,15 +25,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class TcpRegistrar extends Thread {
+public class Registrar extends Thread {
 
-    private final Logger logger = LogManager.getLogger(TcpRegistrar.class);
+    private final Logger logger = LogManager.getLogger(Registrar.class);
     private final ServerSocket serverSocket;
     private final Set<ClientConnection> clients;
     private final ConcurrentLinkedQueue<Message> inbox;
     private final AtomicBoolean alive;
 
-    public TcpRegistrar(
+    public Registrar(
         ServerSocket serverSocket,
         Set<ClientConnection> clients,
         ConcurrentLinkedQueue<Message> inbox,
@@ -75,44 +77,42 @@ public class TcpRegistrar extends Thread {
         ObjectOutputStream tcpOutput = new ObjectOutputStream(socket.getOutputStream());
         tcpOutput.flush();
 
-        // TODO: create udp port and thread.
-        Integer udpSenderPort = 8885;
-        Integer udpListenerPort = 8886;
+        DatagramSocket udpSocket = new DatagramSocket();
+        Integer udpPort = udpSocket.getLocalPort();
 
         connection.setTcpInput(tcpInput)
             .setTcpOutput(tcpOutput)
-            .setUdpSenderPort(udpSenderPort)
-            .setUdpListenerPort(udpListenerPort);
+            .setUdpPort(udpPort);
 
         Map<Class<? extends Message>, Consumer<Message>> handlers = new HashMap<>();
 
-        handlers.put(RegisterClientRequest.class, (message) -> {
-            RegisterClientRequest request = (RegisterClientRequest) message;
+        handlers.put(TcpRegistrationRequest.class, (message) -> {
+            TcpRegistrationRequest request = (TcpRegistrationRequest) message;
             connection.setId(request.getId());
-            logger.info(
-                "Responding to client {} with ports: {}/{}",
-                request.getId(),
-                udpSenderPort,
-                udpListenerPort
-            );
+            logger.info("Responding to client {} with UDP port: {}", request.getId(), udpPort);
 
             try {
-                tcpOutput.writeObject(new RegisterClientResponse(udpSenderPort, udpListenerPort));
+                Messenger udpMessenger = new Messenger(inbox, connection.getUdpOutbox(), alive);
+                ObjectInputStream udpInput = new PacketObjectInputStream(udpSocket);
+                ObjectOutputStream udpOutput = new PacketObjectOutputStream(udpSocket, connection.getAddress(), request.getUdpPort());
+
+                logger.debug("Client UDP port received: " + request.getUdpPort());
+
+                new Listener(udpInput, udpMessenger, new HashMap<>()).start();
+                new VerifiedSender(connection, udpOutput, udpMessenger).start();
+
+                connection.setUdpInput(udpInput).setUdpOutput(udpOutput);
+
+                tcpOutput.writeObject(new TcpRegistrationResponse(udpPort));
                 tcpOutput.flush();
             } catch (IOException e) {
                 logger.error("Failed to respond to client register request: " + e.getMessage(), e);
             }
         });
 
-        handlers.put(Ping.class, (message) -> {
-            Ping ping = (Ping) message;
-            logger.info("Ping received from client {} at {}", ping.getId(), ping.getTime());
-            inbox.add(ping);
-        });
-
         Messenger tcpMessenger = new Messenger(inbox, connection.getTcpOutbox(), alive);
-        new TcpListener(tcpInput, tcpMessenger, handlers).start();
-        new TcpSender(tcpOutput, tcpMessenger).start();
+        new Listener(tcpInput, tcpMessenger, handlers).start();
+        new Sender(tcpOutput, tcpMessenger).start();
     }
 
 }

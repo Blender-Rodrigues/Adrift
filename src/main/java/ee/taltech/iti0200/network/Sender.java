@@ -7,13 +7,13 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class TcpSender extends Thread {
+public class Sender extends Thread {
 
-    private final Logger logger = LogManager.getLogger(TcpSender.class);
-    private final Messenger messenger;
+    private final Logger logger = LogManager.getLogger(Sender.class);
     private final ObjectOutputStream output;
+    protected final Messenger messenger;
 
-    public TcpSender(ObjectOutputStream output, Messenger messenger) {
+    public Sender(ObjectOutputStream output, Messenger messenger) {
         this.messenger = messenger;
         this.output = output;
     }

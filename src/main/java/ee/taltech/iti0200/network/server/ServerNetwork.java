@@ -7,6 +7,7 @@ import ee.taltech.iti0200.network.message.Message;
 import ee.taltech.iti0200.network.message.Ping;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.net.Protocol;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -35,20 +36,25 @@ public class ServerNetwork extends Network {
 
     @Override
     public void initialize() {
-        new TcpRegistrar(serverSocket, clients, inbox, alive).start();
+        new Registrar(serverSocket, clients, inbox, alive).start();
     }
 
     @Override
     public void update(long tick) {
         LinkedList<Message> messages = messenger.readInbox();
-        messages.forEach(message -> logger.debug("Server read: " + message.getClass().getSimpleName()));
+        messages.forEach(message -> logger.debug(
+            "Server received {}: {}",
+            message.getClass().getSimpleName(),
+            message.toString()
+        ));
     }
 
     @Override
     public void propagate(long tick) {
         if (tick % 400 == 0) {
             LinkedList<Message> messages = new LinkedList<>();
-            messages.add(new Ping(tick, id));
+            messages.add(new Ping(tick, id, Protocol.TCP));
+            messages.add(new Ping(tick, id, Protocol.UDP));
             messenger.writeOutbox(messages);
         }
     }
@@ -60,7 +66,7 @@ public class ServerNetwork extends Network {
         try {
             serverSocket.close();
         } catch (IOException e) {
-            logger.error("Failed to close " + serverSocket.getClass() + " with: " + e.getMessage(), e);
+            logger.error("Failed to close " + serverSocket.getClass() + ": " + e.getMessage(), e);
         }
     }
 

@@ -6,12 +6,14 @@ import java.util.UUID;
 
 public class Ping implements Message {
 
+    private Protocol channel;
     private long time;
     private UUID id;
 
-    public Ping(long time, UUID id) {
+    public Ping(long time, UUID id, Protocol channel) {
         this.time = time;
         this.id = id;
+        this.channel = channel;
     }
 
     public long getTime() {
@@ -24,7 +26,12 @@ public class Ping implements Message {
 
     @Override
     public Protocol getChannel() {
-        return Protocol.TCP;
+        return channel;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Ping from %s received at %s over %s", id, time, channel.name());
     }
 
 }

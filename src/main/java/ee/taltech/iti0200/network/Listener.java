@@ -9,18 +9,18 @@ import java.io.ObjectInputStream;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class TcpListener extends Thread {
+public class Listener extends Thread {
 
     private static final int ERROR_LIMIT = 5;
 
-    private final Logger logger = LogManager.getLogger(TcpListener.class);
+    private final Logger logger = LogManager.getLogger(Listener.class);
     private final Messenger messenger;
     private final ObjectInputStream input;
     private final Map<Class<? extends Message>, Consumer<Message>> handlers;
 
     private int errors = 0;
 
-    public TcpListener(
+    public Listener(
         ObjectInputStream input,
         Messenger messenger,
         Map<Class<? extends Message>, Consumer<Message>> handlers

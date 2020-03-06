@@ -20,15 +20,20 @@ public class ClientConnection {
     private final Logger logger = LogManager.getLogger(ClientConnection.class);
     private ObjectInputStream tcpInput;
     private ObjectOutputStream tcpOutput;
+    private ObjectInputStream udpInput;
+    private ObjectOutputStream udpOutput;
     private UUID id;
     private InetAddress address;
     private Integer tcpPort;
-    private Integer udpSenderPort;
-    private Integer udpListenerPort;
+    private Integer udpPort;
 
     public ClientConnection(InetAddress address, Integer tcpPort) {
         this.address = address;
         this.tcpPort = tcpPort;
+    }
+
+    public InetAddress getAddress() {
+        return address;
     }
 
     public ConcurrentLinkedQueue<Message> getTcpOutbox() {
@@ -37,6 +42,24 @@ public class ClientConnection {
 
     public ConcurrentLinkedQueue<Message> getUdpOutbox() {
         return udpOutbox;
+    }
+
+    public ObjectInputStream getUdpInput() {
+        return udpInput;
+    }
+
+    public ClientConnection setUdpInput(ObjectInputStream udpInput) {
+        this.udpInput = udpInput;
+        return this;
+    }
+
+    public ObjectOutputStream getUdpOutput() {
+        return udpOutput;
+    }
+
+    public ClientConnection setUdpOutput(ObjectOutputStream udpOutput) {
+        this.udpOutput = udpOutput;
+        return this;
     }
 
     public ObjectInputStream getTcpInput() {
@@ -66,21 +89,12 @@ public class ClientConnection {
         return this;
     }
 
-    public Integer getUdpSenderPort() {
-        return udpSenderPort;
+    public Integer getUdpPort() {
+        return udpPort;
     }
 
-    public ClientConnection setUdpSenderPort(Integer udpSenderPort) {
-        this.udpSenderPort = udpSenderPort;
-        return this;
-    }
-
-    public Integer getUdpListenerPort() {
-        return udpListenerPort;
-    }
-
-    public ClientConnection setUdpListenerPort(Integer udpListenerPort) {
-        this.udpListenerPort = udpListenerPort;
+    public ClientConnection setUdpPort(Integer udpPort) {
+        this.udpPort = udpPort;
         return this;
     }
 

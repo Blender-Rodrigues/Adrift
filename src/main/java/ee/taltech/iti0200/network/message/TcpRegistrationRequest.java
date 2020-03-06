@@ -4,16 +4,22 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 import java.util.UUID;
 
-public class RegisterClientRequest implements Message {
+public class TcpRegistrationRequest implements Message {
 
     private UUID id;
+    private int udpPort;
 
-    public RegisterClientRequest(UUID id) {
+    public TcpRegistrationRequest(UUID id, int udpPort) {
         this.id = id;
+        this.udpPort = udpPort;
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public int getUdpPort() {
+        return udpPort;
     }
 
     @Override
