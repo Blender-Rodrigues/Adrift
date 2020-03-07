@@ -27,7 +27,6 @@ class ClientGame extends Game {
 
         components.add(graphics);
         components.add(input);
-
     }
 
     @Override
