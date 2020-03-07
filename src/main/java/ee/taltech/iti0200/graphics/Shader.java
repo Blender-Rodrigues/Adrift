@@ -68,7 +68,7 @@ public class Shader {
         int location = glGetUniformLocation(program, name);
         FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         value.get(buffer);
-        if(location != -1) {
+        if (location != -1) {
             glUniformMatrix4fv(location, false, buffer);
         }
     }
