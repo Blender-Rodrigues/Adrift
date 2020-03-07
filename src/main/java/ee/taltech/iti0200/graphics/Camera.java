@@ -78,7 +78,7 @@ public class Camera {
     }
 
     public void zoomIn() {
-        zoom = Math.round(zoom / 1.1 * 100)/100f;
+        zoom = Math.round(zoom / 1.1 * 100) / 100f;
         setZoom(zoom);
     }
 
