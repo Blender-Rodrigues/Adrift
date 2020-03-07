@@ -14,16 +14,16 @@ public class VerifiedSender extends Sender {
 
     private final Logger logger = LogManager.getLogger(VerifiedSender.class);
 
-    private ClientConnection connection;
+    private ConnectionToClient connection;
 
-    public VerifiedSender(ClientConnection connection, ObjectOutputStream output, Messenger messenger) {
-        super(output, messenger);
+    public VerifiedSender(String name, ConnectionToClient connection, ObjectOutputStream output, Messenger messenger) {
+        super(name, output, messenger, connection);
         this.connection = connection;
     }
 
     public void run() {
         logger.info("Waiting for client UDP connection.");
-        while (messenger.isAlive()) {
+        while (messenger.isAlive() && connection.isOpen()) {
             Thread.yield();
             Object message;
 
@@ -48,7 +48,9 @@ public class VerifiedSender extends Sender {
 
             break;
         }
-        logger.info("Client UDP registration received, switching to sending mode.");
+
+        connection.finalized();
+        logger.info("Client {} registration completed.", connection.getId());
         super.run();
     }
 

@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 
 public class GroupMessenger extends Messenger {
 
-    private final Set<ClientConnection> clients;
+    private final Set<ConnectionToClient> clients;
 
-    public GroupMessenger(Set<ClientConnection> clients, ConcurrentLinkedQueue<Message> inbox, AtomicBoolean alive) {
+    public GroupMessenger(Set<ConnectionToClient> clients, ConcurrentLinkedQueue<Message> inbox, AtomicBoolean alive) {
         super(inbox, null, alive);
         this.clients = clients;
     }
@@ -40,7 +40,7 @@ public class GroupMessenger extends Messenger {
             .filter(message -> message.getChannel().equals(Protocol.UDP))
             .collect(Collectors.toList());
 
-        for (ClientConnection client: clients) {
+        for (ConnectionToClient client: clients) {
             Thread.yield();
 
             if (!tcpMessages.isEmpty()) {

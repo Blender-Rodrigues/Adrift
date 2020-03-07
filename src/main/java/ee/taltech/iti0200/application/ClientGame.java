@@ -7,6 +7,8 @@ import ee.taltech.iti0200.network.client.ClientNetwork;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.physics.Vector;
 
+import java.net.UnknownHostException;
+
 class ClientGame extends Game {
 
     protected Player player;
@@ -35,7 +37,7 @@ class ClientGame extends Game {
     }
 
     @Override
-    protected void initialize() {
+    protected void initialize() throws UnknownHostException {
         network = new ClientNetwork(world, host, tcpPort);
         components.add(network);
         world.addBody(player, true);

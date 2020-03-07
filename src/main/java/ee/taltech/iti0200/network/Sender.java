@@ -9,17 +9,22 @@ import java.io.ObjectOutputStream;
 
 public class Sender extends Thread {
 
+    private static int counter = 0;
+
     private final Logger logger = LogManager.getLogger(Sender.class);
     private final ObjectOutputStream output;
     protected final Messenger messenger;
+    protected final Connection connection;
 
-    public Sender(ObjectOutputStream output, Messenger messenger) {
+    public Sender(String name, ObjectOutputStream output, Messenger messenger, Connection connection) {
+        setName(name + " Sender " + counter++);
         this.messenger = messenger;
         this.output = output;
+        this.connection = connection;
     }
 
     public void run() {
-        while (messenger.isAlive()) {
+        while (messenger.isAlive() && connection.isOpen()) {
             try {
                 Message message = messenger.readOutbox();
                 if (message != null) {

@@ -29,13 +29,13 @@ public class Registrar extends Thread {
 
     private final Logger logger = LogManager.getLogger(Registrar.class);
     private final ServerSocket serverSocket;
-    private final Set<ClientConnection> clients;
+    private final Set<ConnectionToClient> clients;
     private final ConcurrentLinkedQueue<Message> inbox;
     private final AtomicBoolean alive;
 
     public Registrar(
         ServerSocket serverSocket,
-        Set<ClientConnection> clients,
+        Set<ConnectionToClient> clients,
         ConcurrentLinkedQueue<Message> inbox,
         AtomicBoolean alive
     ) {
@@ -43,6 +43,7 @@ public class Registrar extends Thread {
         this.clients = clients;
         this.inbox = inbox;
         this.alive = alive;
+        setName("Server registrar");
     }
 
     public void run() {
@@ -56,12 +57,12 @@ public class Registrar extends Thread {
                 InetAddress address = socket.getInetAddress();
                 int port = socket.getPort();
 
-                ClientConnection connection = new ClientConnection(address, port);
+                ConnectionToClient connection = new ConnectionToClient(address, port);
 
                 if (clients.contains(connection)) {
-                    logger.warn("Client connection {}:{} already existing.", address, port);
+                    logger.warn("Client connection {}:{} already existing.", address.getHostName(), port);
                 } else {
-                    logger.info("Connection accepted from {}:{} ", address.toString(), port);
+                    logger.info("Connection accepted from {}:{} ", address.getHostName(), port);
                     register(socket, connection);
                 }
             } catch (IOException e) {
@@ -70,9 +71,7 @@ public class Registrar extends Thread {
         }
     }
 
-    private void register(Socket socket, ClientConnection connection) throws IOException {
-        clients.add(connection);
-
+    private void register(Socket socket, ConnectionToClient connection) throws IOException {
         ObjectInputStream tcpInput = new ObjectInputStream(socket.getInputStream());
         ObjectOutputStream tcpOutput = new ObjectOutputStream(socket.getOutputStream());
         tcpOutput.flush();
@@ -80,8 +79,10 @@ public class Registrar extends Thread {
         DatagramSocket udpSocket = new DatagramSocket();
         Integer udpPort = udpSocket.getLocalPort();
 
-        connection.setTcpInput(tcpInput)
+        connection.setTcpSocket(socket)
+            .setTcpInput(tcpInput)
             .setTcpOutput(tcpOutput)
+            .setUdpSocket(udpSocket)
             .setUdpPort(udpPort);
 
         Map<Class<? extends Message>, Consumer<Message>> handlers = new HashMap<>();
@@ -92,27 +93,33 @@ public class Registrar extends Thread {
             logger.info("Responding to client {} with UDP port: {}", request.getId(), udpPort);
 
             try {
-                Messenger udpMessenger = new Messenger(inbox, connection.getUdpOutbox(), alive);
                 ObjectInputStream udpInput = new PacketObjectInputStream(udpSocket);
-                ObjectOutputStream udpOutput = new PacketObjectOutputStream(udpSocket, connection.getAddress(), request.getUdpPort());
-
-                logger.debug("Client UDP port received: " + request.getUdpPort());
-
-                new Listener(udpInput, udpMessenger, new HashMap<>()).start();
-                new VerifiedSender(connection, udpOutput, udpMessenger).start();
+                ObjectOutputStream udpOutput = new PacketObjectOutputStream(
+                    udpSocket,
+                    connection.getAddress(),
+                    request.getUdpPort()
+                );
 
                 connection.setUdpInput(udpInput).setUdpOutput(udpOutput);
 
+                logger.debug("Client UDP port received: " + request.getUdpPort());
+
+                Messenger udpMessenger = new Messenger(inbox, connection.getUdpOutbox(), alive);
+                new Listener("Server UDP", udpInput, udpMessenger, connection).start();
+                new VerifiedSender("Server UDP", connection, udpOutput, udpMessenger).start();
+
                 tcpOutput.writeObject(new TcpRegistrationResponse(udpPort));
                 tcpOutput.flush();
+
+                clients.add(connection);
             } catch (IOException e) {
                 logger.error("Failed to respond to client register request: " + e.getMessage(), e);
             }
         });
 
         Messenger tcpMessenger = new Messenger(inbox, connection.getTcpOutbox(), alive);
-        new Listener(tcpInput, tcpMessenger, handlers).start();
-        new Sender(tcpOutput, tcpMessenger).start();
+        new Listener("Server TCP", tcpInput, tcpMessenger, connection, handlers).start();
+        new Sender("Server TCP", tcpOutput, tcpMessenger, connection).start();
     }
 
 }

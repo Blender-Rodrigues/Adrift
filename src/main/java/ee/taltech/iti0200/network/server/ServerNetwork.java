@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ServerNetwork extends Network {
 
     private final Logger logger = LogManager.getLogger(ServerNetwork.class);
-    private final Set<ClientConnection> clients = ConcurrentHashMap.newKeySet();
+    private final Set<ConnectionToClient> clients = ConcurrentHashMap.newKeySet();
     private final ConcurrentLinkedQueue<Message> inbox = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean alive = new AtomicBoolean(true);
     private final Messenger messenger = new GroupMessenger(clients, inbox, alive);
@@ -62,7 +62,7 @@ public class ServerNetwork extends Network {
     @Override
     public void terminate() {
         super.terminate();
-        clients.forEach(ClientConnection::close);
+        clients.forEach(ConnectionToClient::close);
         try {
             serverSocket.close();
         } catch (IOException e) {
