@@ -12,10 +12,14 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL20.*;
 
 public class Shader {
-    private int program;
-    private int vertexShader; // processes the vertices that the shader takes
-    private int fragmentShader; // gives everything color
 
+    private int program;
+
+    /** Processes the vertices that the shader takes */
+    private int vertexShader;
+
+    /** Gives everything color */
+    private int fragmentShader;
 
     public Shader(String filename) {
         program = glCreateProgram();
