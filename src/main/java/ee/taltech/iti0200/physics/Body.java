@@ -83,4 +83,6 @@ public class Body {
         return this.elasticity;
     }
 
+    public void onCollide(Body otherBody) {}
+
 }

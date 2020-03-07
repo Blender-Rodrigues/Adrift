@@ -74,7 +74,6 @@ public class Physics implements Component {
            List<Body> colliding = stationaryBodies.stream()
                .filter(stationary -> stationary.isCollideable() || moving.isCollideable())
                .filter(moving::intersects)
-               .peek(moving::onCollide)
                .map(entity -> (Body) entity)
                .collect(Collectors.toList());
 
@@ -129,10 +128,14 @@ public class Physics implements Component {
         // Get the best way of resolving the collision.
         int bestResolveStrategyIndex = getBestResolveStrategyIndex(resolveStrategyResults);
         Vector bestResolveStrategy = getBestResolveStrategy(bestResolveStrategyIndex, resolveStrategies);
+        Body collidingBody = collidingBodies.get(bestResolveStrategyIndex / 2);
 
         // Move the body according to the chosen way and updated vectors that store how the body has been moved earlier during the same collision resolution.
         double collidingBodyElasticity = getCollidingBodyElasticity(bestResolveStrategyIndex, collidingBodies);
         movingBody.move(bestResolveStrategy);
+        movingBody.onCollide(collidingBody);
+        collidingBody.onCollide(movingBody);
+
         elasticitySoFar = getNewElasticityOfCollision(elasticitySoFar, movedSoFar, bestResolveStrategy, collidingBodyElasticity);
         movedSoFar.add(bestResolveStrategy);
 

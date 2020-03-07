@@ -68,10 +68,6 @@ public class Entity extends Body {
 
     }
 
-    public void onCollide(Entity otherEntity) {
-
-    }
-
     public List<Body> getComponents() {
         return components;
     }
