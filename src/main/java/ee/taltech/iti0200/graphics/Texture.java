@@ -57,7 +57,7 @@ public class Texture {
 
 
     public void bind(int sampler) {
-        if(sampler >= 0 && sampler <= 31) {
+        if (sampler >= 0 && sampler <= 31) {
             glActiveTexture(GL_TEXTURE0 + sampler);
             glBindTexture(GL_TEXTURE_2D, id);
         }
