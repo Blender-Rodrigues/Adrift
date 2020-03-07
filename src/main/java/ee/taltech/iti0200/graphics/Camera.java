@@ -92,12 +92,13 @@ public class Camera {
     }
 
     public void update() {
-        if(followingPlayer) {
+        if (followingPlayer) {
             setPosition(new Vector3f(
-                    (float)-player.getBoundingBox().getCentre().x * RENDER_SCALE_MULTIPLIER,
-                    (float)-player.getBoundingBox().getCentre().y * RENDER_SCALE_MULTIPLIER,
-                    0)
-            );
+                (float) -player.getBoundingBox().getCentre().x * RENDER_SCALE_MULTIPLIER,
+                (float) -player.getBoundingBox().getCentre().y * RENDER_SCALE_MULTIPLIER,
+                0
+            ));
         }
     }
+
 }
