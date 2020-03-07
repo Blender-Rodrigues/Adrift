@@ -41,21 +41,27 @@ public class Input implements Component {
 
         bindings.put(GLFW_KEY_RIGHT, new HashMap<>());
         bindings.get(GLFW_KEY_RIGHT).put(GLFW_PRESS, this::moveCameraRight);
+        bindings.get(GLFW_KEY_RIGHT).put(GLFW_REPEAT, this::moveCameraRight);
 
         bindings.put(GLFW_KEY_LEFT, new HashMap<>());
         bindings.get(GLFW_KEY_LEFT).put(GLFW_PRESS, this::moveCameraLeft);
+        bindings.get(GLFW_KEY_LEFT).put(GLFW_REPEAT, this::moveCameraLeft);
 
         bindings.put(GLFW_KEY_UP, new HashMap<>());
         bindings.get(GLFW_KEY_UP).put(GLFW_PRESS, this::moveCameraUp);
+        bindings.get(GLFW_KEY_UP).put(GLFW_REPEAT, this::moveCameraUp);
 
         bindings.put(GLFW_KEY_DOWN, new HashMap<>());
         bindings.get(GLFW_KEY_DOWN).put(GLFW_PRESS, this::moveCameraDown);
+        bindings.get(GLFW_KEY_DOWN).put(GLFW_REPEAT, this::moveCameraDown);
 
         bindings.put(GLFW_KEY_I, new HashMap<>());
         bindings.get(GLFW_KEY_I).put(GLFW_PRESS, this::zoomCameraIn);
+        bindings.get(GLFW_KEY_I).put(GLFW_REPEAT, this::zoomCameraIn);
 
         bindings.put(GLFW_KEY_O, new HashMap<>());
         bindings.get(GLFW_KEY_O).put(GLFW_PRESS, this::zoomCameraOut);
+        bindings.get(GLFW_KEY_O).put(GLFW_REPEAT, this::zoomCameraOut);
 
 
         glfwSetKeyCallback(window, (window, key, scanCode, action, mods) -> {

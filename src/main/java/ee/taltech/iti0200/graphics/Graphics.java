@@ -170,6 +170,10 @@ public class Graphics implements Component {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
+        //TODO: don't get to player via drawables :(
+        //TODO: find the other magical 32 - it is necessary to understand why it is necessary here.
+        camera.setPosition(new Vector3f((float)-drawables.get(drawables.size()-1).getBoundingBox().getCentre().x*32, 0, 0));
+
         for (Body drawable : drawables) {
             drawable.render(shader, camera);
         }

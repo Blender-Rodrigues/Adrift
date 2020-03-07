@@ -5,7 +5,11 @@ import org.joml.Vector3f;
 
 public class Camera {
 
-    public static final int CAMERA_SENSITIVITY = 100;
+    // millel peaksid meetodid olema ja millel mitte? kas nt addPosition on vajalik?
+    // kas kaamerat tuleks kontrollida graphics v camera alt?
+    // kas kaamera asukohta tuleks ka siis muuta, kui see muutuma ei peaks? mingi if check update alla?
+
+    public static final int CAMERA_SENSITIVITY = 25;
 
     private Vector3f position;
     private Matrix4f projection;
