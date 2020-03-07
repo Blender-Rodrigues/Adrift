@@ -19,7 +19,6 @@ public class Player extends Entity {
         setJumpsLeft(jumpAmountLimit);
     }
 
-
     public double getJumpDeltaV() {
         return jumpDeltaV;
     }
