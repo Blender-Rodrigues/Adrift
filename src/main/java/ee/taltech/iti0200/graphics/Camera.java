@@ -33,7 +33,7 @@ public class Camera {
         this.player = player;
 
         position = new Vector3f(0, 0, 0);
-        projection = new Matrix4f().setOrtho2D(-width/2f, width/2f, -height/2f, height/2f);
+        projection = new Matrix4f().setOrtho2D(-width / 2f, width / 2f, -height / 2f, height / 2f);
     }
 
     public void setPosition(Vector3f position) {
