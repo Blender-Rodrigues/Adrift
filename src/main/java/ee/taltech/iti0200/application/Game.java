@@ -36,8 +36,8 @@ abstract public class Game {
 
             components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
 
-            for (Component component1 : components) {
-                component1.initialize();
+            for (Component component : components) {
+                component.initialize();
             }
         } catch (Exception e) {
             logger.error("Initialization failed " + e.getMessage(), e);

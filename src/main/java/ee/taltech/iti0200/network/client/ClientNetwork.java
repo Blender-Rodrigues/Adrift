@@ -35,6 +35,8 @@ public class ClientNetwork extends Network {
     @Override
     public void update(long tick) {
         LinkedList<Message> messages = messenger.readInbox();
+
+        // TODO: temporary generic example of handling messages
         messages.forEach(message -> logger.debug(
             "Client received {}: {}",
             message.getClass().getSimpleName(),
@@ -45,6 +47,8 @@ public class ClientNetwork extends Network {
     @Override
     public void propagate(long tick) {
         Thread.yield();
+
+        // TODO: temporary generic example of sending a message
         if (tick % 1000 == 0) {
             LinkedList<Message> messages = new LinkedList<>();
 

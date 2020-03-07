@@ -37,6 +37,10 @@ public class ConnectionToServer extends Connection {
         this.id = id;
     }
 
+    /**
+     * Establishes first a TCP and then an UDP connection to the server.
+     * Creates separate threads for up and down communications on both protocols.
+     */
     public void initialize() throws IOException, ClassNotFoundException {
         udpSocket = new DatagramSocket();
 
@@ -85,6 +89,10 @@ public class ConnectionToServer extends Connection {
         logger.info("Connected to " + address.getHostName());
     }
 
+    /**
+     * Retry sending a message provided by runnable parameter every 3 seconds up to 30 seconds.
+     * Break and return when a message of the specified type is received from the server.
+     */
     private Message retry(
         Class<? extends Message> type,
         ObjectInputStream stream,

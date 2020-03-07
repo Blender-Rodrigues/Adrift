@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static java.lang.String.format;
+
 public class Listener extends Thread {
 
     private static final int ERROR_LIMIT = 5;
@@ -42,6 +44,9 @@ public class Listener extends Thread {
         this.handlers = handlers;
     }
 
+    /**
+     * Tolerate up to 5 subsequent failed incoming message reads before closing down the connection.
+     */
     public void run() {
         while (messenger.isAlive() && connection.isOpen()) {
             Thread.yield();
@@ -63,7 +68,11 @@ public class Listener extends Thread {
 
                 errors++;
                 if (errors >= ERROR_LIMIT) {
-                    logger.error("Failed to read " + errors + " subsequent messages. Closing thread. " + e.getMessage(), e);
+                    logger.error(
+                        format("Failed to read %s subsequent messages. Closing connection. %s", errors, e.getMessage()),
+                        e
+                    );
+                    connection.close();
                     return;
                 } else {
                     logger.error("Failed to read message " + e.getMessage(), e);

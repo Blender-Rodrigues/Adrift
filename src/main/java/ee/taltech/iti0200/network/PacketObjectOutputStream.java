@@ -30,18 +30,17 @@ public class PacketObjectOutputStream extends ObjectOutputStream {
     @Override
     protected void writeObjectOverride(Object message) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream(5000);  // TODO: do we need to handle buffer size here?
-        ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(byteStream));
 
-        output.flush();
-        output.writeObject(message);
-        output.flush();
+        try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(byteStream))) {
+            output.flush();
+            output.writeObject(message);
+            output.flush();
 
-        byte[] sendBuf = byteStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(sendBuf, sendBuf.length, address, port);
+            byte[] sendBuf = byteStream.toByteArray();
+            DatagramPacket packet = new DatagramPacket(sendBuf, sendBuf.length, address, port);
 
-        socket.send(packet);
-
-        output.close();
+            socket.send(packet);
+        }
     }
 
     @Override
@@ -51,7 +50,7 @@ public class PacketObjectOutputStream extends ObjectOutputStream {
 
     @Override
     public void close() throws IOException {
-        // TODO: figure out if this should close the socket or will it be handled separately.
+        // Socket is closed separately
     }
 
 }

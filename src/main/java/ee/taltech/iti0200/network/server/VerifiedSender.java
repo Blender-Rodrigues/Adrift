@@ -21,6 +21,10 @@ public class VerifiedSender extends Sender {
         this.connection = connection;
     }
 
+    /**
+     * Since the client side UDP listener port has not yet talked to the server we might get blocked by the firewall
+     * and thus we wait for a registration packet from that port before starting to send server UDP messages there.
+     */
     public void run() {
         logger.info("Waiting for client UDP connection.");
         while (messenger.isAlive() && connection.isOpen()) {

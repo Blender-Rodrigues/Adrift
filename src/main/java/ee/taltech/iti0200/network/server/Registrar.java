@@ -46,6 +46,9 @@ public class Registrar extends Thread {
         setName("Server registrar");
     }
 
+    /**
+     * Waits and registers new client connections.
+     */
     public void run() {
         while (alive.get()) {
             try {
@@ -71,6 +74,10 @@ public class Registrar extends Thread {
         }
     }
 
+    /**
+     * Creates separate sockets and threads for handling per client TCP and UDP communication.
+     * Handles initial client communication setup.
+     */
     private void register(Socket socket, ConnectionToClient connection) throws IOException {
         ObjectInputStream tcpInput = new ObjectInputStream(socket.getInputStream());
         ObjectOutputStream tcpOutput = new ObjectOutputStream(socket.getOutputStream());

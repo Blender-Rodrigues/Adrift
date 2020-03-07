@@ -23,17 +23,16 @@ public class PacketObjectInputStream extends ObjectInputStream {
         byte[] buffer = new byte[5000]; // TODO: do we need to handle buffer size here?
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
         socket.receive(packet);
-
-        ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new ByteArrayInputStream(buffer)));
-        Object message = input.readObject();
-        input.close();
-
-        return(message);
+        try (
+            ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new ByteArrayInputStream(buffer)))
+        ) {
+            return input.readObject();
+        }
     }
 
     @Override
     public void close() throws IOException {
-        // TODO: figure out if this should close the socket or will it be handled separately.
+        // Socket is closed separately
     }
 
 }
