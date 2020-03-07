@@ -75,14 +75,11 @@ public class Entity extends Body {
     }
 
     public void initializeGraphics() {
-        for (Body component : components) {
-            component.initializeGraphics();
-        }
+        components.forEach(Body::initializeGraphics);
     }
 
     public void render(Shader shader, Camera camera) {
-        for (Body component : components) {
-            component.render(shader, camera);
-        }
+        components.forEach(component -> component.render(shader, camera));
     }
+
 }
