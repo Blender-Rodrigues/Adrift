@@ -26,4 +26,13 @@ public class Vector extends Vector2d {
         this.setX(this.getX() * vector.getX());
         this.setY(this.getY() * vector.getY());
     }
+
+    public Vector rounded() {
+        int xInt = (int) getX() * 100;
+        int yInt = (int) getY() * 100;
+        double x = (double) xInt / 100d;
+        double y = (double) yInt / 100d;
+        return new Vector(x, y);
+    }
+
 }
