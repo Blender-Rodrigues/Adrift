@@ -53,11 +53,10 @@ public class Graphics implements Component {
     private Shader shader;
     public Camera camera;
     private Player player;
-    private List<Body> drawables; // list of items to render.
+    private List<Body> drawables = new ArrayList<>();
 
     public Graphics(World world, Player player) {
         this.world = world;
-        this.drawables = new ArrayList<>();
         this.player = player;
 
         // Setup an error callback. The default implementation
