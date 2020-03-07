@@ -51,7 +51,7 @@ public class ServerNetwork extends Network {
 
     @Override
     public void propagate(long tick) {
-        if (tick % 400 == 0) {
+        if (tick % 1000 == 0) {
             LinkedList<Message> messages = new LinkedList<>();
             messages.add(new Ping(tick, id, Protocol.TCP));
             messages.add(new Ping(tick, id, Protocol.UDP));

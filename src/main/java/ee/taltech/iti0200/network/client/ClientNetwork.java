@@ -45,7 +45,7 @@ public class ClientNetwork extends Network {
     @Override
     public void propagate(long tick) {
         Thread.yield();
-        if (tick % 300 == 0) {
+        if (tick % 1000 == 0) {
             LinkedList<Message> messages = new LinkedList<>();
 
             messages.add(new Ping(tick, id, Protocol.TCP));

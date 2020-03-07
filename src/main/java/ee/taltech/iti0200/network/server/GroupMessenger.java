@@ -43,6 +43,10 @@ public class GroupMessenger extends Messenger {
         for (ConnectionToClient client: clients) {
             Thread.yield();
 
+            if (!client.isOpen()) {
+                return;
+            }
+
             if (!tcpMessages.isEmpty()) {
                 final ConcurrentLinkedQueue<Message> outbox = client.getTcpOutbox();
                 synchronized(outbox) {
