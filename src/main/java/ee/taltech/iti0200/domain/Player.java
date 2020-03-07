@@ -15,10 +15,6 @@ public class Player extends Entity {
     private static final double mass = 70.0;
     private static final double elasticity = 0.25;
 
-    private Model model;
-    private Texture texture;
-    private Transform transform;
-
     public Player(Vector position) {
         super(new Body(mass, new Vector(size), position, true, true), false);
         setElasticity(elasticity);

@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.physics.Body;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -50,14 +51,14 @@ public class Graphics implements Component {
 
     private World world;
     private Shader shader;
-    public Camera camera; // ok to have as public and control camera from Camera rather than Graphics?
-    private List<Body> drawables;
-    private boolean follow;
+    public Camera camera;
+    private Player player;
+    private List<Body> drawables; // list of items to render.
 
-    public Graphics(World world) {
+    public Graphics(World world, Player player) {
         this.world = world;
-        this.drawables = new ArrayList<Body>();
-        this.follow = false;
+        this.drawables = new ArrayList<>();
+        this.player = player;
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -122,7 +123,7 @@ public class Graphics implements Component {
         // bindings available for use.
         GL.createCapabilities();
 
-        camera = new Camera(1200, 800);
+        camera = new Camera(1200, 800, player);
         glEnable(GL_TEXTURE_2D);
 
         shader = new Shader("shader");
@@ -170,9 +171,7 @@ public class Graphics implements Component {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-        //TODO: don't get to player via drawables :(
-        //TODO: find the other magical 32 - it is necessary to understand why it is necessary here.
-        camera.setPosition(new Vector3f((float)-drawables.get(drawables.size()-1).getBoundingBox().getCentre().x*32, 0, 0));
+        camera.update();
 
         for (Body drawable : drawables) {
             drawable.render(shader, camera);

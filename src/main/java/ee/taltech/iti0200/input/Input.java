@@ -63,6 +63,9 @@ public class Input implements Component {
         bindings.get(GLFW_KEY_O).put(GLFW_PRESS, this::zoomCameraOut);
         bindings.get(GLFW_KEY_O).put(GLFW_REPEAT, this::zoomCameraOut);
 
+        bindings.put(GLFW_KEY_F, new HashMap<>());
+        bindings.get(GLFW_KEY_F).put(GLFW_PRESS, this::togglePlayerCam);
+
 
         glfwSetKeyCallback(window, (window, key, scanCode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
@@ -111,6 +114,10 @@ public class Input implements Component {
 
     private void zoomCameraOut() {
         graphics.camera.zoomOut();
+    }
+
+    private void togglePlayerCam() {
+        graphics.camera.togglePlayerCam();
     }
 
 }

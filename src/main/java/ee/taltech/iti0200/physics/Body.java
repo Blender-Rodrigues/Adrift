@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 
 public class Body {
 
+    public static final int RENDER_SCALE_MULTIPLIER = 32;
     protected double mass;
     protected double inverseMass;
     protected Vector speed;
@@ -115,7 +116,7 @@ public class Body {
         this.texture = new Texture("default.png");
 
         transform = new Transform();
-        transform.scale = new Vector3f(32, 32, 1);
+        transform.scale = new Vector3f(RENDER_SCALE_MULTIPLIER, RENDER_SCALE_MULTIPLIER, 1);
     }
 
     public void changeTexture(String filename) {

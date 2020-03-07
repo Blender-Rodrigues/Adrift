@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.graphics;
 
+import ee.taltech.iti0200.domain.Player;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -10,6 +11,7 @@ public class Camera {
     // kas kaamera asukohta tuleks ka siis muuta, kui see muutuma ei peaks? mingi if check update alla?
 
     public static final int CAMERA_SENSITIVITY = 25;
+    public static final int RENDER_SCALE_MULTIPLIER = 32;
 
     private Vector3f position;
     private Matrix4f projection;
@@ -21,10 +23,15 @@ public class Camera {
 
     private float zoom;
 
-    public Camera(int width, int height) {
+    private Player player;
+    private boolean followingPlayer;
+
+    public Camera(int width, int height, Player player) {
         this.width = width;
         this.height = height;
         this.zoom = 1f;
+        this.followingPlayer = false;
+        this.player = player;
 
         position = new Vector3f(0, 0, 0);
         projection = new Matrix4f().setOrtho2D(-width/2f, width/2f, -height/2f, height/2f);
@@ -38,7 +45,10 @@ public class Camera {
         this.position.add(position);
     }
 
-    // TODO: modify projection
+    // TODO: a better way to set zoom, rather than creating a new projection.
+    public void setZoom(float zoom) {
+        projection = new Matrix4f().setOrtho2D(-width*zoom/2f, width*zoom/2f, -height*zoom/2f, height*zoom/2f);
+    }
 
     public Vector3f getPosition() {
         return position;
@@ -68,18 +78,27 @@ public class Camera {
         addPosition(new Vector3f(0, CAMERA_SENSITIVITY, 0));
     }
 
-    //TODO: solve zoom with a modify projection method
-    //TODO: DRY!
-    //TODO: zooming out and in again should reset the original zoom
     public void zoomIn() {
-        zoom /= 1.1;
-
-        projection = new Matrix4f().setOrtho2D(-width*zoom/2f, width*zoom/2f, -height*zoom/2f, height*zoom/2f);
+        zoom = Math.round(zoom / 1.1 * 100)/100f;
+        setZoom(zoom);
     }
 
     public void zoomOut() {
-        zoom *= 1.1;
+        zoom = Math.round(zoom * 1.1 * 100)/100f;
+        setZoom(zoom);
+    }
 
-        projection = new Matrix4f().setOrtho2D(-width*zoom/2f, width*zoom/2f, -height*zoom/2f, height*zoom/2f);
+    public void togglePlayerCam() {
+        followingPlayer = !followingPlayer;
+    }
+
+    public void update() {
+        if(followingPlayer) {
+            setPosition(new Vector3f(
+                    (float)-player.getBoundingBox().getCentre().x * RENDER_SCALE_MULTIPLIER,
+                    (float)-player.getBoundingBox().getCentre().y * RENDER_SCALE_MULTIPLIER,
+                    0)
+            );
+        }
     }
 }
