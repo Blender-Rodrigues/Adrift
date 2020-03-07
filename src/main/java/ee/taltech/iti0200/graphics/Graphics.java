@@ -107,7 +107,6 @@ public class Graphics implements Component {
             );
         } // the stack frame is popped automatically
 
-
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
         // Enable v-sync
