@@ -24,13 +24,12 @@ public class Camera {
     private float zoom;
 
     private Player player;
-    private boolean followingPlayer;
+    private boolean followingPlayer = true;
 
     public Camera(int width, int height, Player player) {
         this.width = width;
         this.height = height;
         this.zoom = 1f;
-        this.followingPlayer = false;
         this.player = player;
 
         position = new Vector3f(0, 0, 0);

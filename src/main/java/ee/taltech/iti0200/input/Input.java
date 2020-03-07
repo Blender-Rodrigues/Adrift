@@ -39,6 +39,9 @@ public class Input implements Component {
         bindings.get(GLFW_KEY_D).put(GLFW_PRESS, this::movePlayerRight);
         bindings.get(GLFW_KEY_D).put(GLFW_REPEAT, this::movePlayerRight);
 
+        bindings.put(GLFW_KEY_W, new HashMap<>());
+        bindings.get(GLFW_KEY_W).put(GLFW_PRESS, this::jumpPlayer);
+
         bindings.put(GLFW_KEY_RIGHT, new HashMap<>());
         bindings.get(GLFW_KEY_RIGHT).put(GLFW_PRESS, this::moveCameraRight);
         bindings.get(GLFW_KEY_RIGHT).put(GLFW_REPEAT, this::moveCameraRight);
@@ -66,7 +69,6 @@ public class Input implements Component {
         bindings.put(GLFW_KEY_F, new HashMap<>());
         bindings.get(GLFW_KEY_F).put(GLFW_PRESS, this::togglePlayerCam);
 
-
         glfwSetKeyCallback(window, (window, key, scanCode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true);
@@ -90,6 +92,13 @@ public class Input implements Component {
     private void movePlayerRight() {
         player.accelerate(new Vector(1.0, 0.0));
         logger.debug("Player at: " + player.getBoundingBox().getCentre());
+    }
+
+    private void jumpPlayer() {
+        if (player.getJumpsLeft() > 0) {
+            player.setJumpsLeft(player.getJumpsLeft() - 1);
+            player.accelerate(new Vector(0.0, player.getJumpDeltaV()));
+        }
     }
 
     private void moveCameraLeft() {

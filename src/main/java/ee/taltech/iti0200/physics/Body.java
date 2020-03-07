@@ -91,6 +91,8 @@ public class Body {
         return this.elasticity;
     }
 
+    public void onCollide(Body otherBody) {}
+
     public void initializeGraphics() {
 
         float[] vertices = new float[] {
