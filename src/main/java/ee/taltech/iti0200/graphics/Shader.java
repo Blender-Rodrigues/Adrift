@@ -59,7 +59,7 @@ public class Shader {
 
     public void setUniform(String name, int value) {
         int location = glGetUniformLocation(program, name);
-        if(location != -1) {
+        if (location != -1) {
             glUniform1i(location, value);
         }
     }
