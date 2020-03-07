@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Arrays.asList;
 
@@ -18,10 +19,9 @@ abstract public class Connection {
     public static final int RETRY = 3000;
 
     private final Logger logger = LogManager.getLogger(Connection.class);
+    private final AtomicBoolean finalized = new AtomicBoolean(false);
 
     protected final InetAddress address;
-
-    private boolean finalized = false;
 
     protected Socket tcpSocket;
     protected Integer tcpPort;
@@ -86,11 +86,15 @@ abstract public class Connection {
     }
 
     public void finalized() {
-        this.finalized = true;
+        finalized.set(true);
+    }
+
+    public boolean isFinalized() {
+        return finalized.get();
     }
 
     public synchronized boolean isOpen() {
-        if (!finalized) {
+        if (!finalized.get()) {
             return true;
         }
         return !tcpSocket.isClosed() && !udpSocket.isClosed();

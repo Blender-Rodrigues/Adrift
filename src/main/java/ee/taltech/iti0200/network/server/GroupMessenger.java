@@ -43,7 +43,7 @@ public class GroupMessenger extends Messenger {
         for (ConnectionToClient client: clients) {
             Thread.yield();
 
-            if (!client.isOpen()) {
+            if (!client.isOpen() || !client.isFinalized()) {
                 return;
             }
 

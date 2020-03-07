@@ -8,6 +8,8 @@ import ee.taltech.iti0200.network.Sender;
 import ee.taltech.iti0200.network.message.Message;
 import ee.taltech.iti0200.network.message.TcpRegistrationRequest;
 import ee.taltech.iti0200.network.message.TcpRegistrationResponse;
+import ee.taltech.iti0200.network.message.UdpRegistrationRequest;
+import ee.taltech.iti0200.network.message.UdpRegistrationResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -92,9 +94,25 @@ public class Registrar extends Thread {
             .setUdpSocket(udpSocket)
             .setUdpPort(udpPort);
 
-        Map<Class<? extends Message>, Consumer<Message>> handlers = new HashMap<>();
+        Map<Class<? extends Message>, Consumer<Message>> udpHandlers = new HashMap<>();
+        udpHandlers.put(UdpRegistrationRequest.class, (message) -> {
+            if (connection.isFinalized()) {
+                return;
+            }
 
-        handlers.put(TcpRegistrationRequest.class, (message) -> {
+            try {
+                tcpOutput.writeObject(new UdpRegistrationResponse());
+                tcpOutput.flush();
+                connection.finalized();
+                clients.add(connection);
+            } catch (IOException e) {
+                logger.error("Failed to respond to registration request " + e.getMessage(), e);
+            }
+        });
+
+        Map<Class<? extends Message>, Consumer<Message>> tcpHandlers = new HashMap<>();
+
+        tcpHandlers.put(TcpRegistrationRequest.class, (message) -> {
             TcpRegistrationRequest request = (TcpRegistrationRequest) message;
             connection.setId(request.getId());
             logger.info("Responding to client {} with UDP port: {}", request.getId(), udpPort);
@@ -112,20 +130,18 @@ public class Registrar extends Thread {
                 logger.debug("Client UDP port received: " + request.getUdpPort());
 
                 Messenger udpMessenger = new Messenger(inbox, connection.getUdpOutbox(), alive);
-                new Listener("Server UDP", udpInput, udpMessenger, connection).start();
-                new VerifiedSender("Server UDP", connection, udpOutput, udpMessenger).start();
+                new Listener("Server UDP", udpInput, udpMessenger, connection, udpHandlers).start();
+                new Sender("Server UDP", udpOutput, udpMessenger, connection).start();
 
                 tcpOutput.writeObject(new TcpRegistrationResponse(udpPort));
                 tcpOutput.flush();
-
-                clients.add(connection);
             } catch (IOException e) {
                 logger.error("Failed to respond to client register request: " + e.getMessage(), e);
             }
         });
 
         Messenger tcpMessenger = new Messenger(inbox, connection.getTcpOutbox(), alive);
-        new Listener("Server TCP", tcpInput, tcpMessenger, connection, handlers).start();
+        new Listener("Server TCP", tcpInput, tcpMessenger, connection, tcpHandlers).start();
         new Sender("Server TCP", tcpOutput, tcpMessenger, connection).start();
     }
 
