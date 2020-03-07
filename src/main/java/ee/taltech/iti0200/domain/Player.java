@@ -10,16 +10,13 @@ public class Player extends Entity {
     private static final double elasticity = 0.25;
     private static final int jumpAmountLimit = 2;
     private static final double jumpDeltaV = 10.0;
+
     private int jumpsLeft;
 
     public Player(Vector position) {
         super(new Body(mass, new Vector(size), position, true, true), false);
         setElasticity(elasticity);
-        setJumpsLeft(getJumpAmountLimit());
-    }
-
-    public int getJumpAmountLimit() {
-        return jumpAmountLimit;
+        setJumpsLeft(jumpAmountLimit);
     }
 
     public double getJumpDeltaV() {
@@ -34,12 +31,13 @@ public class Player extends Entity {
         return this.jumpsLeft;
     }
 
+    @Override
     public void onCollide(Body otherBody) {
         if (otherBody instanceof Terrain) {
             boolean verticalCollision = getBoundingBox().getOverLap(otherBody.getBoundingBox()).getY() == 0;
             boolean otherIsBelow = getBoundingBox().getCentre().getY() > otherBody.getBoundingBox().getCentre().getY();
             if (verticalCollision && otherIsBelow) {
-                setJumpsLeft(getJumpAmountLimit());
+                setJumpsLeft(jumpAmountLimit);
             }
         }
     }
