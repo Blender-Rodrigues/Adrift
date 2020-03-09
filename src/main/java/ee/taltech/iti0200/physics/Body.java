@@ -9,6 +9,7 @@ public class Body {
     protected boolean moved;
     protected double elasticity;
     protected double frictionCoefficient;
+    protected double dragFromSurface;
     private boolean collideable;
 
     public Body(double mass, BoundingBox boundingBox, boolean collideable) {
@@ -50,7 +51,7 @@ public class Body {
     }
 
     public void drag() {
-        this.setXSpeed(this.frictionCoefficient * this.getSpeed().getX());
+        this.setXSpeed(this.dragFromSurface * this.frictionCoefficient * this.getSpeed().getX());
     }
 
     public double getMass() {
@@ -95,6 +96,14 @@ public class Body {
 
     public void setFrictionCoefficient(double frictionCoefficient) {
         this.frictionCoefficient = frictionCoefficient;
+    }
+
+    public double getDragFromSurface() {
+        return dragFromSurface;
+    }
+
+    public void setDragFromSurface(double dragFromSurface) {
+        this.dragFromSurface = dragFromSurface;
     }
 
     public void onCollide(Body otherBody) {}

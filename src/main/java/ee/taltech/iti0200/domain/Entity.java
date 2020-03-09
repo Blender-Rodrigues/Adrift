@@ -11,6 +11,8 @@ public class Entity extends Body {
 
     private List<Body> components;
 
+    private boolean onFloor;
+
     public boolean isOnFloor() {
         return onFloor;
     }
@@ -18,8 +20,6 @@ public class Entity extends Body {
     public void setOnFloor(boolean onFloor) {
         this.onFloor = onFloor;
     }
-
-    private boolean onFloor;
 
     public Entity(List<Body> components, boolean collideable) {
         super(

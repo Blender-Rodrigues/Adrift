@@ -61,11 +61,33 @@ public class Physics implements Component {
             double maxX = clamp(moving.getBoundingBox().getMaxX());
             double minY = moving.getBoundingBox().getMinY();
 
-            boolean intersects = terrainMap.containsKey(new Vector(minX, minY))
-                || terrainMap.containsKey(new Vector(centreX, minY))
-                || terrainMap.containsKey(new Vector(maxX, minY));
+            Vector leftVector = new Vector(minX, minY);
+            Vector middleVector = new Vector(centreX, minY);
+            Vector rightVector = new Vector(maxX, minY);
+
+            boolean leftEdgeOnGround = terrainMap.containsKey(leftVector);
+            boolean middleOnGround = terrainMap.containsKey(middleVector);
+            boolean rightEdgeOnGround = terrainMap.containsKey(rightVector);
+
+            boolean intersects = leftEdgeOnGround
+                || middleOnGround
+                || rightEdgeOnGround;
 
             moving.setOnFloor(intersects);
+
+            if (intersects) {
+                double drag = 1.0;
+                if (leftEdgeOnGround) {
+                    drag = Math.min(drag, terrainMap.get(leftVector).getFrictionCoefficient());
+                }
+                if (middleOnGround) {
+                    drag = Math.min(drag, terrainMap.get(middleVector).getFrictionCoefficient());
+                }
+                if (rightEdgeOnGround) {
+                    drag = Math.min(drag, terrainMap.get(rightVector).getFrictionCoefficient());
+                }
+                moving.setDragFromSurface(drag);
+            }
         }
     }
 
