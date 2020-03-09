@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,33 +62,20 @@ public class Physics implements Component {
             double maxX = clamp(moving.getBoundingBox().getMaxX());
             double minY = moving.getBoundingBox().getMinY();
 
-            Vector leftVector = new Vector(minX, minY);
-            Vector middleVector = new Vector(centreX, minY);
-            Vector rightVector = new Vector(maxX, minY);
+            boolean intersects = false;
+            double drag = 1.0;
 
-            boolean leftEdgeOnGround = terrainMap.containsKey(leftVector);
-            boolean middleOnGround = terrainMap.containsKey(middleVector);
-            boolean rightEdgeOnGround = terrainMap.containsKey(rightVector);
-
-            boolean intersects = leftEdgeOnGround
-                || middleOnGround
-                || rightEdgeOnGround;
+            for (double xCoord: Arrays.asList(minX, centreX, maxX)) {
+                Vector bottomVector = new Vector(xCoord, minY);
+                boolean onGround = terrainMap.containsKey(bottomVector);
+                intersects = intersects || onGround;
+                if (onGround) {
+                    drag = Math.min(drag, terrainMap.get(bottomVector).getFrictionCoefficient());
+                }
+            }
 
             moving.setOnFloor(intersects);
-
-            if (intersects) {
-                double drag = 1.0;
-                if (leftEdgeOnGround) {
-                    drag = Math.min(drag, terrainMap.get(leftVector).getFrictionCoefficient());
-                }
-                if (middleOnGround) {
-                    drag = Math.min(drag, terrainMap.get(middleVector).getFrictionCoefficient());
-                }
-                if (rightEdgeOnGround) {
-                    drag = Math.min(drag, terrainMap.get(rightVector).getFrictionCoefficient());
-                }
-                moving.setDragFromSurface(drag);
-            }
+            moving.setDragFromSurface(drag);
         }
     }
 
