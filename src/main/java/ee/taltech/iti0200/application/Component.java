@@ -3,8 +3,8 @@ package ee.taltech.iti0200.application;
 import ee.taltech.iti0200.ai.Intelligence;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
-import ee.taltech.iti0200.network.ClientNetwork;
-import ee.taltech.iti0200.network.ServerNetwork;
+import ee.taltech.iti0200.network.client.ClientNetwork;
+import ee.taltech.iti0200.network.server.ServerNetwork;
 import ee.taltech.iti0200.physics.Physics;
 
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public interface Component {
         put(Intelligence.class, 5);
     }};
 
-    default void initialize() {
+    default void initialize() throws Exception {
 
     }
 

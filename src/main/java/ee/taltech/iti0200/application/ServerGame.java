@@ -2,7 +2,7 @@ package ee.taltech.iti0200.application;
 
 import ee.taltech.iti0200.ai.Intelligence;
 import ee.taltech.iti0200.network.Network;
-import ee.taltech.iti0200.network.ServerNetwork;
+import ee.taltech.iti0200.network.server.ServerNetwork;
 
 class ServerGame extends Game {
 
@@ -14,8 +14,8 @@ class ServerGame extends Game {
     }
 
     @Override
-    protected void initialize() {
-        network = new ServerNetwork(world);
+    protected void initialize() throws Exception {
+        network = new ServerNetwork(world, tcpPort);
         components.add(network);
         components.add(new Intelligence(world));
     }

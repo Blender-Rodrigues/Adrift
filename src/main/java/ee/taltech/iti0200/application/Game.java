@@ -21,6 +21,7 @@ abstract public class Game {
     private Logger logger;
 
     public Game() {
+        Thread.currentThread().setName(getClass().getSimpleName());
         world = new World(0.0, 40.0, 0.0, 40.0, 0.05);
         timer = new Timer(20F);
         components.add(new Physics(world));
@@ -28,13 +29,20 @@ abstract public class Game {
     }
 
     void run() {
-        world.initialize();
-        initialize();
-        timer.initialize();
+        try {
+            world.initialize();
+            initialize();
+            timer.initialize();
 
-        components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
+            components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
 
-        components.forEach(Component::initialize);
+            for (Component component : components) {
+                component.initialize();
+            }
+        } catch (Exception e) {
+            logger.error("Initialization failed " + e.getMessage(), e);
+            return;
+        }
 
         logger.info("Finished initialization. Starting game loop.");
 
@@ -51,7 +59,7 @@ abstract public class Game {
 
     protected abstract void loop(long tick);
 
-    protected abstract void initialize();
+    protected abstract void initialize() throws Exception;
 
     protected abstract boolean isGameRunning();
 

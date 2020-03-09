@@ -3,14 +3,12 @@ package ee.taltech.iti0200.application;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static org.lwjgl.glfw.GLFW.glfwGetTime;
-
 public class Timer {
 
     private static final long THREAD_SLEEP = 10;
 
     private Logger logger;
-    private double lastLoopTime;
+    private long lastLoopTime;
     private float sleepTime;
     private long tick = 0;
 
@@ -43,8 +41,8 @@ public class Timer {
         return tick++;
     }
 
-    private double getTime() {
-        return glfwGetTime();
+    private long getTime() {
+        return System.currentTimeMillis();
     }
 
 }
