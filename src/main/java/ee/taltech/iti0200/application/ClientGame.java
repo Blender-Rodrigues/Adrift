@@ -23,9 +23,9 @@ class ClientGame extends Game {
         this.tcpPort = tcpPort;
         this.host = host;
 
-        graphics = new Graphics(world);
-        player = new Player(new Vector(20.0, 4.0));
-        input = new Input(graphics.getWindow(), player);
+        player = new Player(new Vector(20.0, 40.0));
+        graphics = new Graphics(world, player);
+        input = new Input(graphics.getWindow(), player, graphics.getCamera());
 
         components.add(graphics);
         components.add(input);

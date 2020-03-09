@@ -2,6 +2,7 @@ package ee.taltech.iti0200.graphics;
 
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*; // needed for samplers, which are targets for textures
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,10 +15,16 @@ public class Texture {
     private int width;
     private int height;
 
-    public Texture(String filename) throws IOException {
-        BufferedImage image;
+    public Texture(String filename) {
+        BufferedImage image = null; // TODO: not initializing here causes errors please help
 
-        image = ImageIO.read(new File(filename));
+        try {
+            image = ImageIO.read(new File("./build/resources/main/textures/" + filename));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
         width = image.getWidth();
         height = image.getHeight();
 
@@ -49,7 +56,10 @@ public class Texture {
     }
 
 
-    public void bind() {
-        glBindTexture(GL_TEXTURE_2D, id);
+    public void bind(int sampler) {
+        if (sampler >= 0 && sampler <= 31) {
+            glActiveTexture(GL_TEXTURE0 + sampler);
+            glBindTexture(GL_TEXTURE_2D, id);
+        }
     }
 }

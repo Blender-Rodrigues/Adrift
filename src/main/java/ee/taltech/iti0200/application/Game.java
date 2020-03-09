@@ -23,7 +23,7 @@ abstract public class Game {
     public Game() {
         Thread.currentThread().setName(getClass().getSimpleName());
         world = new World(0.0, 40.0, 0.0, 40.0, 0.05);
-        timer = new Timer(20F);
+        timer = new Timer(60F);
         components.add(new Physics(world));
         logger = LogManager.getLogger(Game.class);
     }

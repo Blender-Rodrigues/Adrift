@@ -1,14 +1,19 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.physics.Body;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
-import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.joml.*;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
@@ -45,10 +50,13 @@ public class Graphics implements Component {
     private long window;
 
     private World world;
-    private Model model;
-    private Texture tex;
-    public Graphics(World world) {
+    private Shader shader;
+    private Camera camera;
+    private List<Body> drawables = new ArrayList<>();
+
+    public Graphics(World world, Player player) {
         this.world = world;
+        this.camera = new Camera(1200, 800, player);
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -65,7 +73,7 @@ public class Graphics implements Component {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(600, 400, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(1200, 800, "Hello World!", NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -75,10 +83,15 @@ public class Graphics implements Component {
         return window;
     }
 
+    public Camera getCamera() {
+        return camera;
+    }
+
     @Override
     public void initialize() {
+
         // Get the thread stack and push a new frame
-        try ( MemoryStack stack = stackPush() ) {
+        try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -90,9 +103,9 @@ public class Graphics implements Component {
 
             // Center the window
             glfwSetWindowPos(
-                window,
-                (vidmode.width() - pWidth.get(0)) / 2,
-                (vidmode.height() - pHeight.get(0)) / 2
+                    window,
+                    (vidmode.width() - pWidth.get(0)) / 2,
+                    (vidmode.height() - pHeight.get(0)) / 2
             );
         } // the stack frame is popped automatically
 
@@ -113,37 +126,18 @@ public class Graphics implements Component {
 
         glEnable(GL_TEXTURE_2D);
 
-        float[] vertices = new float[] {
-                -0.5f, 0.5f,
-                0.5f, 0.5f,
-                0.5f, -0.5f,
-                -0.5f, -0.5f,
-                0.3f, -0.5f, //delete this
-        };
+        shader = new Shader("shader");
 
-        float[] texture = new float[] {
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1,
-                1, 1, //delete this
+        camera.setPosition(new Vector3f(0, 0, 0));
 
-        };
+        drawables.addAll(world.getImMovableBodies());
+        drawables.addAll(world.getMovableBodies());
 
-        int[] indices = new int[] {
-                0, 1, 2,
-                4, 3, 0 //change 4 to 2
-        };
-
-        model = new Model(vertices, texture, indices);
-
-        try {
-            tex = new Texture("./build/resources/main/smile.png");
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Body drawable : drawables) {
+            drawable.initializeGraphics();
         }
 
-        glClearColor(0.0f, 0.0f, 0.3f, 0.0f);
+        glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
     }
 
     @Override
@@ -161,15 +155,27 @@ public class Graphics implements Component {
         return !glfwWindowShouldClose(window);
     }
 
+    public void addDrawable(Body drawable) {
+        drawables.add(drawable);
+        drawable.initializeGraphics();
+    }
+
+    public void removeDrawable(Body drawable) {
+        drawables.remove(drawable);
+    }
+
     @Override
-    public void update(long time) {
+    public void update(long tick) {
+
         glfwPollEvents();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-        model.render();
+        camera.update();
 
-        tex.bind();
+        for (Body drawable : drawables) {
+            drawable.render(shader, camera);
+        }
 
         glfwSwapBuffers(window); // swap the color buffers
     }

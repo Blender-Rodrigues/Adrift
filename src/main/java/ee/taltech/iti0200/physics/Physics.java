@@ -37,7 +37,7 @@ public class Physics implements Component {
         Map<Vector, Terrain> terrainMap = world.getTerrainMap();
         for (Entity player: movableBodies) {
             if (player instanceof Player) {
-                logger.debug("Player at: " + player.getBoundingBox().getCentre());
+                logger.debug("Player {} at: {}", player, player.getBoundingBox().getCentre());
             }
         }
         checkForFloor(movableBodies, terrainMap);
