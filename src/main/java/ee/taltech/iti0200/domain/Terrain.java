@@ -10,10 +10,12 @@ public class Terrain extends Entity {
     public static final double TERRAIN_BLOCK_RESOLUTION = 100;
     private static final double mass = Double.POSITIVE_INFINITY;
     private static final double elasticity = 0.9;
+    private static final double frictionCoefficient = 0.9;
 
     public Terrain(Vector position) {
         super(new Body(mass, new Vector(size), position.rounded(), true, true), true);
         setElasticity(elasticity);
+        setFrictionCoefficient(frictionCoefficient);
     }
 
     public int getIntegerWidth() {

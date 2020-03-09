@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,10 +41,18 @@ public class Physics implements Component {
                 logger.debug("Player {} at: {}", player, player.getBoundingBox().getCentre());
             }
         }
+
         checkForFloor(movableBodies, terrainMap);
+        applyDrag(movableBodies);
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
         applyGravity(movableBodies);
+    }
+
+    private void applyDrag(List<Entity> movableBodies) {
+        movableBodies.stream()
+            .filter(Entity::isOnFloor)
+            .forEach(Entity::drag);
     }
 
     private void checkForFloor(List<Entity> movingBodies, Map<Vector, Terrain> terrainMap) {
@@ -53,11 +62,20 @@ public class Physics implements Component {
             double maxX = clamp(moving.getBoundingBox().getMaxX());
             double minY = moving.getBoundingBox().getMinY();
 
-            boolean intersects = terrainMap.containsKey(new Vector(minX, minY))
-                || terrainMap.containsKey(new Vector(centreX, minY))
-                || terrainMap.containsKey(new Vector(maxX, minY));
+            boolean intersects = false;
+            double drag = 1.0;
+
+            for (double xCoord: Arrays.asList(minX, centreX, maxX)) {
+                Vector bottomVector = new Vector(xCoord, minY);
+                boolean onGround = terrainMap.containsKey(bottomVector);
+                intersects = intersects || onGround;
+                if (onGround) {
+                    drag = Math.min(drag, terrainMap.get(bottomVector).getFrictionCoefficient());
+                }
+            }
 
             moving.setOnFloor(intersects);
+            moving.setDragFromSurface(drag);
         }
     }
 

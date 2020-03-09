@@ -11,10 +11,12 @@ public class Bot extends Entity {
     private static final double mass = 70.0;
     private static final Random random = new Random();
     private static final double elasticity = 0.25;
+    private static final double frictionCoefficient = 0.99;
 
     public Bot(Vector position) {
         super(new Body(mass, size, position, true, true), false);
         setElasticity(elasticity);
+        setFrictionCoefficient(frictionCoefficient);
     }
 
     public void update(long tick) {

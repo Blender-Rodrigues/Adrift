@@ -12,6 +12,8 @@ public class Body {
     protected BoundingBox boundingBox;
     protected boolean moved;
     protected double elasticity;
+    protected double frictionCoefficient;
+    protected double dragFromSurface;
     private boolean collideable;
 
     private Model model;
@@ -25,6 +27,7 @@ public class Body {
         this.boundingBox = boundingBox;
         this.collideable = collideable;
         this.elasticity = 1;
+        this.frictionCoefficient = 1;
     }
 
     public Body(double mass, Vector min, Vector max, boolean collideable) {
@@ -53,6 +56,10 @@ public class Body {
 
     public void accelerate(Vector accelerateDelta) {
         this.speed.add(accelerateDelta);
+    }
+
+    public void drag() {
+        this.setXSpeed(this.dragFromSurface * this.frictionCoefficient * this.getSpeed().getX());
     }
 
     public double getMass() {
@@ -89,6 +96,22 @@ public class Body {
 
     public double getElasticity() {
         return this.elasticity;
+    }
+
+    public double getFrictionCoefficient() {
+        return frictionCoefficient;
+    }
+
+    public void setFrictionCoefficient(double frictionCoefficient) {
+        this.frictionCoefficient = frictionCoefficient;
+    }
+
+    public double getDragFromSurface() {
+        return dragFromSurface;
+    }
+
+    public void setDragFromSurface(double dragFromSurface) {
+        this.dragFromSurface = dragFromSurface;
     }
 
     public void onCollide(Body otherBody) {}
