@@ -2,7 +2,7 @@ package ee.taltech.iti0200.input;
 
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Player;
-import ee.taltech.iti0200.graphics.Graphics;
+import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.physics.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,13 +21,13 @@ public class Input implements Component {
     private long window;
     private List<Runnable> events = new LinkedList<>();
     private Map<Integer, Map<Integer, Runnable>> bindings = new HashMap<>();
-    private Graphics graphics;
+    private Camera camera;
 
-    public Input(long window, Player player, Graphics graphics) {
+    public Input(long window, Player player, Camera camera) {
         logger = LogManager.getLogger(Input.class);
         this.player = player;
         this.window = window;
-        this.graphics = graphics;
+        this.camera = camera;
     }
 
     public void initialize() {
@@ -43,31 +43,31 @@ public class Input implements Component {
         bindings.get(GLFW_KEY_W).put(GLFW_PRESS, this::jumpPlayer);
 
         bindings.put(GLFW_KEY_RIGHT, new HashMap<>());
-        bindings.get(GLFW_KEY_RIGHT).put(GLFW_PRESS, this::moveCameraRight);
-        bindings.get(GLFW_KEY_RIGHT).put(GLFW_REPEAT, this::moveCameraRight);
+        bindings.get(GLFW_KEY_RIGHT).put(GLFW_PRESS, camera::moveRight);
+        bindings.get(GLFW_KEY_RIGHT).put(GLFW_REPEAT, camera::moveRight);
 
         bindings.put(GLFW_KEY_LEFT, new HashMap<>());
-        bindings.get(GLFW_KEY_LEFT).put(GLFW_PRESS, this::moveCameraLeft);
-        bindings.get(GLFW_KEY_LEFT).put(GLFW_REPEAT, this::moveCameraLeft);
+        bindings.get(GLFW_KEY_LEFT).put(GLFW_PRESS, camera::moveLeft);
+        bindings.get(GLFW_KEY_LEFT).put(GLFW_REPEAT, camera::moveLeft);
 
         bindings.put(GLFW_KEY_UP, new HashMap<>());
-        bindings.get(GLFW_KEY_UP).put(GLFW_PRESS, this::moveCameraUp);
-        bindings.get(GLFW_KEY_UP).put(GLFW_REPEAT, this::moveCameraUp);
+        bindings.get(GLFW_KEY_UP).put(GLFW_PRESS, camera::moveUp);
+        bindings.get(GLFW_KEY_UP).put(GLFW_REPEAT, camera::moveUp);
 
         bindings.put(GLFW_KEY_DOWN, new HashMap<>());
-        bindings.get(GLFW_KEY_DOWN).put(GLFW_PRESS, this::moveCameraDown);
-        bindings.get(GLFW_KEY_DOWN).put(GLFW_REPEAT, this::moveCameraDown);
+        bindings.get(GLFW_KEY_DOWN).put(GLFW_PRESS, camera::moveDown);
+        bindings.get(GLFW_KEY_DOWN).put(GLFW_REPEAT, camera::moveDown);
 
         bindings.put(GLFW_KEY_I, new HashMap<>());
-        bindings.get(GLFW_KEY_I).put(GLFW_PRESS, this::zoomCameraIn);
-        bindings.get(GLFW_KEY_I).put(GLFW_REPEAT, this::zoomCameraIn);
+        bindings.get(GLFW_KEY_I).put(GLFW_PRESS, camera::zoomIn);
+        bindings.get(GLFW_KEY_I).put(GLFW_REPEAT, camera::zoomIn);
 
         bindings.put(GLFW_KEY_O, new HashMap<>());
-        bindings.get(GLFW_KEY_O).put(GLFW_PRESS, this::zoomCameraOut);
-        bindings.get(GLFW_KEY_O).put(GLFW_REPEAT, this::zoomCameraOut);
+        bindings.get(GLFW_KEY_O).put(GLFW_PRESS, camera::zoomOut);
+        bindings.get(GLFW_KEY_O).put(GLFW_REPEAT, camera::zoomOut);
 
         bindings.put(GLFW_KEY_F, new HashMap<>());
-        bindings.get(GLFW_KEY_F).put(GLFW_PRESS, this::togglePlayerCam);
+        bindings.get(GLFW_KEY_F).put(GLFW_PRESS, camera::togglePlayerCam);
 
         glfwSetKeyCallback(window, (window, key, scanCode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
@@ -99,34 +99,6 @@ public class Input implements Component {
             player.setJumpsLeft(player.getJumpsLeft() - 1);
             player.accelerate(new Vector(0.0, player.getJumpDeltaV()));
         }
-    }
-
-    private void moveCameraLeft() {
-        graphics.camera.moveLeft();
-    }
-
-    private void moveCameraRight() {
-        graphics.camera.moveRight();
-    }
-
-    private void moveCameraUp() {
-        graphics.camera.moveUp();
-    }
-
-    private void moveCameraDown() {
-        graphics.camera.moveDown();
-    }
-
-    private void zoomCameraIn() {
-        graphics.camera.zoomIn();
-    }
-
-    private void zoomCameraOut() {
-        graphics.camera.zoomOut();
-    }
-
-    private void togglePlayerCam() {
-        graphics.camera.togglePlayerCam();
     }
 
 }

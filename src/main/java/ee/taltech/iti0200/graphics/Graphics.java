@@ -51,13 +51,12 @@ public class Graphics implements Component {
 
     private World world;
     private Shader shader;
-    public Camera camera;
-    private Player player;
+    private Camera camera;
     private List<Body> drawables = new ArrayList<>();
 
     public Graphics(World world, Player player) {
         this.world = world;
-        this.player = player;
+        this.camera = new Camera(1200, 800, player);
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -84,11 +83,15 @@ public class Graphics implements Component {
         return window;
     }
 
+    public Camera getCamera() {
+        return camera;
+    }
+
     @Override
     public void initialize() {
 
         // Get the thread stack and push a new frame
-        try ( MemoryStack stack = stackPush() ) {
+        try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -100,9 +103,9 @@ public class Graphics implements Component {
 
             // Center the window
             glfwSetWindowPos(
-                window,
-                (vidmode.width() - pWidth.get(0)) / 2,
-                (vidmode.height() - pHeight.get(0)) / 2
+                    window,
+                    (vidmode.width() - pWidth.get(0)) / 2,
+                    (vidmode.height() - pHeight.get(0)) / 2
             );
         } // the stack frame is popped automatically
 
@@ -121,7 +124,6 @@ public class Graphics implements Component {
         // bindings available for use.
         GL.createCapabilities();
 
-        camera = new Camera(1200, 800, player);
         glEnable(GL_TEXTURE_2D);
 
         shader = new Shader("shader");

@@ -23,7 +23,7 @@ class ClientGame extends Game {
 
         player = new Player(new Vector(20.0, 40.0));
         graphics = new Graphics(world, player);
-        input = new Input(graphics.getWindow(), player, graphics);
+        input = new Input(graphics.getWindow(), player, graphics.getCamera());
 
         components.add(graphics);
         components.add(input);

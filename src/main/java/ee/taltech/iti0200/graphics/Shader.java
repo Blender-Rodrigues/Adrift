@@ -15,10 +15,14 @@ public class Shader {
 
     private int program;
 
-    /** Processes the vertices that the shader takes */
+    /**
+     * Processes the vertices that the shader takes
+     */
     private int vertexShader;
 
-    /** Gives everything color */
+    /**
+     * Gives everything color
+     */
     private int fragmentShader;
 
     public Shader(String filename) {
@@ -26,20 +30,18 @@ public class Shader {
 
         vertexShader = glCreateShader(GL_VERTEX_SHADER);
         // ./build/resources/main/smile.png
-        glShaderSource(vertexShader, readFile(filename+".vs"));
+        glShaderSource(vertexShader, readFile(filename + ".vs"));
         glCompileShader(vertexShader);
-        if(glGetShaderi(vertexShader, GL_COMPILE_STATUS) != 1) { // if the shader is errorish
-            System.err.println(glGetShaderInfoLog(vertexShader));
-            System.exit(1);
+        if (glGetShaderi(vertexShader, GL_COMPILE_STATUS) != 1) { // if the shader is errorish
+            throw new IllegalStateException(glGetShaderInfoLog(vertexShader));
         }
 
 
         fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, readFile(filename+".fs"));
+        glShaderSource(fragmentShader, readFile(filename + ".fs"));
         glCompileShader(fragmentShader);
-        if(glGetShaderi(fragmentShader, GL_COMPILE_STATUS) != 1) { // if the shader is errorish
-            System.err.println(glGetShaderInfoLog(fragmentShader));
-            System.exit(1);
+        if (glGetShaderi(fragmentShader, GL_COMPILE_STATUS) != 1) { // if the shader is errorish
+            throw new IllegalStateException(glGetShaderInfoLog(fragmentShader));
         }
 
         glAttachShader(program, vertexShader);
@@ -49,15 +51,13 @@ public class Shader {
         glBindAttribLocation(program, 1, "textures");
 
         glLinkProgram(program);
-        if(glGetProgrami(program, GL_LINK_STATUS) != 1) {
-            System.err.println(glGetProgramInfoLog(program));
-            System.exit(1);
+        if (glGetProgrami(program, GL_LINK_STATUS) != 1) {
+            throw new IllegalStateException(glGetProgramInfoLog(program));
         }
 
         glValidateProgram(program);
-        if(glGetProgrami(program, GL_VALIDATE_STATUS) != 1) {
-            System.err.println(glGetProgramInfoLog(program));
-            System.exit(1);
+        if (glGetProgrami(program, GL_VALIDATE_STATUS) != 1) {
+            throw new IllegalStateException(glGetProgramInfoLog(program));
         }
     }
 
@@ -88,7 +88,7 @@ public class Shader {
         try {
             br = new BufferedReader(new FileReader(new File("./build/resources/main/shaders/" + filename)));
             String line;
-            while((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 string.append(line);
                 string.append("\n");
             }
