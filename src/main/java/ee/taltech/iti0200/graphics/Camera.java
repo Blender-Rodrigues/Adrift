@@ -38,7 +38,12 @@ public class Camera {
 
     // TODO: a better way to set zoom, rather than creating a new projection.
     public void setZoom(float zoom) {
-        projection = new Matrix4f().setOrtho2D(-width*zoom/2f, width*zoom/2f, -height*zoom/2f, height*zoom/2f);
+        projection = new Matrix4f().setOrtho2D(
+            -width * zoom / 2f,
+            width * zoom / 2f,
+            -height * zoom / 2f,
+            height * zoom / 2f
+        );
     }
 
     public Vector3f getPosition() {

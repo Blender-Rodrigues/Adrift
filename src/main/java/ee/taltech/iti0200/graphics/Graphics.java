@@ -4,16 +4,16 @@ import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.physics.Body;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.joml.*;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
@@ -88,7 +88,7 @@ public class Graphics implements Component {
     }
 
     @Override
-    public void initialize() {
+    public void initialize() throws IOException {
 
         // Get the thread stack and push a new frame
         try (MemoryStack stack = stackPush()) {
@@ -103,9 +103,9 @@ public class Graphics implements Component {
 
             // Center the window
             glfwSetWindowPos(
-                    window,
-                    (vidmode.width() - pWidth.get(0)) / 2,
-                    (vidmode.height() - pHeight.get(0)) / 2
+                window,
+                (vidmode.width() - pWidth.get(0)) / 2,
+                (vidmode.height() - pHeight.get(0)) / 2
             );
         } // the stack frame is popped automatically
 
@@ -155,7 +155,7 @@ public class Graphics implements Component {
         return !glfwWindowShouldClose(window);
     }
 
-    public void addDrawable(Body drawable) {
+    public void addDrawable(Body drawable) throws IOException {
         drawables.add(drawable);
         drawable.initializeGraphics();
     }
@@ -166,7 +166,6 @@ public class Graphics implements Component {
 
     @Override
     public void update(long tick) {
-
         glfwPollEvents();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer

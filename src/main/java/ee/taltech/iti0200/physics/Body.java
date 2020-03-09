@@ -1,9 +1,19 @@
 package ee.taltech.iti0200.physics;
 
-import ee.taltech.iti0200.graphics.*;
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Model;
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.Texture;
+import ee.taltech.iti0200.graphics.Transform;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 
+import java.io.IOException;
+
 public class Body {
+
+    private final Logger logger = LogManager.getLogger(Body.class);
 
     public static final int RENDER_SCALE_MULTIPLIER = 32;
     protected double mass;
@@ -114,27 +124,28 @@ public class Body {
         this.dragFromSurface = dragFromSurface;
     }
 
-    public void onCollide(Body otherBody) {}
+    public void onCollide(Body otherBody) {
 
-    public void initializeGraphics() {
+    }
 
+    public void initializeGraphics() throws IOException {
         float[] vertices = new float[] {
-                -1f, 1f, 0,
-                1f, 1f, 0,
-                1f, -1f, 0,
-                -1f, -1f, 0
+            -1f, 1f, 0,
+            1f, 1f, 0,
+            1f, -1f, 0,
+            -1f, -1f, 0
         };
 
         float[] texture = new float[] {
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1
+            0, 0,
+            1, 0,
+            1, 1,
+            0, 1
         };
 
         int[] indices = new int[] {
-                0, 1, 2,
-                2, 3, 0
+            0, 1, 2,
+            2, 3, 0
         };
 
         model = new Model(vertices, texture, indices);
@@ -145,7 +156,11 @@ public class Body {
     }
 
     public void changeTexture(String filename) {
-        this.texture = new Texture(filename);
+        try {
+            this.texture = new Texture(filename);
+        } catch (IOException e) {
+            logger.error("Failed to change texture: " + e.getMessage(), e);
+        }
     }
 
     public void render(Shader shader, Camera camera) {
@@ -157,4 +172,5 @@ public class Body {
         texture.bind(0);
         model.render();
     }
+
 }

@@ -11,19 +11,15 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class Texture {
+
+    private static final String PATH = "./build/resources/main/textures/";
+
     private int id;
     private int width;
     private int height;
 
-    public Texture(String filename) {
-        BufferedImage image = null; // TODO: not initializing here causes errors please help
-
-        try {
-            image = ImageIO.read(new File("./build/resources/main/textures/" + filename));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+    public Texture(String filename) throws IOException {
+        BufferedImage image = ImageIO.read(new File(PATH + filename));
 
         width = image.getWidth();
         height = image.getHeight();
@@ -34,11 +30,11 @@ public class Texture {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                int pixel = pixelsRaw[i*width + j];
-                pixels.put((byte)((pixel >> 16) & 0xFF));
-                pixels.put((byte)((pixel >> 8) & 0xFF));
-                pixels.put((byte)(pixel & 0xFF));
-                pixels.put((byte)((pixel >> 24) & 0xFF));
+                int pixel = pixelsRaw[i * width + j];
+                pixels.put((byte) ((pixel >> 16) & 0xFF));
+                pixels.put((byte) ((pixel >> 8) & 0xFF));
+                pixels.put((byte) (pixel & 0xFF));
+                pixels.put((byte) ((pixel >> 24) & 0xFF));
 
             }
         }
@@ -55,11 +51,11 @@ public class Texture {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     }
 
-
     public void bind(int sampler) {
         if (sampler >= 0 && sampler <= 31) {
             glActiveTexture(GL_TEXTURE0 + sampler);
             glBindTexture(GL_TEXTURE_2D, id);
         }
     }
+
 }
