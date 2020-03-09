@@ -40,10 +40,18 @@ public class Physics implements Component {
                 logger.debug("Player at: " + player.getBoundingBox().getCentre());
             }
         }
+
         checkForFloor(movableBodies, terrainMap);
+        applyDrag(movableBodies);
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
         applyGravity(movableBodies);
+    }
+
+    private void applyDrag(List<Entity> movableBodies) {
+        movableBodies.stream()
+            .filter(Entity::isOnFloor)
+            .forEach(Entity::drag);
     }
 
     private void checkForFloor(List<Entity> movingBodies, Map<Vector, Terrain> terrainMap) {
