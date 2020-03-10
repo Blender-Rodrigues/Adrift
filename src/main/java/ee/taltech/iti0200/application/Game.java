@@ -49,6 +49,7 @@ abstract public class Game {
         while (isGameRunning()) {
             components.forEach(component -> component.update(tick));
             loop(tick);
+            world.update(tick);
             tick = timer.sleep();
         }
 

@@ -3,6 +3,7 @@ package ee.taltech.iti0200.physics;
 import javax.vecmath.Vector2d;
 
 public class Vector extends Vector2d {
+
     public Vector(double x, double y) {
         super(x, y);
     }

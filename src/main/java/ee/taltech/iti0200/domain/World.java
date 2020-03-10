@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
+
 public class World {
 
+    protected List<Entity> entities = new ArrayList<>();
     protected List<Entity> movableBodies = new ArrayList<>();
     protected List<Entity> imMovableBodies = new ArrayList<>();
     protected Map<Vector, Terrain> terrainMap;
@@ -18,7 +21,6 @@ public class World {
     protected double yMin;
     protected double yMax;
     protected double timeStep;
-
     public World(double xMin, double xMax, double yMin, double yMax, double timeStep) {
         this.xMin = xMin;
         this.xMax = xMax;
@@ -36,6 +38,11 @@ public class World {
         addBody(new Terrain(new Vector(1.0, 3.0)), false);
         addBody(new Terrain(new Vector(39.0, 3.0)), false);
         mapTerrain();
+    }
+
+    public void update(long tick) {
+        entities.forEach(entity -> entity.update(tick));
+        entities.removeIf(Entity::isRemoved);
     }
 
     public void mapTerrain() {
@@ -57,19 +64,15 @@ public class World {
         return timeStep;
     }
 
-    private void addMovableBody(Entity body) {
-        movableBodies.add(body);
-    }
-
-    private void addImMovableBody(Entity body) {
-        imMovableBodies.add(body);
-    }
-
     public void addBody(Entity body, boolean movable) {
+        entities.add(body);
+        if (defaultTexture != null) {
+            body.initializeGraphics();
+        }
         if (movable) {
-            addMovableBody(body);
+            movableBodies.add(body);
         } else {
-            addImMovableBody(body);
+            imMovableBodies.add(body);
         }
     }
 
@@ -79,6 +82,10 @@ public class World {
 
     public List<Entity> getImMovableBodies() {
         return imMovableBodies;
+    }
+
+    public List<Entity> getEntities() {
+        return entities;
     }
 
 }
