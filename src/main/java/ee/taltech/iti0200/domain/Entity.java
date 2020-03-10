@@ -6,6 +6,7 @@ import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.Vector;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -74,8 +75,10 @@ public class Entity extends Body {
         return components;
     }
 
-    public void initializeGraphics() {
-        components.forEach(Body::initializeGraphics);
+    public void initializeGraphics() throws IOException {
+        for (Body component : components) {
+            component.initializeGraphics();
+        }
     }
 
     public void render(Shader shader, Camera camera) {

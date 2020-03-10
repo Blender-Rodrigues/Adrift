@@ -7,9 +7,10 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*; // shader commands
+import static org.lwjgl.opengl.GL20.*;
 
 public class Model {
+
     private int drawCount;
     private int vertexId;
     private int textureId;
@@ -59,15 +60,14 @@ public class Model {
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
-
     }
 
     private FloatBuffer createBuffer(float[] vertices) {
-
         FloatBuffer buffer = BufferUtils.createFloatBuffer(vertices.length);
         buffer.put(vertices);
         buffer.flip();
 
         return buffer;
     }
+
 }

@@ -13,34 +13,30 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class Shader {
 
-    private int program;
+    private static final String PATH = "./build/resources/main/shaders/";
+
+    private int program = glCreateProgram();
 
     /**
      * Processes the vertices that the shader takes
      */
-    private int vertexShader;
+    private int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
     /**
      * Gives everything color
      */
-    private int fragmentShader;
+    private int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    public Shader(String filename) {
-        program = glCreateProgram();
-
-        vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        // ./build/resources/main/smile.png
+    public Shader(String filename) throws IOException {
         glShaderSource(vertexShader, readFile(filename + ".vs"));
         glCompileShader(vertexShader);
-        if (glGetShaderi(vertexShader, GL_COMPILE_STATUS) != 1) { // if the shader is errorish
+        if (glGetShaderi(vertexShader, GL_COMPILE_STATUS) != 1) {
             throw new IllegalStateException(glGetShaderInfoLog(vertexShader));
         }
 
-
-        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, readFile(filename + ".fs"));
         glCompileShader(fragmentShader);
-        if (glGetShaderi(fragmentShader, GL_COMPILE_STATUS) != 1) { // if the shader is errorish
+        if (glGetShaderi(fragmentShader, GL_COMPILE_STATUS) != 1) {
             throw new IllegalStateException(glGetShaderInfoLog(fragmentShader));
         }
 
@@ -81,21 +77,17 @@ public class Shader {
         glUseProgram(program);
     }
 
-    private String readFile(String filename) {
+    private String readFile(String filename) throws IOException {
         StringBuilder string = new StringBuilder();
-        BufferedReader br;
-
-        try {
-            br = new BufferedReader(new FileReader(new File("./build/resources/main/shaders/" + filename)));
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(PATH + filename)))) {
             String line;
             while ((line = br.readLine()) != null) {
                 string.append(line);
                 string.append("\n");
             }
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         return string.toString();
     }
+
 }
