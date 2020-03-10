@@ -1,7 +1,6 @@
 package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.physics.Body;
-import ee.taltech.iti0200.physics.Physics;
 import ee.taltech.iti0200.physics.Vector;
 
 public class Terrain extends Entity {
