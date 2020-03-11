@@ -7,7 +7,11 @@ import org.joml.Vector3f;
 public class Camera {
 
     public static final int CAMERA_SENSITIVITY = 25;
-    public static final int RENDER_SCALE_MULTIPLIER = 32;
+    public static final int RENDER_SCALE_MULTIPLIER = 1;
+
+    /* zoom in and zoom out are "inverted" -> the smaller the value, the farther the camera is from the map */
+    public static final float MINIMUM_ZOOM_VALUE = 0.05f;
+    public static final float MAXIMUM_ZOOM_VALUE = 10.0f;
 
     private Vector3f position;
     private Matrix4f projection;
@@ -63,7 +67,8 @@ public class Camera {
     }
 
     public void moveRight() {
-        position.add(new Vector3f(-CAMERA_SENSITIVITY, 0, 0));    }
+        position.add(new Vector3f(-CAMERA_SENSITIVITY, 0, 0));
+    }
 
     public void moveUp() {
         position.add(new Vector3f(0, -CAMERA_SENSITIVITY, 0));
@@ -74,12 +79,12 @@ public class Camera {
     }
 
     public void zoomIn() {
-        zoom = Math.round(zoom / 1.1 * 100) / 100f;
+        zoom = zoom / 1.05f;
         setZoom(zoom);
     }
 
     public void zoomOut() {
-        zoom = Math.round(zoom * 1.1 * 100) / 100f;
+        zoom = zoom * 1.05f;
         setZoom(zoom);
     }
 
