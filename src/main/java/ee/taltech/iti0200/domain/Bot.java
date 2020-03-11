@@ -1,10 +1,13 @@
 package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.physics.Body;
-import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 public class Bot extends Living {
 
