@@ -1,8 +1,12 @@
 package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
+import java.util.AbstractMap;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Random;
 
 public class Bot extends Living {
@@ -27,12 +31,34 @@ public class Bot extends Living {
     public void update(long tick) {
         if (tick % 10 == 0) {
             move();
-            look();
+            Map.Entry<Vector, Double> closestPlayer = look();
+            shoot(closestPlayer);
         }
     }
 
-    private void look() {
+    private void shoot(Map.Entry<Vector, Double> target) {
+        if (target.getValue() < 0.2) {
+            Vector speed = new Vector(target.getKey());
+            speed.normalize();
+            speed.scale(1);
 
+            Vector position = new Vector(getBoundingBox().getCentre());
+
+            Projectile projectile = new Projectile(position, speed);
+
+            world.addBody(projectile, true);
+        }
+    }
+
+    private Map.Entry<Vector, Double> look() {
+        return world.getLivingEntities().stream()
+            .map(Living::getBoundingBox)
+            .map(BoundingBox::getCentre)
+            .map(Vector::new)
+            .peek(vector -> vector.sub(this.getBoundingBox().getCentre()))
+            .map(vector -> new AbstractMap.SimpleEntry<>(vector, vector.angle(this.speed)))
+            .min(Map.Entry.comparingByValue())
+            .get();
     }
 
     private void move() {
