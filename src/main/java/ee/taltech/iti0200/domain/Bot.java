@@ -64,7 +64,7 @@ public class Bot extends Living {
             .peek(vector -> vector.sub(this.getBoundingBox().getCentre()))
             .map(vector -> new AbstractMap.SimpleEntry<>(vector, vector.angle(this.speed)))
             .filter(entry -> entry.getValue() < 0.2)
-            .min(Map.Entry.comparingByValue());
+            .min(Comparator.comparing(entry -> entry.getKey().lengthSquared()));
     }
 
     private void move() {
