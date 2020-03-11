@@ -12,12 +12,12 @@ import org.joml.Vector3f;
 import java.io.IOException;
 
 import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
+import static org.lwjgl.opengl.GL11.*;
 
 public class Body {
 
     private final Logger logger = LogManager.getLogger(Body.class);
 
-    public static final int RENDER_SCALE_MULTIPLIER = 32;
     protected double mass;
     protected double inverseMass;
     protected Vector speed;
@@ -31,6 +31,7 @@ public class Body {
     private Model model;
     private Texture texture;
     private Transform transform;
+    private boolean graphicsInitialized;
 
     public Body(double mass, BoundingBox boundingBox, boolean collideable) {
         this.mass = mass;
@@ -131,21 +132,21 @@ public class Body {
     }
 
     public void initializeGraphics() {
-        float[] vertices = new float[] {
+        float[] vertices = new float[]{
             -1f, 1f, 0,
             1f, 1f, 0,
             1f, -1f, 0,
             -1f, -1f, 0
         };
 
-        float[] texture = new float[] {
+        float[] texture = new float[]{
             0, 0,
             1, 0,
             1, 1,
             0, 1
         };
 
-        int[] indices = new int[] {
+        int[] indices = new int[]{
             0, 1, 2,
             2, 3, 0
         };
@@ -153,8 +154,12 @@ public class Body {
         model = new Model(vertices, texture, indices);
         this.texture = defaultTexture;
 
-        transform = new Transform();
-        transform.scale = new Vector3f(RENDER_SCALE_MULTIPLIER, RENDER_SCALE_MULTIPLIER, 1);
+        if (!graphicsInitialized) {
+            transform = new Transform();
+            transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
+            graphicsInitialized = true;
+        }
+
     }
 
     public void changeTexture(String filename) {
@@ -166,7 +171,7 @@ public class Body {
     }
 
     public void render(Shader shader, Camera camera) {
-        transform.pos.set(new Vector3f((float)this.boundingBox.getCentre().x, (float)this.boundingBox.getCentre().y, 0));
+        transform.pos.set(new Vector3f((float) this.boundingBox.getCentre().x, (float) this.boundingBox.getCentre().y, 0));
 
         shader.bind();
         shader.setUniform("sampler", 0);
