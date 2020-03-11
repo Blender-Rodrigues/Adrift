@@ -55,11 +55,11 @@ public class Bot extends Living {
 
     private Optional<AbstractMap.SimpleEntry<Vector, Double>> look() {
         return world.getLivingEntities().stream()
-            .map(Living::getBoundingBox)
-            .map(BoundingBox::getCentre)
-            .map(Vector::new)
-            .peek(vector -> vector.sub(this.getBoundingBox().getCentre()))
-            .map(vector -> new AbstractMap.SimpleEntry<>(vector, vector.angle(this.speed)))
+            .map(living -> {
+                Vector vector = new Vector(living.getBoundingBox().getCentre());
+                vector.sub(getBoundingBox().getCentre());
+                return new AbstractMap.SimpleEntry<>(vector, vector.angle(this.speed));
+            })
             .filter(entry -> entry.getValue() < 0.2)
             .min(Comparator.comparing(entry -> entry.getKey().lengthSquared()));
     }
