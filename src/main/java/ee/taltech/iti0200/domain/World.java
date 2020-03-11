@@ -13,6 +13,7 @@ import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
 public class World {
 
     protected List<Entity> entities = new ArrayList<>();
+    protected List<Living> livingEntities = new ArrayList<>();
     protected List<Entity> movableBodies = new ArrayList<>();
     protected List<Entity> imMovableBodies = new ArrayList<>();
     protected Map<Vector, Terrain> terrainMap;
@@ -41,7 +42,7 @@ public class World {
     }
 
     public void update(long tick) {
-        entities.forEach(entity -> entity.update(tick));
+        livingEntities.forEach(entity -> entity.update(tick));
         entities.removeIf(Entity::isRemoved);
     }
 
@@ -74,6 +75,9 @@ public class World {
         } else {
             imMovableBodies.add(body);
         }
+        if (body instanceof Living) {
+            livingEntities.add((Living) body);
+        }
     }
 
     public List<Entity> getMovableBodies() {
@@ -86,6 +90,10 @@ public class World {
 
     public List<Entity> getEntities() {
         return entities;
+    }
+
+    public List<Living> getLivingEntities() {
+        return livingEntities;
     }
 
 }
