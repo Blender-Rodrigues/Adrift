@@ -13,15 +13,20 @@ public class Bot extends Entity {
     private static final double elasticity = 0.25;
     private static final double frictionCoefficient = 0.99;
 
+    private Vector acceleration;
+
     public Bot(Vector position) {
         super(new Body(mass, size, position, true, true), false);
         setElasticity(elasticity);
         setFrictionCoefficient(frictionCoefficient);
+        acceleration = new Vector(0.0, 0.0);
     }
 
     public void update(long tick) {
-        if (tick % 100 == 0) {
-            speed.add(new Vector(random.nextDouble() * 2.0 - 1.0, 0));
+        if (tick % 10 == 0) {
+            acceleration.add(new Vector(random.nextDouble() - 0.5, 0));
+            acceleration.scale(0.9);
+            speed.add(acceleration);
         }
     }
 
