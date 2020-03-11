@@ -5,7 +5,7 @@ import ee.taltech.iti0200.physics.Vector;
 
 import java.util.Random;
 
-public class Bot extends Entity {
+public class Bot extends Living {
 
     private static final Vector size = new Vector(1.5, 1.5);
     private static final double mass = 70.0;
