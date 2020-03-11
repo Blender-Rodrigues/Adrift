@@ -3,7 +3,7 @@ package ee.taltech.iti0200.domain;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.Vector;
 
-public class Player extends Entity {
+public class Player extends Living {
 
     private static final Vector size = new Vector(1.0, 1.0);
     private static final double mass = 70.0;

@@ -68,13 +68,6 @@ public class Entity extends Body {
         this.components = Arrays.asList(component);
     }
 
-    /**
-     * Called for living things on every game tick
-     */
-    public void update(long tick) {
-
-    }
-
     public List<Body> getComponents() {
         return components;
     }
