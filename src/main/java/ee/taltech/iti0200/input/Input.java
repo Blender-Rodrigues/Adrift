@@ -55,8 +55,8 @@ public class Input implements Component {
         bind(new KeyEvent(GLFW_KEY_UP, camera::moveUp, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_DOWN, camera::moveDown, GLFW_PRESS, GLFW_REPEAT));
 
-        bind(new KeyEvent(GLFW_KEY_I, camera::zoomIn, GLFW_PRESS));
-        bind(new KeyEvent(GLFW_KEY_O, camera::zoomOut, GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_I, camera::zoomIn, GLFW_PRESS, GLFW_REPEAT));
+        bind(new KeyEvent(GLFW_KEY_O, camera::zoomOut, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_F, camera::togglePlayerCam, GLFW_PRESS));
 
         glfwSetKeyCallback(window, this::invoke);

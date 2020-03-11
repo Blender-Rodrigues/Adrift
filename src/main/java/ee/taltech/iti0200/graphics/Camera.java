@@ -9,6 +9,10 @@ public class Camera {
     public static final int CAMERA_SENSITIVITY = 25;
     public static final int RENDER_SCALE_MULTIPLIER = 32;
 
+    /* zoom in and zoom out are "inverted" -> the smaller the value, the farther the camera is from the map */
+    public static final float MINIMUM_ZOOM_VALUE = 0.05f;
+    public static final float MAXIMUM_ZOOM_VALUE = 10.0f;
+
     private Vector3f position;
     private Matrix4f projection;
     private Matrix4f target;
@@ -74,12 +78,12 @@ public class Camera {
     }
 
     public void zoomIn() {
-        zoom = Math.round(zoom / 1.1 * 100) / 100f;
+        zoom = Math.max(zoom / 1.05f, MINIMUM_ZOOM_VALUE);
         setZoom(zoom);
     }
 
     public void zoomOut() {
-        zoom = Math.round(zoom * 1.1 * 100) / 100f;
+        zoom = Math.min(zoom * 1.05f, MAXIMUM_ZOOM_VALUE);
         setZoom(zoom);
     }
 
