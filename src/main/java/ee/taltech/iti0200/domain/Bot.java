@@ -4,10 +4,7 @@ import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-import java.util.AbstractMap;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Bot extends Living {
 
@@ -16,7 +13,8 @@ public class Bot extends Living {
     private static final Random random = new Random();
     private static final double elasticity = 0.25;
     private static final double frictionCoefficient = 0.99;
-    private static final int shootRechargeTime = 500;
+    private static final int shootRechargeTime = 250;
+    private static final int bulletSpeed = 15;
     private World world;
 
     private Vector acceleration;
@@ -36,8 +34,8 @@ public class Bot extends Living {
             move();
             ticksLeftForRecharge -= 10;
             if (ticksLeftForRecharge <= 0) {
-                Map.Entry<Vector, Double> closestPlayer = look();
-                shoot(closestPlayer);
+                Optional<AbstractMap.SimpleEntry<Vector, Double>> closestPlayer = look();
+                closestPlayer.ifPresent(this::shoot);
             }
         }
     }
@@ -48,7 +46,7 @@ public class Bot extends Living {
 
             Vector speed = new Vector(target.getKey());
             speed.normalize();
-            speed.scale(1);
+            speed.scale(bulletSpeed);
 
             Vector position = new Vector(getBoundingBox().getCentre());
 
@@ -58,15 +56,15 @@ public class Bot extends Living {
         }
     }
 
-    private Map.Entry<Vector, Double> look() {
+    private Optional<AbstractMap.SimpleEntry<Vector, Double>> look() {
         return world.getLivingEntities().stream()
             .map(Living::getBoundingBox)
             .map(BoundingBox::getCentre)
             .map(Vector::new)
             .peek(vector -> vector.sub(this.getBoundingBox().getCentre()))
             .map(vector -> new AbstractMap.SimpleEntry<>(vector, vector.angle(this.speed)))
-            .min(Map.Entry.comparingByValue())
-            .get();
+            .filter(entry -> entry.getValue() < 0.2)
+            .min(Map.Entry.comparingByValue());
     }
 
     private void move() {
