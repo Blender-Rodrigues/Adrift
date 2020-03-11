@@ -16,9 +16,11 @@ public class Bot extends Living {
     private static final Random random = new Random();
     private static final double elasticity = 0.25;
     private static final double frictionCoefficient = 0.99;
+    private static final int shootRechargeTime = 500;
     private World world;
 
     private Vector acceleration;
+    private int ticksLeftForRecharge;
 
     public Bot(Vector position, World world) {
         super(new Body(mass, size, position, true, true), false);
@@ -26,18 +28,24 @@ public class Bot extends Living {
         setFrictionCoefficient(frictionCoefficient);
         acceleration = new Vector(0.0, 0.0);
         this.world = world;
+        ticksLeftForRecharge = 0;
     }
 
     public void update(long tick) {
         if (tick % 10 == 0) {
             move();
-            Map.Entry<Vector, Double> closestPlayer = look();
-            shoot(closestPlayer);
+            ticksLeftForRecharge -= 10;
+            if (ticksLeftForRecharge <= 0) {
+                Map.Entry<Vector, Double> closestPlayer = look();
+                shoot(closestPlayer);
+            }
         }
     }
 
     private void shoot(Map.Entry<Vector, Double> target) {
         if (target.getValue() < 0.2) {
+            ticksLeftForRecharge = shootRechargeTime;
+
             Vector speed = new Vector(target.getKey());
             speed.normalize();
             speed.scale(1);
