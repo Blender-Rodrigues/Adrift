@@ -2,19 +2,23 @@ package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
-import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class Entity extends Body {
 
     private List<Body> components;
-
     private boolean onFloor;
+
+    protected boolean removed = false;
+
+    public boolean isRemoved() {
+        return removed;
+    }
 
     public boolean isOnFloor() {
         return onFloor;
@@ -75,7 +79,7 @@ public class Entity extends Body {
         return components;
     }
 
-    public void initializeGraphics() throws IOException {
+    public void initializeGraphics() {
         for (Body component : components) {
             component.initializeGraphics();
         }

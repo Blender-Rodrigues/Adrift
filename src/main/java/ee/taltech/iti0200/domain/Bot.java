@@ -24,4 +24,5 @@ public class Bot extends Entity {
             speed.add(new Vector(random.nextDouble() * 2.0 - 1.0, 0));
         }
     }
+
 }
