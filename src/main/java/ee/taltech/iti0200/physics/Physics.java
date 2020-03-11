@@ -2,7 +2,7 @@ package ee.taltech.iti0200.physics;
 
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Entity;
-import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.Projectile;
 import ee.taltech.iti0200.domain.Terrain;
 import ee.taltech.iti0200.domain.World;
 import org.apache.logging.log4j.LogManager;
@@ -15,19 +15,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.physics.BoundingBox.clamp;
-import static jdk.nashorn.internal.objects.NativeMath.round;
-
 
 public class Physics implements Component {
 
     private World world;
-    private Logger logger;
+    private Logger logger = LogManager.getLogger(Physics.class);
 
     private static final Vector GRAVITY = new Vector(0, -9.81);
     private static final double NO_BOUNCE_SPEED_LIMIT = 1;
 
     public Physics(World world) {
-        logger = LogManager.getLogger(Physics.class);
         this.world = world;
     }
 
@@ -36,12 +33,6 @@ public class Physics implements Component {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
         Map<Vector, Terrain> terrainMap = world.getTerrainMap();
-        for (Entity player: movableBodies) {
-            if (player instanceof Player) {
-                logger.debug("Player {} at: {}", player, player.getBoundingBox().getCentre());
-            }
-        }
-
         checkForFloor(movableBodies, terrainMap);
         applyDrag(movableBodies);
         moveBodies(movableBodies, world.getTimeStep());
@@ -84,6 +75,7 @@ public class Physics implements Component {
         accelerateDelta.scale(world.getTimeStep());
         entities.stream()
             .filter(entity -> !entity.isOnFloor())
+            .filter(entity -> !(entity instanceof Projectile))
             .forEach(entity -> entity.accelerate(accelerateDelta));
     }
 

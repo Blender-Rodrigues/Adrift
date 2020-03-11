@@ -11,6 +11,8 @@ import org.joml.Vector3f;
 
 import java.io.IOException;
 
+import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
+
 public class Body {
 
     private final Logger logger = LogManager.getLogger(Body.class);
@@ -128,7 +130,7 @@ public class Body {
 
     }
 
-    public void initializeGraphics() throws IOException {
+    public void initializeGraphics() {
         float[] vertices = new float[] {
             -1f, 1f, 0,
             1f, 1f, 0,
@@ -149,7 +151,7 @@ public class Body {
         };
 
         model = new Model(vertices, texture, indices);
-        this.texture = new Texture("default.png");
+        this.texture = defaultTexture;
 
         transform = new Transform();
         transform.scale = new Vector3f(RENDER_SCALE_MULTIPLIER, RENDER_SCALE_MULTIPLIER, 1);

@@ -2,6 +2,8 @@ package ee.taltech.iti0200.input;
 
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.Projectile;
+import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.physics.Vector;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +18,7 @@ import java.util.Set;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_F;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_I;
@@ -38,17 +41,20 @@ public class Input implements Component {
     private Set<KeyEvent> events = new HashSet<>();
     private Map<Integer, KeyEvent> bindings = new HashMap<>();
     private Camera camera;
+    private World world;
 
-    public Input(long window, Player player, Camera camera) {
+    public Input(long window, Player player, Camera camera, World world) {
         this.player = player;
         this.window = window;
         this.camera = camera;
+        this.world = world;
     }
 
     public void initialize() {
-        bind(new KeyEvent(GLFW_KEY_A, this::movePlayerLeft, GLFW_PRESS, GLFW_REPEAT));
-        bind(new KeyEvent(GLFW_KEY_D, this::movePlayerRight, GLFW_PRESS, GLFW_REPEAT));
-        bind(new KeyEvent(GLFW_KEY_W, this::jumpPlayer, GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_A, this::playerMoveLeft, GLFW_PRESS, GLFW_REPEAT));
+        bind(new KeyEvent(GLFW_KEY_D, this::playerMoveRight, GLFW_PRESS, GLFW_REPEAT));
+        bind(new KeyEvent(GLFW_KEY_W, this::playerJump, GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_E, this::playerShoot, GLFW_PRESS));
 
         bind(new KeyEvent(GLFW_KEY_RIGHT, camera::moveRight, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_LEFT, camera::moveLeft, GLFW_PRESS, GLFW_REPEAT));
@@ -73,7 +79,7 @@ public class Input implements Component {
         }
     }
 
-    private void movePlayerLeft() {
+    private void playerMoveLeft() {
         if (player.isOnFloor()) {
             player.accelerate(new Vector(-0.5, 0.0));
         } else {
@@ -82,7 +88,7 @@ public class Input implements Component {
         logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
-    private void movePlayerRight() {
+    private void playerMoveRight() {
         if (player.isOnFloor()) {
             player.accelerate(new Vector(0.5, 0.0));
         } else {
@@ -91,11 +97,22 @@ public class Input implements Component {
         logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
-    private void jumpPlayer() {
+    private void playerJump() {
         if (player.getJumpsLeft() > 0) {
             player.setJumpsLeft(player.getJumpsLeft() - 1);
             player.accelerate(new Vector(0.0, player.getJumpDeltaV()));
         }
+    }
+
+    private void playerShoot() {
+        Vector speed = new Vector(player.getSpeed());
+        speed.scale(2);
+
+        Vector position = new Vector(player.getBoundingBox().getCentre());
+
+        Projectile projectile = new Projectile(position, speed);
+
+        world.addBody(projectile, true);
     }
 
     private void bind(KeyEvent event) {

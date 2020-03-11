@@ -12,8 +12,6 @@ import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
@@ -37,7 +35,12 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -47,12 +50,13 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class Graphics implements Component {
 
+    public static Texture defaultTexture;
+
     private long window;
 
     private World world;
     private Shader shader;
     private Camera camera;
-    private List<Body> drawables = new ArrayList<>();
 
     public Graphics(World world, Player player) {
         this.world = world;
@@ -130,10 +134,8 @@ public class Graphics implements Component {
 
         camera.setPosition(new Vector3f(0, 0, 0));
 
-        drawables.addAll(world.getImMovableBodies());
-        drawables.addAll(world.getMovableBodies());
-
-        for (Body drawable : drawables) {
+        defaultTexture = new Texture("default.png");
+        for (Body drawable : world.getEntities()) {
             drawable.initializeGraphics();
         }
 
@@ -155,15 +157,6 @@ public class Graphics implements Component {
         return !glfwWindowShouldClose(window);
     }
 
-    public void addDrawable(Body drawable) throws IOException {
-        drawables.add(drawable);
-        drawable.initializeGraphics();
-    }
-
-    public void removeDrawable(Body drawable) {
-        drawables.remove(drawable);
-    }
-
     @Override
     public void update(long tick) {
         glfwPollEvents();
@@ -172,7 +165,7 @@ public class Graphics implements Component {
 
         camera.update();
 
-        for (Body drawable : drawables) {
+        for (Body drawable : world.getEntities()) {
             drawable.render(shader, camera);
         }
 
