@@ -30,8 +30,8 @@ public class World {
     }
 
     public void initialize() {
-        addBody(new Bot(new Vector(10.0, 4.0)), true);
-        addBody(new Bot(new Vector(30.0, 4.0)), true);
+        addBody(new Bot(new Vector(10.0, 4.0), this), true);
+        addBody(new Bot(new Vector(30.0, 4.0), this), true);
         for (int i = 0; i < 20; i++) {
             addBody(new Terrain(new Vector(i * 2.0 + 1.0, 1.0)), false);
         }

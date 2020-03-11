@@ -12,22 +12,33 @@ public class Bot extends Entity {
     private static final Random random = new Random();
     private static final double elasticity = 0.25;
     private static final double frictionCoefficient = 0.99;
+    private World world;
 
     private Vector acceleration;
 
-    public Bot(Vector position) {
+    public Bot(Vector position, World world) {
         super(new Body(mass, size, position, true, true), false);
         setElasticity(elasticity);
         setFrictionCoefficient(frictionCoefficient);
         acceleration = new Vector(0.0, 0.0);
+        this.world = world;
     }
 
     public void update(long tick) {
         if (tick % 10 == 0) {
-            acceleration.add(new Vector(random.nextDouble() - 0.5, 0));
-            acceleration.scale(0.9);
-            speed.add(acceleration);
+            move();
+            look();
         }
+    }
+
+    private void look() {
+
+    }
+
+    private void move() {
+        acceleration.add(new Vector(random.nextDouble() - 0.5, 0));
+        acceleration.scale(0.9);
+        speed.add(acceleration);
     }
 
 }
