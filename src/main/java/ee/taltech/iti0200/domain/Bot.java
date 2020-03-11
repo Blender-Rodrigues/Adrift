@@ -34,8 +34,7 @@ public class Bot extends Living {
             move();
             ticksLeftForRecharge -= 10;
             if (ticksLeftForRecharge <= 0) {
-                Optional<AbstractMap.SimpleEntry<Vector, Double>> closestPlayer = look();
-                closestPlayer.ifPresent(this::shoot);
+                look().ifPresent(this::shoot);
             }
         }
     }
