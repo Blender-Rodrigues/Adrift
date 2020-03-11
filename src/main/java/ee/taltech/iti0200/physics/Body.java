@@ -31,7 +31,6 @@ public class Body {
     private Model model;
     private Texture texture;
     private Transform transform;
-    private boolean graphicsInitialized;
 
     public Body(double mass, BoundingBox boundingBox, boolean collideable) {
         this.mass = mass;
@@ -154,11 +153,9 @@ public class Body {
         model = new Model(vertices, texture, indices);
         this.texture = defaultTexture;
 
-        if (!graphicsInitialized) {
-            transform = new Transform();
-            transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
-            graphicsInitialized = true;
-        }
+        transform = new Transform();
+        transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
+
 
     }
 

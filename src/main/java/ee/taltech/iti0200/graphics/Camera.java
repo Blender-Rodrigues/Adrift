@@ -29,7 +29,7 @@ public class Camera {
     public Camera(int width, int height, Player player) {
         this.width = width;
         this.height = height;
-        this.zoom = -1f;
+        this.zoom = 1f;
         this.player = player;
 
         position = new Vector3f(0, 0, 0);
