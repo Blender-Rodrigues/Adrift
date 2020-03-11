@@ -49,9 +49,7 @@ public class Bot extends Living {
 
             Vector position = new Vector(getBoundingBox().getCentre());
 
-            Projectile projectile = new Projectile(position, speed);
-
-            world.addBody(projectile, true);
+            world.addBody(new Projectile(position, speed), true);
         }
     }
 
