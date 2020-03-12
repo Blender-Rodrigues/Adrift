@@ -42,6 +42,7 @@ public class Bot extends Living {
 
     private void shoot(Map.Entry<Vector, Double> target) {
         if (target.getValue() < 0.2) {
+            gun.shoot();
 
             Vector speed = new Vector(target.getKey());
             speed.normalize();
