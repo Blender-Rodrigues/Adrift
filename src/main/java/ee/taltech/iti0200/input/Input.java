@@ -108,9 +108,7 @@ public class Input implements Component {
         if (!player.canShoot()) {
             return;
         }
-        Projectile projectile = player.shoot();
-
-        world.addBody(projectile, true);
+        world.addBody(player.shoot(), true);
     }
 
     private void bind(KeyEvent event) {

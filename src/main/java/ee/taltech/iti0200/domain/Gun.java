@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.domain;
 
+import ee.taltech.iti0200.physics.Vector;
+
 public class Gun {
 
     private static final double fireRate = 3;
@@ -24,7 +26,13 @@ public class Gun {
         leftToReload -= time;
     }
 
-    public void shoot() {
+    public Projectile shoot(Vector direction, Vector position) {
         leftToReload = fireRate;
+
+        Vector speed = new Vector(direction);
+        speed.normalize();
+        speed.scale(projectileSpeed);
+
+        return new Projectile(new Vector(position), speed);
     }
 }

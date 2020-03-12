@@ -24,15 +24,7 @@ public class Player extends Living {
     }
 
     public Projectile shoot() {
-        gun.shoot();
-
-        Vector speed = new Vector(getSpeed());
-        speed.normalize();
-        speed.scale(gun.getProjectileSpeed());
-
-        Vector position = new Vector(getBoundingBox().getCentre());
-
-        return new Projectile(position, speed);
+        return gun.shoot(getSpeed(), getBoundingBox().getCentre());
     }
 
     public void update(long tick, double timePassed) {

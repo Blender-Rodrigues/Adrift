@@ -42,15 +42,7 @@ public class Bot extends Living {
 
     private void shoot(Map.Entry<Vector, Double> target) {
         if (target.getValue() < 0.2) {
-            gun.shoot();
-
-            Vector speed = new Vector(target.getKey());
-            speed.normalize();
-            speed.scale(gun.getProjectileSpeed());
-
-            Vector position = new Vector(getBoundingBox().getCentre());
-
-            world.addBody(new Projectile(position, speed), true);
+            world.addBody(gun.shoot(target.getKey(), getBoundingBox().getCentre()), true);
         }
     }
 
