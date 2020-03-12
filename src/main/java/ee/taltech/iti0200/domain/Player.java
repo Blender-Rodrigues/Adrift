@@ -20,11 +20,11 @@ public class Player extends Living {
         setElasticity(elasticity);
         setJumpsLeft(jumpAmountLimit);
         setFrictionCoefficient(frictionCoefficient);
-        gun = new Gun();
+        gun = new Gun(getBoundingBox());
     }
 
     public Projectile shoot() {
-        return gun.shoot(getSpeed(), getBoundingBox().getCentre());
+        return gun.shoot(getSpeed());
     }
 
     public void update(long tick, double timePassed) {

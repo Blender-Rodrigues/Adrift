@@ -1,16 +1,19 @@
 package ee.taltech.iti0200.domain;
 
+import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-public class Gun {
+public class Gun extends Entity{
 
     private static final double fireRate = 3;
     private static final double damage = 1;
     private static final double projectileSpeed = 15;
+    private static final double mass = 0.0;
 
     private double leftToReload;
 
-    public Gun() {
+    public Gun(BoundingBox boundingBox) {
+        super(mass, boundingBox, false);
         leftToReload = 0;
     }
 
@@ -26,13 +29,13 @@ public class Gun {
         leftToReload -= time;
     }
 
-    public Projectile shoot(Vector direction, Vector position) {
+    public Projectile shoot(Vector direction) {
         leftToReload = fireRate;
 
         Vector speed = new Vector(direction);
         speed.normalize();
         speed.scale(projectileSpeed);
 
-        return new Projectile(new Vector(position), speed);
+        return new Projectile(new Vector(getBoundingBox().getCentre()), speed);
     }
 }

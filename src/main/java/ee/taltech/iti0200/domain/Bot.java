@@ -27,7 +27,7 @@ public class Bot extends Living {
         setFrictionCoefficient(frictionCoefficient);
         acceleration = new Vector(0.0, 0.0);
         this.world = world;
-        this.gun = new Gun();
+        this.gun = new Gun(getBoundingBox());
     }
 
     public void update(long tick, double timePassed) {
@@ -42,7 +42,7 @@ public class Bot extends Living {
 
     private void shoot(Map.Entry<Vector, Double> target) {
         if (target.getValue() < 0.2) {
-            world.addBody(gun.shoot(target.getKey(), getBoundingBox().getCentre()), true);
+            world.addBody(gun.shoot(target.getKey()), true);
         }
     }
 
