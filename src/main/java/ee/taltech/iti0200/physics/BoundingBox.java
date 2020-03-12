@@ -24,7 +24,7 @@ public class BoundingBox {
 
     public BoundingBox(Vector position, Vector size, boolean usingPositionAndSize) {
         this.centre = position;
-        this.size = size;
+        this.size = new Vector(size);
         this.size.scale(0.5);
     }
 
