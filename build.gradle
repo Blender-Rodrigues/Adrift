@@ -2,8 +2,12 @@ import org.gradle.internal.os.OperatingSystem
 
 // Specify repositories we'd like to fetch libraries from
 repositories {
-    mavenCentral()
     jcenter()
+    mavenCentral()
+
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 // Plugins so gradle would take some assumptions about the project setup
@@ -52,6 +56,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-api:2.13.0"
     implementation "org.apache.logging.log4j:log4j-core:2.13.0"
     implementation "javax.vecmath:vecmath:1.5.2"
+    implementation "org.joml:joml:1.9.22"
 
     runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
@@ -64,7 +69,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "ee.taltech.iti0200.Game"
+        attributes "Main-Class": "ee.taltech.iti0200.application.Game"
     }
 
     from {

@@ -1,17 +1,31 @@
 package ee.taltech.iti0200.network;
 
+import ee.taltech.iti0200.network.message.Message;
+
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Messenger {
 
-    private final ConcurrentLinkedQueue<String> inbox = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<String> outbox = new ConcurrentLinkedQueue<>();
-    private final AtomicBoolean alive = new AtomicBoolean(true);
+    private final ConcurrentLinkedQueue<Message> inbox;
+    private final ConcurrentLinkedQueue<Message> outbox;
+    private final AtomicBoolean alive;
 
-    protected LinkedList<String> readInbox() {
-        LinkedList<String> content;
+    public Messenger(ConcurrentLinkedQueue<Message> inbox, ConcurrentLinkedQueue<Message> outbox, AtomicBoolean alive) {
+        this.inbox = inbox;
+        this.outbox = outbox;
+        this.alive = alive;
+    }
+
+    public Messenger() {
+        alive = new AtomicBoolean(true);
+        outbox = new ConcurrentLinkedQueue<>();
+        inbox = new ConcurrentLinkedQueue<>();
+    }
+
+    public LinkedList<Message> readInbox() {
+        LinkedList<Message> content;
         synchronized(inbox) {
             content = new LinkedList<>(inbox);
             inbox.clear();
@@ -19,15 +33,20 @@ public class Messenger {
         return content;
     }
 
-    protected void writeInbox(String message) {
+    public void writeInbox(Message message) {
         inbox.add(message);
     }
 
-    protected String readOutbox() {
-        return outbox.poll();
+    public Message readOutbox() {
+        synchronized(outbox) {
+            if (outbox.isEmpty()) {
+                return null;
+            }
+            return outbox.poll();
+        }
     }
 
-    protected void writeOutbox(LinkedList<String> data) {
+    public void writeOutbox(LinkedList<Message> data) {
         synchronized(outbox) {
             outbox.addAll(data);
         }

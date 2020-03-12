@@ -1,6 +1,10 @@
 package ee.taltech.iti0200.graphics;
 
+import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.domain.Player;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.physics.Body;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -11,8 +15,6 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
@@ -26,16 +28,19 @@ import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -43,26 +48,28 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Mostly still the  hello-world example from https://www.lwjgl.org/guide just to get
  * a rough idea on how to start using LWJGL library
  */
-public class Graphics {
+public class Graphics implements Component {
+
+    public static Texture defaultTexture;
 
     private long window;
+
     private World world;
-    private Model model;
-    private Texture tex;
+    private Shader shader;
+    private Camera camera;
 
-    public Graphics(World world) {
+    public Graphics(World world, Player player) {
         this.world = world;
-    }
-
-    public long initialize() {
+        this.camera = new Camera(1200, 800, player);
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if ( !glfwInit() )
+        if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
+        }
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
@@ -70,12 +77,25 @@ public class Graphics {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(600, 400, "Hello World!", NULL, NULL);
-        if ( window == NULL )
+        window = glfwCreateWindow(1200, 800, "Hello World!", NULL, NULL);
+        if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
+        }
+    }
+
+    public long getWindow() {
+        return window;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    @Override
+    public void initialize() throws IOException {
 
         // Get the thread stack and push a new frame
-        try ( MemoryStack stack = stackPush() ) {
+        try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -110,40 +130,19 @@ public class Graphics {
 
         glEnable(GL_TEXTURE_2D);
 
-        float[] vertices = new float[] {
-                -0.5f, 0.5f,
-                0.5f, 0.5f,
-                0.5f, -0.5f,
-                -0.5f, -0.5f,
-                0.3f, -0.5f, //delete this
-        };
+        shader = new Shader("shader");
 
-        float[] texture = new float[] {
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1,
-                1, 1, //delete this
+        camera.setPosition(new Vector3f(0, 0, 0));
 
-        };
-
-        int[] indices = new int[] {
-                0, 1, 2,
-                4, 3, 0 //change 4 to 2
-        };
-
-        model = new Model(vertices, texture, indices);
-
-        try {
-            tex = new Texture("./build/resources/main/smile.png");
-        } catch (IOException e) {
-            e.printStackTrace();
+        defaultTexture = new Texture("default.png");
+        for (Body drawable : world.getEntities()) {
+            drawable.initializeGraphics();
         }
 
-        glClearColor(0.0f, 0.0f, 0.3f, 0.0f);
-        return window;
+        glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
     }
 
+    @Override
     public void terminate() {
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
@@ -158,14 +157,17 @@ public class Graphics {
         return !glfwWindowShouldClose(window);
     }
 
-    public void render(long time) {
+    @Override
+    public void update(long tick) {
         glfwPollEvents();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-        model.render();
+        camera.update();
 
-        tex.bind();
+        for (Body drawable : world.getEntities()) {
+            drawable.render(shader, camera);
+        }
 
         glfwSwapBuffers(window); // swap the color buffers
     }
