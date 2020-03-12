@@ -2,7 +2,6 @@ package ee.taltech.iti0200.input;
 
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.Player;
-import ee.taltech.iti0200.domain.Projectile;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.physics.Vector;
