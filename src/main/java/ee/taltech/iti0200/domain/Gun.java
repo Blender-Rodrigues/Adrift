@@ -19,4 +19,12 @@ public class Gun {
     public double getProjectileSpeed() {
         return projectileSpeed;
     }
+
+    public void passTime(double time) {
+        leftToReload -= time;
+    }
+
+    public void shoot() {
+        leftToReload = fireRate;
+    }
 }
