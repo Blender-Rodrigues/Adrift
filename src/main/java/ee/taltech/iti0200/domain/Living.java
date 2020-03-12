@@ -17,7 +17,7 @@ public class Living extends Entity {
     /**
      * Called for living things on every game tick
      */
-    public void update(long tick) {
+    public void update(long tick, double timePassed) {
 
     }
 }

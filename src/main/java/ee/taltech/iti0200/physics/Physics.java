@@ -1,10 +1,7 @@
 package ee.taltech.iti0200.physics;
 
 import ee.taltech.iti0200.application.Component;
-import ee.taltech.iti0200.domain.Entity;
-import ee.taltech.iti0200.domain.Projectile;
-import ee.taltech.iti0200.domain.Terrain;
-import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

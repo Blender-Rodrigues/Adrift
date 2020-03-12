@@ -30,9 +30,9 @@ public class Bot extends Living {
         this.gun = new Gun();
     }
 
-    public void update(long tick) {
+    public void update(long tick, double timePassed) {
+        gun.passTime(timePassed);
         if (tick % 10 == 0) {
-            gun.passTime(10 * world.getTimeStep());
             move();
             if (gun.canShoot()) {
                 look().ifPresent(this::shoot);

@@ -42,7 +42,7 @@ public class World {
     }
 
     public void update(long tick) {
-        livingEntities.forEach(entity -> entity.update(tick));
+        livingEntities.forEach(entity -> entity.update(tick, timeStep));
         entities.removeIf(Entity::isRemoved);
     }
 
