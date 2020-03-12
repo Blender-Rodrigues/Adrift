@@ -13,12 +13,28 @@ public class Player extends Living {
     private static final double jumpDeltaV = 10.0;
 
     private int jumpsLeft;
+    private Gun gun;
 
     public Player(Vector position) {
         super(new Body(mass, new Vector(size), position, true, true), false);
         setElasticity(elasticity);
         setJumpsLeft(jumpAmountLimit);
         setFrictionCoefficient(frictionCoefficient);
+        gun = new Gun();
+    }
+
+    public Projectile shoot() {
+        Vector speed = new Vector(getSpeed());
+        speed.normalize();
+        speed.scale(gun.getProjectileSpeed());
+
+        Vector position = new Vector(getBoundingBox().getCentre());
+
+        return new Projectile(position, speed);
+    }
+
+    public boolean canShoot() {
+        return gun.canShoot();
     }
 
     public double getJumpDeltaV() {

@@ -105,12 +105,10 @@ public class Input implements Component {
     }
 
     private void playerShoot() {
-        Vector speed = new Vector(player.getSpeed());
-        speed.scale(2);
-
-        Vector position = new Vector(player.getBoundingBox().getCentre());
-
-        Projectile projectile = new Projectile(position, speed);
+        if (!player.canShoot()) {
+            return;
+        }
+        Projectile projectile = player.shoot();
 
         world.addBody(projectile, true);
     }
