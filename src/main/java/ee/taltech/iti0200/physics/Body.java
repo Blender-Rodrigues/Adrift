@@ -12,7 +12,6 @@ import org.joml.Vector3f;
 import java.io.IOException;
 
 import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
-import static org.lwjgl.opengl.GL11.*;
 
 public class Body {
 
@@ -71,7 +70,7 @@ public class Body {
     }
 
     public void drag() {
-        this.setXSpeed(this.dragFromSurface * this.frictionCoefficient * this.getSpeed().getX());
+        this.setXSpeed(this.dragFromSurface * this.frictionCoefficient * speed.getX());
     }
 
     public double getMass() {
@@ -155,8 +154,6 @@ public class Body {
 
         transform = new Transform();
         transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
-
-
     }
 
     public void changeTexture(String filename) {

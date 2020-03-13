@@ -6,18 +6,23 @@ import java.util.List;
 
 public class Living extends Entity {
 
-    public Living(List<Body> components, boolean collideable) {
+    protected final World world;
+
+    public Living(List<Body> components, boolean collideable, World world) {
         super(components, collideable);
+        this.world = world;
     }
 
-    public Living(Body component, boolean collideable) {
+    public Living(Body component, boolean collideable, World world) {
         super(component, collideable);
+        this.world = world;
     }
 
     /**
      * Called for living things on every game tick
      */
-    public void update(long tick, double timePassed) {
+    public void update(long tick) {
 
     }
+
 }
