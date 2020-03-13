@@ -11,6 +11,7 @@ public class Player extends Living {
     private static final double FRICTION_COEFFICIENT = 0.99;
     private static final int JUMP_AMOUNT_LIMIT = 2;
     private static final double JUMP_DELTA_V = 10.0;
+    private static final int MAX_HEALTH = 100;
 
     private int jumpsLeft;
     private Gun gun;
@@ -20,7 +21,8 @@ public class Player extends Living {
         setElasticity(ELASTICITY);
         setJumpsLeft(JUMP_AMOUNT_LIMIT);
         setFrictionCoefficient(FRICTION_COEFFICIENT);
-        gun = new Gun(boundingBox, 30);
+        gun = new Gun(boundingBox, 30, this);
+        health = MAX_HEALTH;
     }
 
     public void shoot() {
@@ -46,6 +48,7 @@ public class Player extends Living {
 
     @Override
     public void onCollide(Body otherBody) {
+        super.onCollide(otherBody);
         if (otherBody instanceof Terrain) {
             boolean verticalCollision = boundingBox.getOverLap(otherBody.getBoundingBox()).getY() == 0;
             boolean otherIsBelow = boundingBox.getCentre().getY() > otherBody.getBoundingBox().getCentre().getY();

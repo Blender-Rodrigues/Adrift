@@ -35,11 +35,12 @@ public class World {
     public void initialize() {
         addBody(new Bot(new Vector(10.0, 4.0), this), true);
         addBody(new Bot(new Vector(30.0, 4.0), this), true);
+
         for (int i = 0; i < 20; i++) {
-            addBody(new Terrain(new Vector(i * 2.0 + 1.0, 1.0)), false);
+            addBody(new Terrain(new Vector(i * 2.0 + 1.0, 1.0), this), false);
         }
-        addBody(new Terrain(new Vector(1.0, 3.0)), false);
-        addBody(new Terrain(new Vector(39.0, 3.0)), false);
+        addBody(new Terrain(new Vector(1.0, 3.0), this), false);
+        addBody(new Terrain(new Vector(39.0, 3.0), this), false);
         mapTerrain();
     }
 
@@ -47,6 +48,8 @@ public class World {
         time = tick;
         livingEntities.forEach(entity -> entity.update(tick));
         entities.removeIf(Entity::isRemoved);
+        livingEntities.removeIf(Entity::isRemoved);
+        movableBodies.removeIf(Entity::isRemoved);
     }
 
     public void mapTerrain() {
@@ -101,6 +104,21 @@ public class World {
 
     public List<Living> getLivingEntities() {
         return livingEntities;
+    }
+
+    public List<Projectile> getProjectiles() {
+        return movableBodies.stream()
+            .filter(body -> body instanceof Projectile)
+            .map(entity -> (Projectile) entity)
+            .collect(Collectors.toList());
+    }
+
+    public void removeTerrain(Terrain terrainEntity) {
+        imMovableBodies.remove(terrainEntity);
+        entities.remove(terrainEntity);
+        terrainEntity.getBoundingBox().getAllXCoordinates().stream()
+            .map(x -> new Vector(x, terrainEntity.getBoundingBox().getMaxY()))
+            .forEach(vector -> terrainMap.remove(vector));
     }
 
 }

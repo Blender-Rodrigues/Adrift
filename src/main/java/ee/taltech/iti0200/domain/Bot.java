@@ -15,6 +15,7 @@ public class Bot extends Living {
     private static final Random RANDOM = new Random();
     private static final double ELASTICITY = 0.25;
     private static final double FRICTION_COEFFICIENT = 0.99;
+    private static final int MAX_HEALTH = 100;
 
     private Vector acceleration;
     private Gun gun;
@@ -24,11 +25,13 @@ public class Bot extends Living {
         setElasticity(ELASTICITY);
         setFrictionCoefficient(FRICTION_COEFFICIENT);
         acceleration = new Vector(0.0, 0.0);
-        gun = new Gun(boundingBox, 90);
+        gun = new Gun(boundingBox, 90, this);
+        health = MAX_HEALTH;
     }
 
     @Override
     public void update(long tick) {
+        super.update(tick);
         if (tick % 10 == 0) {
             move();
             if (gun.canShoot(tick)) {
