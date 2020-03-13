@@ -27,7 +27,7 @@ public class Living extends Entity {
     }
 
     public void onCollide(Body otherBody) {
-        if (otherBody instanceof Projectile) {
+        if (otherBody instanceof Projectile && ((Projectile) otherBody).getOwner() != this) {
             health -= ((Projectile) otherBody).getDamage();
         }
     }

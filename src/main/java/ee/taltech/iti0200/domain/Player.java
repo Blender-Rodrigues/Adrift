@@ -21,7 +21,7 @@ public class Player extends Living {
         setElasticity(ELASTICITY);
         setJumpsLeft(JUMP_AMOUNT_LIMIT);
         setFrictionCoefficient(FRICTION_COEFFICIENT);
-        gun = new Gun(boundingBox, 30);
+        gun = new Gun(boundingBox, 30, this);
         health = MAX_HEALTH;
     }
 

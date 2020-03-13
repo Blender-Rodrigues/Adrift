@@ -103,4 +103,11 @@ public class World {
         return livingEntities;
     }
 
+    public List<Projectile> getProjectiles() {
+        return movableBodies.stream()
+            .filter(body -> body instanceof Projectile)
+            .map(entity -> (Projectile) entity)
+            .collect(Collectors.toList());
+    }
+
 }

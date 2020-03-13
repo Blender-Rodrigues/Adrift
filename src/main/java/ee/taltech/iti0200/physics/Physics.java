@@ -5,10 +5,7 @@ import ee.taltech.iti0200.domain.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.physics.BoundingBox.clamp;
@@ -29,11 +26,14 @@ public class Physics implements Component {
     public void update(long tick) {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
+        List<Living> livingEntites = world.getLivingEntities();
+        List<Projectile> projectiles = world.getProjectiles();
         Map<Vector, Terrain> terrainMap = world.getTerrainMap();
         checkForFloor(movableBodies, terrainMap);
         applyDrag(movableBodies);
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
+        checkForProjectileHits(livingEntites, projectiles);
         applyGravity(movableBodies);
     }
 
@@ -85,6 +85,19 @@ public class Physics implements Component {
                .collect(Collectors.toList());
 
            resolveCollision(moving, colliding);
+        }
+    }
+
+    private void checkForProjectileHits(List<Living> livingEntites, List<Projectile> projectiles) {
+        for (Projectile projectile: projectiles) {
+            Optional<Living> colliding = livingEntites.stream()
+                .filter(projectile::intersects)
+                .findAny();
+
+            if (colliding.isPresent()) {
+                projectile.onCollide(colliding.get());
+                colliding.get().onCollide(projectile);
+            }
         }
     }
 

@@ -25,7 +25,7 @@ public class Bot extends Living {
         setElasticity(ELASTICITY);
         setFrictionCoefficient(FRICTION_COEFFICIENT);
         acceleration = new Vector(0.0, 0.0);
-        gun = new Gun(boundingBox, 90);
+        gun = new Gun(boundingBox, 90, this);
         health = MAX_HEALTH;
     }
 
