@@ -8,7 +8,7 @@ public class Gun extends Entity {
     private static final double PROJECTILE_SPEED = 15;
 
     private long cooldown = 0;
-    private int damage = 1;
+    private int damage = 10;
     private long fireRate;
 
     public Gun(BoundingBox boundingBox, long fireRate) {
@@ -27,7 +27,7 @@ public class Gun extends Entity {
         speed.normalize();
         speed.scale(PROJECTILE_SPEED);
 
-        return new Projectile(new Vector(boundingBox.getCentre()), speed);
+        return new Projectile(new Vector(boundingBox.getCentre()), speed, damage);
     }
 
 }

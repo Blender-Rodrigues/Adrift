@@ -15,6 +15,7 @@ public class Bot extends Living {
     private static final Random RANDOM = new Random();
     private static final double ELASTICITY = 0.25;
     private static final double FRICTION_COEFFICIENT = 0.99;
+    private static final int MAX_HEALTH = 100;
 
     private Vector acceleration;
     private Gun gun;
@@ -25,6 +26,7 @@ public class Bot extends Living {
         setFrictionCoefficient(FRICTION_COEFFICIENT);
         acceleration = new Vector(0.0, 0.0);
         gun = new Gun(boundingBox, 90);
+        health = MAX_HEALTH;
     }
 
     @Override
