@@ -3,39 +3,31 @@ package ee.taltech.iti0200.domain;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-public class Gun extends Entity{
+public class Gun extends Entity {
 
-    private static final double fireRate = 3;
-    private static final double damage = 1;
-    private static final double projectileSpeed = 15;
-    private static final double mass = 0.0;
+    private static final double PROJECTILE_SPEED = 15;
 
-    private double leftToReload;
+    private long cooldown = 0;
+    private int damage = 1;
+    private long fireRate;
 
-    public Gun(BoundingBox boundingBox) {
-        super(mass, boundingBox, false);
-        leftToReload = 0;
+    public Gun(BoundingBox boundingBox, long fireRate) {
+        super(0, boundingBox, false);
+        this.fireRate = fireRate;
     }
 
-    public boolean canShoot() {
-        return leftToReload <= 0;
+    public boolean canShoot(long tick) {
+        return cooldown <= tick;
     }
 
-    public double getProjectileSpeed() {
-        return projectileSpeed;
-    }
-
-    public void passTime(double time) {
-        leftToReload -= time;
-    }
-
-    public Projectile shoot(Vector direction) {
-        leftToReload = fireRate;
+    public Projectile shoot(Vector direction, long tick) {
+        cooldown = tick + fireRate;
 
         Vector speed = new Vector(direction);
         speed.normalize();
-        speed.scale(projectileSpeed);
+        speed.scale(PROJECTILE_SPEED);
 
-        return new Projectile(new Vector(getBoundingBox().getCentre()), speed);
+        return new Projectile(new Vector(boundingBox.getCentre()), speed);
     }
+
 }
