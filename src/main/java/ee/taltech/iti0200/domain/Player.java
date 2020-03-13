@@ -48,6 +48,7 @@ public class Player extends Living {
 
     @Override
     public void onCollide(Body otherBody) {
+        super.onCollide(otherBody);
         if (otherBody instanceof Terrain) {
             boolean verticalCollision = boundingBox.getOverLap(otherBody.getBoundingBox()).getY() == 0;
             boolean otherIsBelow = boundingBox.getCentre().getY() > otherBody.getBoundingBox().getCentre().getY();

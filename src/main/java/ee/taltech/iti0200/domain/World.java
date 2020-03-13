@@ -47,6 +47,8 @@ public class World {
         time = tick;
         livingEntities.forEach(entity -> entity.update(tick));
         entities.removeIf(Entity::isRemoved);
+        livingEntities.removeIf(Entity::isRemoved);
+        movableBodies.removeIf(Entity::isRemoved);
     }
 
     public void mapTerrain() {

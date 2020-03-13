@@ -31,6 +31,7 @@ public class Bot extends Living {
 
     @Override
     public void update(long tick) {
+        super.update(tick);
         if (tick % 10 == 0) {
             move();
             if (gun.canShoot(tick)) {
