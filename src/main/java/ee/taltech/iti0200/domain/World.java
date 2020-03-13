@@ -21,7 +21,9 @@ public class World {
     protected double xMax;
     protected double yMin;
     protected double yMax;
+    protected long time;
     protected double timeStep;
+
     public World(double xMin, double xMax, double yMin, double yMax, double timeStep) {
         this.xMin = xMin;
         this.xMax = xMax;
@@ -42,6 +44,7 @@ public class World {
     }
 
     public void update(long tick) {
+        time = tick;
         livingEntities.forEach(entity -> entity.update(tick));
         entities.removeIf(Entity::isRemoved);
     }
@@ -55,6 +58,10 @@ public class World {
                     .map(pos -> new SimpleEntry<>(new Vector(pos, maxY), (Terrain) entity));
             })
             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+    }
+
+    public long getTime() {
+        return time;
     }
 
     public Map<Vector, Terrain> getTerrainMap() {

@@ -3,72 +3,54 @@ package ee.taltech.iti0200.domain;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.Vector;
 
-import java.util.AbstractMap;
+import javax.vecmath.Vector2d;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
 public class Bot extends Living {
 
-    private static final Vector size = new Vector(1.5, 1.5);
-    private static final double mass = 70.0;
-    private static final Random random = new Random();
-    private static final double elasticity = 0.25;
-    private static final double frictionCoefficient = 0.99;
-    private static final int shootRechargeTime = 250;
-    private static final int bulletSpeed = 15;
-    private World world;
+    private static final Vector SIZE = new Vector(1.5, 1.5);
+    private static final double MASS = 70.0;
+    private static final Random RANDOM = new Random();
+    private static final double ELASTICITY = 0.25;
+    private static final double FRICTION_COEFFICIENT = 0.99;
 
     private Vector acceleration;
-    private int ticksLeftForRecharge;
+    private Gun gun;
 
     public Bot(Vector position, World world) {
-        super(new Body(mass, size, position, true, true), false);
-        setElasticity(elasticity);
-        setFrictionCoefficient(frictionCoefficient);
+        super(new Body(MASS, SIZE, position, true, true), false, world);
+        setElasticity(ELASTICITY);
+        setFrictionCoefficient(FRICTION_COEFFICIENT);
         acceleration = new Vector(0.0, 0.0);
-        this.world = world;
-        ticksLeftForRecharge = 0;
+        gun = new Gun(boundingBox, 90);
     }
 
+    @Override
     public void update(long tick) {
         if (tick % 10 == 0) {
             move();
-            ticksLeftForRecharge -= 10;
-            if (ticksLeftForRecharge <= 0) {
-                look().ifPresent(this::shoot);
+            if (gun.canShoot(tick)) {
+                lookForPlayer().ifPresent(target -> world.addBody(gun.shoot(target, tick), true));
             }
         }
     }
 
-    private void shoot(Map.Entry<Vector, Double> target) {
-        if (target.getValue() < 0.2) {
-            ticksLeftForRecharge = shootRechargeTime;
-
-            Vector speed = new Vector(target.getKey());
-            speed.normalize();
-            speed.scale(bulletSpeed);
-
-            Vector position = new Vector(getBoundingBox().getCentre());
-
-            world.addBody(new Projectile(position, speed), true);
-        }
-    }
-
-    private Optional<AbstractMap.SimpleEntry<Vector, Double>> look() {
+    private Optional<Vector> lookForPlayer() {
         return world.getLivingEntities().stream()
-            .map(living -> {
-                Vector vector = new Vector(living.getBoundingBox().getCentre());
+            .filter(Player.class::isInstance)
+            .map(player -> {
+                Vector vector = new Vector(player.getBoundingBox().getCentre());
                 vector.sub(getBoundingBox().getCentre());
-                return new AbstractMap.SimpleEntry<>(vector, vector.angle(this.speed));
+                return vector;
             })
-            .filter(entry -> entry.getValue() < 0.2)
-            .min(Comparator.comparing(entry -> entry.getKey().lengthSquared()));
+            .filter(vector -> vector.angle(speed) < 0.2)
+            .min(Comparator.comparing(Vector2d::lengthSquared));
     }
 
     private void move() {
-        acceleration.add(new Vector(random.nextDouble() - 0.5, 0));
+        acceleration.add(new Vector(RANDOM.nextDouble() - 0.5, 0));
         acceleration.scale(0.9);
         speed.add(acceleration);
     }

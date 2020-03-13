@@ -16,6 +16,10 @@ public class Entity extends Body {
 
     protected boolean removed = false;
 
+    public Entity(double mass, BoundingBox boundingBox, boolean collideable) {
+        super(mass, boundingBox, collideable);
+    }
+
     public boolean isRemoved() {
         return removed;
     }

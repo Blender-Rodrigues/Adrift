@@ -5,24 +5,35 @@ import ee.taltech.iti0200.physics.Vector;
 
 public class Player extends Living {
 
-    private static final Vector size = new Vector(1.0, 1.0);
-    private static final double mass = 70.0;
-    private static final double elasticity = 0.25;
-    private static final double frictionCoefficient = 0.99;
-    private static final int jumpAmountLimit = 2;
-    private static final double jumpDeltaV = 10.0;
+    private static final Vector SIZE = new Vector(1.0, 1.0);
+    private static final double MASS = 70.0;
+    private static final double ELASTICITY = 0.25;
+    private static final double FRICTION_COEFFICIENT = 0.99;
+    private static final int JUMP_AMOUNT_LIMIT = 2;
+    private static final double JUMP_DELTA_V = 10.0;
 
     private int jumpsLeft;
+    private Gun gun;
 
-    public Player(Vector position) {
-        super(new Body(mass, new Vector(size), position, true, true), false);
-        setElasticity(elasticity);
-        setJumpsLeft(jumpAmountLimit);
-        setFrictionCoefficient(frictionCoefficient);
+    public Player(Vector position, World world) {
+        super(new Body(MASS, new Vector(SIZE), position, true, true), false, world);
+        setElasticity(ELASTICITY);
+        setJumpsLeft(JUMP_AMOUNT_LIMIT);
+        setFrictionCoefficient(FRICTION_COEFFICIENT);
+        gun = new Gun(boundingBox, 30);
+    }
+
+    public void shoot() {
+        if (!gun.canShoot(world.getTime())) {
+            return;
+        }
+
+        Projectile projectile = gun.shoot(speed, world.getTime());
+        world.addBody(projectile, true);
     }
 
     public double getJumpDeltaV() {
-        return jumpDeltaV;
+        return JUMP_DELTA_V;
     }
 
     public void setJumpsLeft(int jumpsLeft) {
@@ -36,10 +47,10 @@ public class Player extends Living {
     @Override
     public void onCollide(Body otherBody) {
         if (otherBody instanceof Terrain) {
-            boolean verticalCollision = getBoundingBox().getOverLap(otherBody.getBoundingBox()).getY() == 0;
-            boolean otherIsBelow = getBoundingBox().getCentre().getY() > otherBody.getBoundingBox().getCentre().getY();
+            boolean verticalCollision = boundingBox.getOverLap(otherBody.getBoundingBox()).getY() == 0;
+            boolean otherIsBelow = boundingBox.getCentre().getY() > otherBody.getBoundingBox().getCentre().getY();
             if (verticalCollision && otherIsBelow) {
-                setJumpsLeft(jumpAmountLimit);
+                setJumpsLeft(JUMP_AMOUNT_LIMIT);
             }
         }
     }
