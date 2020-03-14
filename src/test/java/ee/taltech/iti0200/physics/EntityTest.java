@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.physics;
 
-import ee.taltech.iti0200.domain.Entity;
+import ee.taltech.iti0200.domain.entity.Entity;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

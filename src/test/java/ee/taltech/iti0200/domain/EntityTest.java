@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.domain;
 
+import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,10 @@
 package ee.taltech.iti0200.domain;
 
+import ee.taltech.iti0200.domain.entity.Bot;
+import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Living;
+import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.AbstractMap.SimpleEntry;

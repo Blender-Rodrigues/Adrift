@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.physics;
 
-import ee.taltech.iti0200.domain.Terrain;
+import ee.taltech.iti0200.domain.entity.Terrain;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,6 @@
-package ee.taltech.iti0200.domain;
+package ee.taltech.iti0200.domain.entity;
 
+import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.physics.Body;
 
 import java.util.List;

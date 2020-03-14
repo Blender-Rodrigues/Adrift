@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain;
+package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.Vector;

@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.graphics;
 
-import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.entity.Player;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

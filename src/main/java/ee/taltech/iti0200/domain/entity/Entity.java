@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain;
+package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;

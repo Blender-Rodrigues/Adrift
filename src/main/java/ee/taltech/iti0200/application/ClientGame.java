@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.application;
 
-import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.client.ClientNetwork;
