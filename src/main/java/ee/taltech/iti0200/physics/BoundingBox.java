@@ -1,29 +1,32 @@
 package ee.taltech.iti0200.physics;
 
-import ee.taltech.iti0200.domain.Terrain;
+import ee.taltech.iti0200.domain.entity.Terrain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
 
-public class BoundingBox {
+public class BoundingBox implements Serializable {
 
     protected Vector centre;
     protected Vector size;
 
-    public BoundingBox(Vector min, Vector max) {
-        this.size = new Vector(max);
-        this.size.sub(min);
+    public BoundingBox(double minX, double minY, double maxX, double maxY) {
+        this.size = new Vector(maxX, maxY);
+        this.size.x -= minX;
+        this.size.y -= minY;
         this.size.scale(0.5);
 
-        this.centre = new Vector(max);
-        this.centre.add(min);
+        this.centre = new Vector(maxX, maxY);
+        this.size.x += minX;
+        this.size.y += minY;
         this.centre.scale(0.5);
     }
 
-    public BoundingBox(Vector position, Vector size, boolean usingPositionAndSize) {
-        this.centre = position;
+    public BoundingBox(Vector position, Vector size) {
+        this.centre = new Vector(position);
         this.size = new Vector(size);
         this.size.scale(0.5);
     }

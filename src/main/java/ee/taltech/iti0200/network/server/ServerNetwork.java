@@ -1,6 +1,8 @@
 package ee.taltech.iti0200.network.server;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.event.CreatePlayer;
+import ee.taltech.iti0200.domain.event.Event;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.message.Message;
@@ -17,6 +19,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static ee.taltech.iti0200.application.Game.eventBus;
 
 public class ServerNetwork extends Network {
 
@@ -37,18 +41,24 @@ public class ServerNetwork extends Network {
     @Override
     public void initialize() {
         new Registrar(serverSocket, clients, inbox, alive).start();
+        eventBus.subscribe(CreatePlayer.class, new PlayerJoinHandler(world, messenger));
     }
 
     @Override
     public void update(long tick) {
         LinkedList<Message> messages = messenger.readInbox();
 
-        // TODO: temporary generic example of handling messages
-        messages.forEach(message -> logger.debug(
-            "Server received {}: {}",
-            message.getClass().getSimpleName(),
-            message.toString()
-        ));
+        messages.forEach(message -> {
+            if (message instanceof Event) {
+                eventBus.dispatch((Event) message);
+            } else {
+                logger.debug(
+                    "Server received non-event {}: {}",
+                    message.getClass().getSimpleName(),
+                    message.toString()
+                );
+            }
+        });
     }
 
     @Override

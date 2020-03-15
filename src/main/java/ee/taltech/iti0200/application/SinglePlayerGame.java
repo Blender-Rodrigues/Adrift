@@ -10,8 +10,9 @@ class SinglePlayerGame extends ClientGame {
 
     @Override
     protected void initialize() {
+        world.initialize();
         components.add(new Intelligence(world));
-        world.addBody(player, true);
+        world.addEntity(player);
     }
 
     @Override

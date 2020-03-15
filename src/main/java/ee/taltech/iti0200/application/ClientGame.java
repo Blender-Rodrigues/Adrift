@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.application;
 
-import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.client.ClientNetwork;
@@ -38,9 +38,9 @@ class ClientGame extends Game {
 
     @Override
     protected void initialize() throws UnknownHostException {
-        network = new ClientNetwork(world, host, tcpPort);
+        network = new ClientNetwork(world, host, tcpPort, player);
         components.add(network);
-        world.addBody(player, true);
+        world.addEntity(player);
     }
 
     @Override

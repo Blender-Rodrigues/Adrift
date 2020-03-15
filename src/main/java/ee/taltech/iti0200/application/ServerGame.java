@@ -15,6 +15,7 @@ class ServerGame extends Game {
 
     @Override
     protected void initialize() throws Exception {
+        world.initialize();
         network = new ServerNetwork(world, tcpPort);
         components.add(network);
         components.add(new Intelligence(world));

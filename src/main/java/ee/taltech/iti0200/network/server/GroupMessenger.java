@@ -4,12 +4,13 @@ import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.message.Message;
 import org.apache.logging.log4j.core.net.Protocol;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.singletonList;
 
 public class GroupMessenger extends Messenger {
 
@@ -26,39 +27,51 @@ public class GroupMessenger extends Messenger {
     }
 
     @Override
-    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-    public void writeOutbox(LinkedList<Message> data) {
-        if (data.isEmpty()) {
+    public void writeOutbox(Message message) {
+        writeOutbox(singletonList(message));
+    }
+
+    @Override
+    public void writeOutbox(List<Message> messages) {
+        if (messages.isEmpty()) {
             return;
         }
 
-        List<Message> tcpMessages = data.stream()
+        clients.forEach(client -> sendToClient(
+            messages.stream()
+                .filter(message -> message.deliverTo(client.getId()))
+                .collect(Collectors.toList()),
+            client
+        ));
+    }
+
+    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
+    private void sendToClient(List<Message> messages, ConnectionToClient client) {
+        Thread.yield();
+
+        if (!client.isOpen() || !client.isFinalized()) {
+            return;
+        }
+
+        List<Message> tcpMessages = messages.stream()
             .filter(message -> message.getChannel().equals(Protocol.TCP))
             .collect(Collectors.toList());
 
-        List<Message> udpMessages = data.stream()
+        List<Message> udpMessages = messages.stream()
             .filter(message -> message.getChannel().equals(Protocol.UDP))
             .collect(Collectors.toList());
 
-        for (ConnectionToClient client: clients) {
-            Thread.yield();
-
-            if (!client.isOpen() || !client.isFinalized()) {
-                return;
+        if (!tcpMessages.isEmpty()) {
+            final ConcurrentLinkedQueue<Message> outbox = client.getTcpOutbox();
+            synchronized(outbox) {
+                outbox.addAll(tcpMessages);
             }
+        }
 
-            if (!tcpMessages.isEmpty()) {
-                final ConcurrentLinkedQueue<Message> outbox = client.getTcpOutbox();
-                synchronized(outbox) {
-                    outbox.addAll(tcpMessages);
-                }
-            }
-
-            if (!udpMessages.isEmpty()) {
-                final ConcurrentLinkedQueue<Message> outbox = client.getUdpOutbox();
-                synchronized(outbox) {
-                    outbox.addAll(udpMessages);
-                }
+        if (!udpMessages.isEmpty()) {
+            final ConcurrentLinkedQueue<Message> outbox = client.getUdpOutbox();
+            synchronized(outbox) {
+                outbox.addAll(udpMessages);
             }
         }
     }

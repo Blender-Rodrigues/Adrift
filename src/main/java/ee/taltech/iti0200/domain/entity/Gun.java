@@ -1,9 +1,11 @@
-package ee.taltech.iti0200.domain;
+package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
 public class Gun extends Entity {
+
+    private static final long serialVersionUID = 1L;
 
     private static final double PROJECTILE_SPEED = 15;
 
@@ -13,7 +15,7 @@ public class Gun extends Entity {
     private Living owner;
 
     public Gun(BoundingBox boundingBox, long fireRate, Living owner) {
-        super(0, boundingBox, false);
+        super(0, boundingBox);
         this.fireRate = fireRate;
         this.owner = owner;
     }
