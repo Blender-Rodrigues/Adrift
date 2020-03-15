@@ -1,11 +1,14 @@
 package ee.taltech.iti0200.network.client;
 
+import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.CreatePlayer;
 import ee.taltech.iti0200.network.Connection;
 import ee.taltech.iti0200.network.Listener;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.PacketObjectInputStream;
 import ee.taltech.iti0200.network.PacketObjectOutputStream;
 import ee.taltech.iti0200.network.Sender;
+import ee.taltech.iti0200.network.message.LoadWorld;
 import ee.taltech.iti0200.network.message.Message;
 import ee.taltech.iti0200.network.message.TcpRegistrationRequest;
 import ee.taltech.iti0200.network.message.TcpRegistrationResponse;
@@ -21,7 +24,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.UUID;
 
 import static java.lang.String.format;
 
@@ -29,12 +31,13 @@ public class ConnectionToServer extends Connection {
 
     private final Logger logger = LogManager.getLogger(ConnectionToServer.class);
     private final Messenger messenger;
-    private final UUID id;
+    private final Player player;
+    private LoadWorld worldData;
 
-    public ConnectionToServer(InetAddress address, int tcpPort, Messenger messenger, UUID id) {
+    public ConnectionToServer(InetAddress address, int tcpPort, Messenger messenger, Player player) {
         super(address, tcpPort);
         this.messenger = messenger;
-        this.id = id;
+        this.player = player;
     }
 
     /**
@@ -53,12 +56,8 @@ public class ConnectionToServer extends Connection {
         tcpSocket.setSoTimeout(RETRY);
 
         TcpRegistrationResponse response = (TcpRegistrationResponse) retry(TcpRegistrationResponse.class, tcpInput, () -> {
-            try {
-                tcpOutput.writeObject(new TcpRegistrationRequest(id, udpSocket.getLocalPort()));
-                tcpOutput.flush();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            tcpOutput.writeObject(new TcpRegistrationRequest(player.getId(), udpSocket.getLocalPort()));
+            tcpOutput.flush();
         });
 
         logger.info("Received UDP port {} from server", response.getUdpPort());
@@ -66,12 +65,13 @@ public class ConnectionToServer extends Connection {
         udpOutput = new PacketObjectOutputStream(udpSocket, address, response.getUdpPort());
 
         retry(UdpRegistrationResponse.class, tcpInput, () -> {
-            try {
-                udpOutput.writeObject(new UdpRegistrationRequest());
-                logger.debug("Trying to register UDP against port " + response.getUdpPort());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            udpOutput.writeObject(new UdpRegistrationRequest());
+            logger.debug("Trying to register UDP against port " + response.getUdpPort());
+        });
+
+        worldData = (LoadWorld) retry(LoadWorld.class, tcpInput, () -> {
+            tcpOutput.writeObject(new CreatePlayer(player));
+            tcpOutput.flush();
         });
 
         tcpSocket.setSoTimeout(0);
@@ -89,6 +89,10 @@ public class ConnectionToServer extends Connection {
         logger.info("Connected to " + address.getHostName());
     }
 
+    public LoadWorld getWorldData() {
+        return worldData;
+    }
+
     /**
      * Retry sending a message provided by runnable parameter every 3 seconds up to 30 seconds.
      * Break and return when a message of the specified type is received from the server.
@@ -96,7 +100,7 @@ public class ConnectionToServer extends Connection {
     private Message retry(
         Class<? extends Message> type,
         ObjectInputStream stream,
-        Runnable runnable
+        RelaxedRunnable runnable
     ) throws IOException, ClassNotFoundException {
         runnable.run();
 
@@ -122,6 +126,13 @@ public class ConnectionToServer extends Connection {
         }
 
         throw new RuntimeException(format("Failed to get a response from server in %d ms", TIMEOUT));
+    }
+
+    @FunctionalInterface
+    public interface RelaxedRunnable {
+
+        void run() throws IOException, ClassNotFoundException;
+
     }
 
 }

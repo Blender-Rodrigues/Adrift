@@ -1,40 +1,29 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-public class Terrain extends Entity {
+public class Terrain extends Damageable {
 
-    private static final Vector size = new Vector(2.00, 2.00);
-    public static final double TERRAIN_BLOCK_RESOLUTION = 100;
-    private static final double mass = Double.POSITIVE_INFINITY;
-    private static final double elasticity = 0.9;
-    private static final double frictionCoefficient = 0.9;
+    private static final long serialVersionUID = 1L;
+
+    private static final Vector SIZE = new Vector(2.00, 2.00);
+    private static final double MASS = Double.POSITIVE_INFINITY;
+    private static final double ELASTICITY = 0.9;
+    private static final double FRICTION_COEFFICIENT = 0.9;
     private static final int MAX_HEALTH = 100;
 
-    private int health;
-    private World world;
+    public static final double TERRAIN_BLOCK_RESOLUTION = 100;
 
-    public Terrain(Vector position, World world) {
-        super(new Body(mass, new Vector(size), position.rounded(), true, true), true);
-        setElasticity(elasticity);
-        setFrictionCoefficient(frictionCoefficient);
-        health = MAX_HEALTH;
-        this.world = world;
+    public Terrain(Vector position) {
+        super(MASS, new BoundingBox(position.rounded(), SIZE), MAX_HEALTH);
+        this.elasticity = ELASTICITY;
+        this.frictionCoefficient = FRICTION_COEFFICIENT;
+        this.collideable = true;
     }
 
     public int getIntegerWidth() {
         return (int) getBoundingBox().getSize().getX() * (int) TERRAIN_BLOCK_RESOLUTION;
-    }
-
-    public void onCollide(Body otherBody) {
-        if (otherBody instanceof Projectile) {
-            this.health -= ((Projectile) otherBody).getDamage();
-            if (health <= 0) {
-                world.removeTerrain(this);
-            }
-        }
     }
 
 }

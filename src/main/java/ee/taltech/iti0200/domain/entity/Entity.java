@@ -1,27 +1,41 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.Texture;
+import ee.taltech.iti0200.graphics.Transform;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
-import ee.taltech.iti0200.physics.Vector;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.joml.Vector3f;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
+import java.util.UUID;
+
+import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
 
 public class Entity extends Body {
 
-    private List<Body> components;
+    private static final long serialVersionUID = 1L;
+
+    private final Logger logger = LogManager.getLogger(Body.class);
+
+    private UUID id = UUID.randomUUID();
     private boolean onFloor;
+    private transient Model model;
+    private transient Texture texture;
+    private transient Transform transform;
 
-    protected boolean removed = false;
+    protected boolean movable = false;
 
-    public Entity(double mass, BoundingBox boundingBox, boolean collideable) {
-        super(mass, boundingBox, collideable);
+    public Entity(double mass, BoundingBox boundingBox) {
+        super(mass, boundingBox);
     }
 
-    public boolean isRemoved() {
-        return removed;
+    public boolean isMovable() {
+        return movable;
     }
 
     public boolean isOnFloor() {
@@ -32,58 +46,63 @@ public class Entity extends Body {
         this.onFloor = onFloor;
     }
 
-    public Entity(List<Body> components, boolean collideable) {
-        super(
-            0.0,
-            new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
-            new Vector(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY),
-            collideable
-        );
-
-        this.components = components;
-
-        Vector min = new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-        Vector max = new Vector(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-
-        for (Body component: components) {
-            this.mass += component.getMass();
-            min = new Vector(
-                Math.min(min.getX(), component.getBoundingBox().getMinX()),
-                Math.min(min.getY(), component.getBoundingBox().getMinY())
-            );
-            max = new Vector(
-                Math.max(max.getX(), component.getBoundingBox().getMaxX()),
-                Math.max(max.getY(), component.getBoundingBox().getMaxY())
-            );
-        }
-
-        this.boundingBox = new BoundingBox(min, max);
-
-        this.inverseMass = 1 / this.mass;
+    public UUID getId() {
+        return id;
     }
 
-    public Entity(Body component, boolean collideable) {
-        super(
-            component.getMass(),
-            component.getBoundingBox(),
-            collideable
-        );
-
-        this.components = Arrays.asList(component);
-    }
-
-    public List<Body> getComponents() {
-        return components;
+    public Entity setId(UUID id) {
+        this.id = id;
+        return this;
     }
 
     public void initializeGraphics() {
-        for (Body component : components) {
-            component.initializeGraphics();
+        float[] vertices = new float[]{
+            -1f, 1f, 0,
+            1f, 1f, 0,
+            1f, -1f, 0,
+            -1f, -1f, 0
+        };
+
+        float[] texture = new float[]{
+            0, 0,
+            1, 0,
+            1, 1,
+            0, 1
+        };
+
+        int[] indices = new int[]{
+            0, 1, 2,
+            2, 3, 0
+        };
+
+        model = new Model(vertices, texture, indices);
+        this.texture = defaultTexture;
+
+        transform = new Transform();
+        transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
+    }
+
+    public void changeTexture(String filename) {
+        try {
+            this.texture = new Texture(filename);
+        } catch (IOException e) {
+            logger.error("Failed to change texture: " + e.getMessage(), e);
         }
     }
 
     public void render(Shader shader, Camera camera) {
-        components.forEach(component -> component.render(shader, camera));
+        transform.pos.set(new Vector3f((float) this.boundingBox.getCentre().x, (float) this.boundingBox.getCentre().y, 0));
+
+        shader.bind();
+        shader.setUniform("sampler", 0);
+        shader.setUniform("projection", transform.getProjection(camera.getProjection()));
+        texture.bind(0);
+        model.render();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + boundingBox.getCentre().rounded();
     }
 
 }

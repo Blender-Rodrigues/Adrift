@@ -2,9 +2,12 @@ package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
 public class Player extends Living {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Vector SIZE = new Vector(1.0, 1.0);
     private static final double MASS = 70.0;
@@ -13,17 +16,17 @@ public class Player extends Living {
     private static final int JUMP_AMOUNT_LIMIT = 2;
     private static final double JUMP_DELTA_V = 10.0;
     private static final int MAX_HEALTH = 100;
+    private static final int FIRE_RATE = 90;
 
     private int jumpsLeft;
     private Gun gun;
 
     public Player(Vector position, World world) {
-        super(new Body(MASS, new Vector(SIZE), position, true, true), false, world);
-        setElasticity(ELASTICITY);
-        setJumpsLeft(JUMP_AMOUNT_LIMIT);
-        setFrictionCoefficient(FRICTION_COEFFICIENT);
-        gun = new Gun(boundingBox, 30, this);
-        health = MAX_HEALTH;
+        super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
+        this.elasticity = ELASTICITY;
+        this.jumpsLeft = JUMP_AMOUNT_LIMIT;
+        this.frictionCoefficient = FRICTION_COEFFICIENT;
+        this.gun = new Gun(boundingBox, FIRE_RATE, this);
     }
 
     public void shoot() {
@@ -32,7 +35,7 @@ public class Player extends Living {
         }
 
         Projectile projectile = gun.shoot(speed, world.getTime());
-        world.addBody(projectile, true);
+        world.addEntity(projectile);
     }
 
     public double getJumpDeltaV() {

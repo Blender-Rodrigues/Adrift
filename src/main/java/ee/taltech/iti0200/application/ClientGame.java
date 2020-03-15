@@ -38,9 +38,9 @@ class ClientGame extends Game {
 
     @Override
     protected void initialize() throws UnknownHostException {
-        network = new ClientNetwork(world, host, tcpPort);
+        network = new ClientNetwork(world, host, tcpPort, player);
         components.add(network);
-        world.addBody(player, true);
+        world.addEntity(player);
     }
 
     @Override

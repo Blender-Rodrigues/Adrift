@@ -16,9 +16,9 @@ public interface Component {
         put(ClientNetwork.class, 1);
         put(ServerNetwork.class, 1);
         put(Physics.class, 2);
+        put(Intelligence.class, 2);
         put(Graphics.class, 3);
         put(Input.class, 4);
-        put(Intelligence.class, 5);
     }};
 
     default void initialize() throws Exception {

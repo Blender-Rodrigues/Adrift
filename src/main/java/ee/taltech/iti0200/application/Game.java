@@ -1,6 +1,11 @@
 package ee.taltech.iti0200.application;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.event.DealDamage;
+import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.RemoveEntity;
+import ee.taltech.iti0200.domain.event.handler.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.handler.EntityRemoveHandler;
 import ee.taltech.iti0200.physics.Physics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +17,8 @@ import static ee.taltech.iti0200.application.Component.priorities;
 import static java.util.Comparator.comparingInt;
 
 abstract public class Game {
+
+    public static EventBus eventBus = new EventBus();
 
     protected World world;
     protected List<Component> components = new LinkedList<>();
@@ -30,9 +37,11 @@ abstract public class Game {
 
     void run() {
         try {
-            world.initialize();
             initialize();
             timer.initialize();
+
+            eventBus.subscribe(DealDamage.class, new EntityDamageHandler(world));
+            eventBus.subscribe(RemoveEntity.class, new EntityRemoveHandler(world));
 
             components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
 
@@ -50,6 +59,7 @@ abstract public class Game {
             components.forEach(component -> component.update(tick));
             loop(tick);
             world.update(tick);
+            eventBus.propagate();
             tick = timer.sleep();
         }
 

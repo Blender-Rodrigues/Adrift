@@ -2,14 +2,14 @@ package ee.taltech.iti0200.domain.event;
 
 abstract public class Event {
 
-    private boolean isCancelled = false;
+    private boolean isStopped = false;
 
-    public boolean isCancelled() {
-        return isCancelled;
+    public boolean isStopped() {
+        return isStopped;
     }
 
-    public void cancel() {
-        isCancelled = true;
+    public void stop() {
+        isStopped = true;
     }
 
 }

@@ -1,9 +1,9 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.application.Component;
-import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Player;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -135,7 +135,7 @@ public class Graphics implements Component {
         camera.setPosition(new Vector3f(0, 0, 0));
 
         defaultTexture = new Texture("default.png");
-        for (Body drawable : world.getEntities()) {
+        for (Entity drawable : world.getEntities()) {
             drawable.initializeGraphics();
         }
 
@@ -165,7 +165,7 @@ public class Graphics implements Component {
 
         camera.update();
 
-        for (Body drawable : world.getEntities()) {
+        for (Entity drawable : world.getEntities()) {
             drawable.render(shader, camera);
         }
 

@@ -1,22 +1,21 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.BoundingBox;
 
-import java.util.List;
+public class Living extends Damageable {
 
-public class Living extends Entity {
+    private static final long serialVersionUID = 1L;
 
-    protected final World world;
-    protected int health;
+    protected transient World world;
 
-    public Living(List<Body> components, boolean collideable, World world) {
-        super(components, collideable);
+    public Living(double mass, BoundingBox boundingBox, World world, int health) {
+        super(mass, boundingBox, health);
         this.world = world;
+        this.movable = true;
     }
 
-    public Living(Body component, boolean collideable, World world) {
-        super(component, collideable);
+    public void setWorld(World world) {
         this.world = world;
     }
 
@@ -24,15 +23,7 @@ public class Living extends Entity {
      * Called for living things on every game tick
      */
     public void update(long tick) {
-        if (health <= 0) {
-            this.removed = true;
-        }
-    }
 
-    public void onCollide(Body otherBody) {
-        if (otherBody instanceof Projectile && ((Projectile) otherBody).getOwner() != this) {
-            health -= ((Projectile) otherBody).getDamage();
-        }
     }
 
 }
