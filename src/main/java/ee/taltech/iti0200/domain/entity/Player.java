@@ -1,11 +1,12 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.graphics.*;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-public class Player extends Living {
+public class Player extends Living implements Drawable {
 
     private static final long serialVersionUID = 1L;
 
@@ -20,6 +21,11 @@ public class Player extends Living {
 
     private int jumpsLeft;
     private Gun gun;
+
+    private Model model;
+    private Transform transform;
+    private Texture texture;
+
 
     public Player(Vector position, World world) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
@@ -62,4 +68,41 @@ public class Player extends Living {
         }
     }
 
+    public void initializeGraphics() {
+        initializeGraphicsT();
+    }
+
+    public void render(Shader shader, Camera camera, long tick) {
+        renderT(shader, camera, tick);
+    }
+
+    @Override
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    @Override
+    public Model getModel() {
+        return model;
+    }
+
+    @Override
+    public void setTransform(Transform transform) {
+        this.transform = transform;
+    }
+
+    @Override
+    public Transform getTransform() {
+        return transform;
+    }
+
+    @Override
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    @Override
+    public Texture getTexture() {
+        return texture;
+    }
 }
