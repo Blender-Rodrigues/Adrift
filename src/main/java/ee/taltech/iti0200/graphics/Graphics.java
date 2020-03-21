@@ -166,7 +166,7 @@ public class Graphics implements Component {
         camera.update();
 
         for (Entity drawable : world.getEntities()) {
-            drawable.render(shader, camera);
+            drawable.render(shader, camera, tick);
         }
 
         glfwSwapBuffers(window); // swap the color buffers

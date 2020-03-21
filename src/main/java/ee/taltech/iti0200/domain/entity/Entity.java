@@ -1,10 +1,6 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.Model;
-import ee.taltech.iti0200.graphics.Shader;
-import ee.taltech.iti0200.graphics.Texture;
-import ee.taltech.iti0200.graphics.Transform;
+import ee.taltech.iti0200.graphics.*;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import org.apache.logging.log4j.LogManager;
@@ -20,12 +16,11 @@ public class Entity extends Body {
 
     private static final long serialVersionUID = 1L;
 
-    private final Logger logger = LogManager.getLogger(Body.class);
-
     private UUID id = UUID.randomUUID();
     private boolean onFloor;
     private transient Model model;
-    private transient Texture texture;
+//    private transient Texture texture;
+    private transient Animation texture;
     private transient Transform transform;
 
     protected boolean movable = false;
@@ -76,27 +71,24 @@ public class Entity extends Body {
         };
 
         model = new Model(vertices, texture, indices);
-        this.texture = defaultTexture;
+//        this.texture = defaultTexture;
+        this.texture = new Animation(6, "anim");
 
         transform = new Transform();
         transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
     }
 
-    public void changeTexture(String filename) {
-        try {
-            this.texture = new Texture(filename);
-        } catch (IOException e) {
-            logger.error("Failed to change texture: " + e.getMessage(), e);
-        }
-    }
+//    public void changeTexture(String filename) {
+//        this.texture = new Texture(filename);
+//    }
 
-    public void render(Shader shader, Camera camera) {
+    public void render(Shader shader, Camera camera, long tick) {
         transform.pos.set(new Vector3f((float) this.boundingBox.getCentre().x, (float) this.boundingBox.getCentre().y, 0));
 
         shader.bind();
         shader.setUniform("sampler", 0);
         shader.setUniform("projection", transform.getProjection(camera.getProjection()));
-        texture.bind(0);
+        texture.bind(tick);
         model.render();
     }
 
