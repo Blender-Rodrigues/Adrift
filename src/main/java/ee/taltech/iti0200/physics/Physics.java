@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.physics;
 
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.application.Game;
 import ee.taltech.iti0200.domain.*;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
@@ -37,7 +38,9 @@ public class Physics implements Component {
         applyDrag(movableBodies);
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
-        checkForProjectileHits(livingEntites, projectiles);
+        if (Game.isServer) {
+            checkForProjectileHits(livingEntites, projectiles);
+        }
         applyGravity(movableBodies);
     }
 
@@ -94,14 +97,10 @@ public class Physics implements Component {
 
     private void checkForProjectileHits(List<Living> livingEntites, List<Projectile> projectiles) {
         for (Projectile projectile: projectiles) {
-            Optional<Living> colliding = livingEntites.stream()
+            livingEntites.stream()
                 .filter(projectile::intersects)
-                .findAny();
-
-            if (colliding.isPresent()) {
-                projectile.onCollide(colliding.get());
-                colliding.get().onCollide(projectile);
-            }
+                .findAny()
+                .ifPresent(projectile::onCollide);
         }
     }
 

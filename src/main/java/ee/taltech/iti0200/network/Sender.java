@@ -28,7 +28,6 @@ public class Sender extends Thread {
             try {
                 Message message = messenger.readOutbox();
                 if (message != null) {
-                    logger.info("Sending {} message", message.getClass().getSimpleName());
                     output.writeObject(message);
                     output.flush();
                 }

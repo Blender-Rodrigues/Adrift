@@ -1,7 +1,8 @@
 package ee.taltech.iti0200.network.client;
 
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.domain.event.CreatePlayer;
+import ee.taltech.iti0200.domain.event.entity.CreatePlayer;
+import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.Connection;
 import ee.taltech.iti0200.network.Listener;
 import ee.taltech.iti0200.network.Messenger;
@@ -24,19 +25,36 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.String.format;
 
 public class ConnectionToServer extends Connection {
 
     private final Logger logger = LogManager.getLogger(ConnectionToServer.class);
-    private final Messenger messenger;
+    private final ConcurrentLinkedQueue<Message> inbox;
+    private final ConcurrentLinkedQueue<Message> tcpOutbox;
+    private final ConcurrentLinkedQueue<Message> udpOutbox;
+    private final AtomicBoolean alive;
     private final Player player;
+
     private LoadWorld worldData;
 
-    public ConnectionToServer(InetAddress address, int tcpPort, Messenger messenger, Player player) {
+    public ConnectionToServer(
+        InetAddress address,
+        int tcpPort,
+        ConcurrentLinkedQueue<Message> inbox,
+        ConcurrentLinkedQueue<Message> tcpOutbox,
+        ConcurrentLinkedQueue<Message> udpOutbox,
+        AtomicBoolean alive,
+        Player player
+    ) {
         super(address, tcpPort);
-        this.messenger = messenger;
+        this.inbox = inbox;
+        this.tcpOutbox = tcpOutbox;
+        this.udpOutbox = udpOutbox;
+        this.alive = alive;
         this.player = player;
     }
 
@@ -70,7 +88,7 @@ public class ConnectionToServer extends Connection {
         });
 
         worldData = (LoadWorld) retry(LoadWorld.class, tcpInput, () -> {
-            tcpOutput.writeObject(new CreatePlayer(player));
+            tcpOutput.writeObject(new CreatePlayer(player, Receiver.SERVER));
             tcpOutput.flush();
         });
 
@@ -79,11 +97,14 @@ public class ConnectionToServer extends Connection {
         udpOutput = new PacketObjectOutputStream(udpSocket, address, response.getUdpPort());
         udpInput = new PacketObjectInputStream(udpSocket);
 
-        new Sender("Client TCP", tcpOutput, messenger, this).start();
-        new Sender("Client UDP", udpOutput, messenger, this).start();
+        Messenger tcpMessenger = new Messenger(inbox, tcpOutbox, alive);
+        Messenger udpMessenger = new Messenger(inbox, udpOutbox, alive);
 
-        new Listener("Client TCP", tcpInput, messenger, this).start();
-        new Listener("Client UDP", udpInput, messenger, this).start();
+        new Sender("Client TCP", tcpOutput, tcpMessenger, this).start();
+        new Sender("Client UDP", udpOutput, udpMessenger, this).start();
+
+        new Listener("Client TCP", tcpInput, tcpMessenger, this).start();
+        new Listener("Client UDP", udpInput, udpMessenger, this).start();
 
         finalized();
         logger.info("Connected to " + address.getHostName());

@@ -1,24 +1,33 @@
 package ee.taltech.iti0200.application;
 
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.event.DealDamage;
+import ee.taltech.iti0200.domain.event.entity.CreateEntity;
+import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.EventBus;
-import ee.taltech.iti0200.domain.event.RemoveEntity;
+import ee.taltech.iti0200.domain.event.entity.GunShot;
+import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
+import ee.taltech.iti0200.domain.event.entity.UpdateVector;
+import ee.taltech.iti0200.domain.event.handler.EntityCreateHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityDamageHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityRemoveHandler;
+import ee.taltech.iti0200.domain.event.handler.GunShotHandler;
+import ee.taltech.iti0200.domain.event.handler.MoveBodyHandler;
 import ee.taltech.iti0200.physics.Physics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import static ee.taltech.iti0200.application.Component.priorities;
 import static java.util.Comparator.comparingInt;
 
 abstract public class Game {
 
-    public static EventBus eventBus = new EventBus();
+    public static EventBus eventBus;
+    public static boolean isClient = false;
+    public static boolean isServer = false;
 
     protected World world;
     protected List<Component> components = new LinkedList<>();
@@ -27,7 +36,8 @@ abstract public class Game {
     private long tick = 0;
     private Logger logger;
 
-    public Game() {
+    public Game(UUID id) {
+        eventBus = new EventBus(id);
         Thread.currentThread().setName(getClass().getSimpleName());
         world = new World(0.0, 40.0, 0.0, 40.0, 0.05);
         timer = new Timer(60F);
@@ -42,6 +52,8 @@ abstract public class Game {
 
             eventBus.subscribe(DealDamage.class, new EntityDamageHandler(world));
             eventBus.subscribe(RemoveEntity.class, new EntityRemoveHandler(world));
+            eventBus.subscribe(CreateEntity.class, new EntityCreateHandler(world));
+            eventBus.subscribe(UpdateVector.class, new MoveBodyHandler(world));
 
             components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
 
@@ -57,9 +69,8 @@ abstract public class Game {
 
         while (isGameRunning()) {
             components.forEach(component -> component.update(tick));
-            loop(tick);
             world.update(tick);
-            eventBus.propagate();
+            loop(tick);
             tick = timer.sleep();
         }
 

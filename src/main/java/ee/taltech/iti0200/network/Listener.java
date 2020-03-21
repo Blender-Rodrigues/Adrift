@@ -89,7 +89,6 @@ public class Listener extends Thread {
             }
 
             messenger.writeInbox(response);
-            logger.error("Message {} received", type.getSimpleName());
         }
     }
 

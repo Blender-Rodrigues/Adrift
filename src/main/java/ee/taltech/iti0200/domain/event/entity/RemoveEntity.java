@@ -1,23 +1,24 @@
-package ee.taltech.iti0200.domain.event;
+package ee.taltech.iti0200.domain.event.entity;
 
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.event.Event;
 import ee.taltech.iti0200.network.message.Message;
+import ee.taltech.iti0200.network.message.Receiver;
 import org.apache.logging.log4j.core.net.Protocol;
 
 import java.util.UUID;
 
 public class RemoveEntity extends Event implements Message {
 
-    private Entity entity;
     private UUID id;
 
-    public RemoveEntity(Entity entity) {
-        this.entity = entity;
-        this.id = entity.getId();
+    public RemoveEntity(Entity entity, Receiver receiver) {
+        this(entity.getId(), receiver);
     }
 
-    public Entity getEntity() {
-        return entity;
+    public RemoveEntity(UUID id, Receiver receiver) {
+        super(receiver);
+        this.id = id;
     }
 
     public UUID getId() {
