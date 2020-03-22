@@ -9,11 +9,12 @@ public abstract class Renderer {
     protected transient Model model;
     private transient Transform transform;
 
-    public Renderer(Entity entity) {
+    public Renderer setEntity(Entity entity) {
         this.entity = entity;
+        return this;
     }
 
-    public void initializeGraphics() {
+    public Renderer initialize() {
         float[] vertices = new float[]{
             -1f, 1f, 0,
             1f, 1f, 0,
@@ -37,6 +38,7 @@ public abstract class Renderer {
 
         transform = new Transform();
         transform.scale = new Vector3f((float) entity.getBoundingBox().getSize().getX(), (float) entity.getBoundingBox().getSize().getY(), 1);
+        return this;
     }
 
     public void render(Shader shader, Camera camera, long tick) {

@@ -1,16 +1,15 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.graphics.*;
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Renderer;
+import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.joml.Vector3f;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 
-import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
+import static ee.taltech.iti0200.graphics.Graphics.DEFAULT;
 
 public class Entity extends Body {
 
@@ -18,13 +17,12 @@ public class Entity extends Body {
 
     private UUID id = UUID.randomUUID();
     private boolean onFloor;
-    public Renderer renderer;
+    public HashMap<String, Renderer> renderers = new HashMap<>();
 
     protected boolean movable = false;
 
     public Entity(double mass, BoundingBox boundingBox) {
         super(mass, boundingBox);
-        renderer = new Drawable(this);
     }
 
     public boolean isMovable() {
@@ -48,8 +46,13 @@ public class Entity extends Body {
         return this;
     }
 
-    public Renderer getRenderer() {
-        return renderer;
+    public Entity setRenderers(HashMap<String, Renderer> renderers) {
+        this.renderers = renderers;
+        return this;
+    }
+
+    public void render(Shader shader, Camera camera, long tick) {
+        renderers.get(DEFAULT).render(shader, camera, tick);
     }
 
     @Override

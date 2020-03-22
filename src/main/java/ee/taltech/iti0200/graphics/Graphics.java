@@ -2,8 +2,10 @@ package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.physics.Body;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -12,7 +14,11 @@ import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
+import static java.util.stream.Collectors.toMap;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
@@ -41,6 +47,7 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.system.MemoryStack.create;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -50,8 +57,11 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class Graphics implements Component {
 
+    public static final String DEFAULT = "DEFAULT";
+
     public static Texture defaultTexture;
     public static Animation defaultAnimation;
+    public static final HashMap<Class<? extends Body>, HashMap<String, Supplier<Renderer>>> renderers = new HashMap<>();
 
     private long window;
 
@@ -135,11 +145,9 @@ public class Graphics implements Component {
 
         camera.setPosition(new Vector3f(0, 0, 0));
 
-        defaultTexture = new Texture("", "default");
-        defaultAnimation = new Animation(2, "animations/default/", "default.player", 20);
-        for (Entity drawable : world.getEntities()) {
-            drawable.getRenderer().initializeGraphics();
-        }
+        createRenderers();
+
+        world.getEntities().forEach(Graphics::setRenderer);
 
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
     }
@@ -167,11 +175,42 @@ public class Graphics implements Component {
 
         camera.update();
 
-        for (Entity drawable : world.getEntities()) {
-            drawable.getRenderer().render(shader, camera, tick);
-        }
+        world.getEntities().forEach(entity -> entity.render(shader, camera, tick));
 
         glfwSwapBuffers(window); // swap the color buffers
+    }
+
+    private void createRenderers() {
+        Texture defaultTexture = new Texture("", "default");
+        Animation playerDefault = new Animation(2, "animations/default/", "default.player", 20);
+        Animation playerJump = new Animation(2, "animations/default/", "jump.player", 20);
+        Animation botDefault = new Animation(2, "animations/default/", "default.bot", 20);
+
+        HashMap<String, Supplier<Renderer>> defaultRenderer = new HashMap<>();
+        defaultRenderer.put(DEFAULT, () -> new Drawable(defaultTexture));
+        renderers.put(Entity.class, defaultRenderer);
+
+        HashMap<String, Supplier<Renderer>> playerRenderer = new HashMap<>();
+        playerRenderer.put(DEFAULT, () -> new Animateable(playerDefault));
+        playerRenderer.put("jump", () -> new Animateable(playerJump));
+        renderers.put(Player.class, playerRenderer);
+
+        HashMap<String, Supplier<Renderer>> botRenderer = new HashMap<>();
+        botRenderer.put(DEFAULT, () -> new Animateable(botDefault));
+        renderers.put(Bot.class, botRenderer);
+    }
+
+    public static void setRenderer(Entity entity) {
+        HashMap<String, Renderer> map = renderers.getOrDefault(entity.getClass(), renderers.get(Entity.class))
+            .entrySet()
+            .stream()
+            .collect(toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().get().setEntity(entity).initialize(),
+                (a, b) -> b,
+                HashMap::new
+            ));
+        entity.setRenderers(map);
     }
 
 }

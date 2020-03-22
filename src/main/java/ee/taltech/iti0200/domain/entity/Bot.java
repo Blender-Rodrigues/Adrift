@@ -34,11 +34,6 @@ public class Bot extends Living {
         this.acceleration = new Vector(0.0, 0.0);
         this.gun = new Gun(boundingBox, FIRE_RATE, this);
         this.movable = true;
-
-        //todo should animations be static? eg. animations = [walking, shooting, falling]
-        this.renderer = new Animateable(this);
-        //todo the next line does not work.
-//        this.renderer = new Animateable(this, new Animation(2, "animations/default/", "default.bot", 20));
     }
 
     @Override

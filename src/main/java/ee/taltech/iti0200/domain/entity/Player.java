@@ -1,10 +1,15 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.graphics.*;
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Graphics;
+import ee.taltech.iti0200.graphics.Renderer;
+import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
+
+import static ee.taltech.iti0200.graphics.Graphics.DEFAULT;
 
 public class Player extends Living {
 
@@ -28,8 +33,6 @@ public class Player extends Living {
         this.jumpsLeft = JUMP_AMOUNT_LIMIT;
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.gun = new Gun(boundingBox, FIRE_RATE, this);
-
-        this.renderer = new Animateable(this);
     }
 
     public void shoot() {
@@ -37,9 +40,6 @@ public class Player extends Living {
             return;
         }
 
-        //todo how do I make this work?
-        // make renderer a list that holds either animateable or drawable?
-        //this.renderer.setAnimation(new Animation(2, "animations/default/", "default.bot", 20));
         Projectile projectile = gun.shoot(speed, world.getTime());
         world.addEntity(projectile);
     }
@@ -54,6 +54,12 @@ public class Player extends Living {
 
     public int getJumpsLeft() {
         return this.jumpsLeft;
+    }
+
+    @Override
+    public void render(Shader shader, Camera camera, long tick) {
+        String renderer = jumpsLeft < JUMP_AMOUNT_LIMIT ? "jump" : DEFAULT;
+        renderers.get(renderer).render(shader, camera, tick);
     }
 
     @Override
