@@ -4,6 +4,7 @@ import ee.taltech.iti0200.physics.Body;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*; // needed for samplers, which are targets for textures
 
@@ -23,9 +24,9 @@ public class Texture {
 
     private final Logger logger = LogManager.getLogger(Body.class);
 
-    public Texture(String filename) {
+    public Texture(String directory, String filename) {
         try {
-            BufferedImage image = ImageIO.read(new File(PATH + filename));
+            BufferedImage image = ImageIO.read(new File(PATH + directory + filename + ".png"));
 
             width = image.getWidth();
             height = image.getHeight();

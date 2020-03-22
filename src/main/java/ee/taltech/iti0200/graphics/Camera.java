@@ -29,7 +29,7 @@ public class Camera {
     public Camera(int width, int height, Player player) {
         this.width = width;
         this.height = height;
-        this.zoom = 0.04f;
+        this.zoom = 0.03f;
         this.player = player;
 
         position = new Vector3f(0, 0, 0);
@@ -67,19 +67,19 @@ public class Camera {
     }
 
     public void moveLeft() {
-        position.add(new Vector3f(CAMERA_SENSITIVITY*zoom, 0, 0));
+        position.add(new Vector3f(CAMERA_SENSITIVITY * zoom, 0, 0));
     }
 
     public void moveRight() {
-        position.add(new Vector3f(-CAMERA_SENSITIVITY*zoom, 0, 0));
+        position.add(new Vector3f(-CAMERA_SENSITIVITY * zoom, 0, 0));
     }
 
     public void moveUp() {
-        position.add(new Vector3f(0, -CAMERA_SENSITIVITY*zoom, 0));
+        position.add(new Vector3f(0, -CAMERA_SENSITIVITY * zoom, 0));
     }
 
     public void moveDown() {
-        position.add(new Vector3f(0, CAMERA_SENSITIVITY*zoom, 0));
+        position.add(new Vector3f(0, CAMERA_SENSITIVITY * zoom, 0));
     }
 
     public void zoomIn() {

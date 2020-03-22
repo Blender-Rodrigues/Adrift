@@ -51,6 +51,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Graphics implements Component {
 
     public static Texture defaultTexture;
+    public static Animation defaultAnimation;
 
     private long window;
 
@@ -134,7 +135,8 @@ public class Graphics implements Component {
 
         camera.setPosition(new Vector3f(0, 0, 0));
 
-        defaultTexture = new Texture("default.png");
+        defaultTexture = new Texture("", "default");
+        defaultAnimation = new Animation(2, "animations/default/", "default.player", 20);
         for (Entity drawable : world.getEntities()) {
             drawable.getRenderer().initializeGraphics();
         }

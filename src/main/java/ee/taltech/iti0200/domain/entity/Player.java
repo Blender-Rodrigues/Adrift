@@ -6,8 +6,6 @@ import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
-
 public class Player extends Living {
 
     private static final long serialVersionUID = 1L;

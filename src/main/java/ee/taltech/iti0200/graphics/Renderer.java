@@ -3,7 +3,7 @@ package ee.taltech.iti0200.graphics;
 import ee.taltech.iti0200.domain.entity.Entity;
 import org.joml.Vector3f;
 
-public class Renderer {
+public abstract class Renderer {
 
     private Entity entity;
     protected transient Model model;
@@ -46,6 +46,5 @@ public class Renderer {
         shader.setUniform("sampler", 0);
         shader.setUniform("projection", transform.getProjection(camera.getProjection()));
     }
-
 
 }
