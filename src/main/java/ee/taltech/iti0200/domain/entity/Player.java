@@ -8,7 +8,7 @@ import ee.taltech.iti0200.physics.Vector;
 
 import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
 
-public class Player extends Living implements Animateable {
+public class Player extends Living {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,11 +24,6 @@ public class Player extends Living implements Animateable {
     private int jumpsLeft;
     private Gun gun;
 
-    private Model model;
-    private Transform transform;
-    private Animation animation;
-
-
     public Player(Vector position, World world) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
         this.elasticity = ELASTICITY;
@@ -36,7 +31,7 @@ public class Player extends Living implements Animateable {
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.gun = new Gun(boundingBox, FIRE_RATE, this);
 
-//        this.texture = new Texture("default.png");
+        this.renderer = new Animateable(this);
     }
 
     public void shoot() {
@@ -70,46 +65,6 @@ public class Player extends Living implements Animateable {
                 setJumpsLeft(JUMP_AMOUNT_LIMIT);
             }
         }
-    }
-
-    @Override
-    public void initializeGraphics() {
-        initializeGraphicsTest();
-    }
-
-    @Override
-    public void render(Shader shader, Camera camera, long tick) {
-        renderTest(shader, camera, tick);
-    }
-
-    @Override
-    public void setModel(Model model) {
-        this.model = model;
-    }
-
-    @Override
-    public void setAnimation(Animation animation) {
-        this.animation = animation;
-    }
-
-    @Override
-    public Model getModel() {
-        return model;
-    }
-
-    @Override
-    public Animation getAnimation() {
-        return animation;
-    }
-
-    @Override
-    public void setTransform(Transform transform) {
-        this.transform = transform;
-    }
-
-    @Override
-    public Transform getTransform() {
-        return transform;
     }
 
 }

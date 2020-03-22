@@ -106,7 +106,7 @@ public class World {
     public void addEntity(Entity entity) {
         entities.put(entity.getId(), entity);
         if (defaultTexture != null) {
-            entity.initializeGraphics();
+            entity.getRenderer().initializeGraphics();
         }
         if (entity.isMovable()) {
             movableBodies.add(entity);

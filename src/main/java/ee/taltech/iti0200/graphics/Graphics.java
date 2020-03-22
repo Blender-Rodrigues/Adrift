@@ -136,7 +136,7 @@ public class Graphics implements Component {
 
         defaultTexture = new Texture("default.png");
         for (Entity drawable : world.getEntities()) {
-            drawable.initializeGraphics();
+            drawable.getRenderer().initializeGraphics();
         }
 
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
@@ -166,7 +166,7 @@ public class Graphics implements Component {
         camera.update();
 
         for (Entity drawable : world.getEntities()) {
-            drawable.render(shader, camera, tick);
+            drawable.getRenderer().render(shader, camera, tick);
         }
 
         glfwSwapBuffers(window); // swap the color buffers

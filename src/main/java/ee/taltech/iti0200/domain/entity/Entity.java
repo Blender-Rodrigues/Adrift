@@ -18,15 +18,13 @@ public class Entity extends Body {
 
     private UUID id = UUID.randomUUID();
     private boolean onFloor;
-    private transient Model model;
-//    private transient Texture texture;
-    private transient Animation texture;
-    private transient Transform transform;
+    public Renderer renderer;
 
     protected boolean movable = false;
 
     public Entity(double mass, BoundingBox boundingBox) {
         super(mass, boundingBox);
+        renderer = new Drawable(this);
     }
 
     public boolean isMovable() {
@@ -50,46 +48,8 @@ public class Entity extends Body {
         return this;
     }
 
-    public void initializeGraphics() {
-        float[] vertices = new float[]{
-            -1f, 1f, 0,
-            1f, 1f, 0,
-            1f, -1f, 0,
-            -1f, -1f, 0
-        };
-
-        float[] texture = new float[]{
-            0, 0,
-            1, 0,
-            1, 1,
-            0, 1
-        };
-
-        int[] indices = new int[]{
-            0, 1, 2,
-            2, 3, 0
-        };
-
-        model = new Model(vertices, texture, indices);
-//        this.texture = defaultTexture;
-        this.texture = new Animation(6, "anim");
-
-        transform = new Transform();
-        transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
-    }
-
-//    public void changeTexture(String filename) {
-//        this.texture = new Texture(filename);
-//    }
-
-    public void render(Shader shader, Camera camera, long tick) {
-        transform.pos.set(new Vector3f((float) this.boundingBox.getCentre().x, (float) this.boundingBox.getCentre().y, 0));
-
-        shader.bind();
-        shader.setUniform("sampler", 0);
-        shader.setUniform("projection", transform.getProjection(camera.getProjection()));
-        texture.bind(tick);
-        model.render();
+    public Renderer getRenderer() {
+        return renderer;
     }
 
     @Override
