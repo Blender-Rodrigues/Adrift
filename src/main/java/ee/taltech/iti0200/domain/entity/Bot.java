@@ -1,6 +1,9 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.graphics.Animateable;
+import ee.taltech.iti0200.graphics.Animation;
+import ee.taltech.iti0200.graphics.Renderer;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -31,6 +34,11 @@ public class Bot extends Living {
         this.acceleration = new Vector(0.0, 0.0);
         this.gun = new Gun(boundingBox, FIRE_RATE, this);
         this.movable = true;
+
+        //todo should animations be static? eg. animations = [walking, shooting, falling]
+        this.renderer = new Animateable(this);
+        //todo the next line does not work.
+//        this.renderer = new Animateable(this, new Animation(2, "animations/default/", "default.bot", 20));
     }
 
     @Override

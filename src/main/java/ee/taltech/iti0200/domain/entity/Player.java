@@ -37,6 +37,9 @@ public class Player extends Living {
             return;
         }
 
+        //todo how do I make this work?
+        // make renderer a list that holds either animateable or drawable?
+        //this.renderer.setAnimation(new Animation(2, "animations/default/", "default.bot", 20));
         Projectile projectile = gun.shoot(speed, world.getTime());
         world.addEntity(projectile);
     }

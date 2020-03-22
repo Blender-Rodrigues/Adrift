@@ -8,8 +8,17 @@ public class Animateable extends Renderer {
 
     private transient Animation animation;
 
+    //todo creating an animation in Player or Bot etc does not work.
+    //todo should all animations be created before the game starts?
+
     public Animateable(Entity entity) {
         super(entity);
+//        this.animation = defaultAnimation;
+    }
+
+    public Animateable(Entity entity, Animation animation) {
+        super(entity);
+//        this.animation = animation;
     }
 
     @Override
@@ -23,6 +32,10 @@ public class Animateable extends Renderer {
         super.render(shader, camera, tick);
         animation.bind(tick);
         model.render();
+    }
+
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
     }
 
 }
