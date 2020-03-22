@@ -1,16 +1,14 @@
 package ee.taltech.iti0200.application;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
-import ee.taltech.iti0200.domain.event.EventBus;
-import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import ee.taltech.iti0200.domain.event.handler.EntityCreateHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityDamageHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityRemoveHandler;
-import ee.taltech.iti0200.domain.event.handler.GunShotHandler;
 import ee.taltech.iti0200.domain.event.handler.MoveBodyHandler;
 import ee.taltech.iti0200.physics.Physics;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +24,7 @@ import static java.util.Comparator.comparingInt;
 abstract public class Game {
 
     public static EventBus eventBus;
+    private UUID id;
     public static boolean isClient = false;
     public static boolean isServer = false;
 
@@ -38,6 +37,7 @@ abstract public class Game {
 
     public Game(UUID id) {
         eventBus = new EventBus(id);
+        this.id = id;
         Thread.currentThread().setName(getClass().getSimpleName());
         world = new World(0.0, 40.0, 0.0, 40.0, 0.05);
         timer = new Timer(60F);
@@ -53,7 +53,7 @@ abstract public class Game {
             eventBus.subscribe(DealDamage.class, new EntityDamageHandler(world));
             eventBus.subscribe(RemoveEntity.class, new EntityRemoveHandler(world));
             eventBus.subscribe(CreateEntity.class, new EntityCreateHandler(world));
-            eventBus.subscribe(UpdateVector.class, new MoveBodyHandler(world));
+            eventBus.subscribe(UpdateVector.class, new MoveBodyHandler(world, id));
 
             components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
 

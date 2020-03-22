@@ -71,6 +71,7 @@ public class ClientNetwork extends Network {
             })
             .collect(Collectors.toList());
 
+        // TODO: send only if the player has moved
         events.add(new UpdateVector(player, Receiver.SERVER));
 
         messenger.writeOutbox(events);
