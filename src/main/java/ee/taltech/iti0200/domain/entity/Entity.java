@@ -17,7 +17,7 @@ public class Entity extends Body {
 
     private UUID id = UUID.randomUUID();
     private boolean onFloor;
-    public HashMap<String, Renderer> renderers = new HashMap<>();
+    public transient HashMap<String, Renderer> renderers = new HashMap<>();
 
     protected boolean movable = false;
 
