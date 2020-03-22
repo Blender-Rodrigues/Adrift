@@ -6,7 +6,9 @@ import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-public class Player extends Living implements Drawable {
+import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
+
+public class Player extends Living implements Animateable {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,7 +26,7 @@ public class Player extends Living implements Drawable {
 
     private Model model;
     private Transform transform;
-    private Texture texture;
+    private Animation animation;
 
 
     public Player(Vector position, World world) {
@@ -33,6 +35,8 @@ public class Player extends Living implements Drawable {
         this.jumpsLeft = JUMP_AMOUNT_LIMIT;
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.gun = new Gun(boundingBox, FIRE_RATE, this);
+
+//        this.texture = new Texture("default.png");
     }
 
     public void shoot() {
@@ -68,12 +72,14 @@ public class Player extends Living implements Drawable {
         }
     }
 
+    @Override
     public void initializeGraphics() {
-        initializeGraphicsT();
+        initializeGraphicsTest();
     }
 
+    @Override
     public void render(Shader shader, Camera camera, long tick) {
-        renderT(shader, camera, tick);
+        renderTest(shader, camera, tick);
     }
 
     @Override
@@ -82,8 +88,18 @@ public class Player extends Living implements Drawable {
     }
 
     @Override
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
+
+    @Override
     public Model getModel() {
         return model;
+    }
+
+    @Override
+    public Animation getAnimation() {
+        return animation;
     }
 
     @Override
@@ -96,13 +112,4 @@ public class Player extends Living implements Drawable {
         return transform;
     }
 
-    @Override
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
-
-    @Override
-    public Texture getTexture() {
-        return texture;
-    }
 }

@@ -3,9 +3,7 @@ package ee.taltech.iti0200.graphics;
 import ee.taltech.iti0200.physics.BoundingBox;
 import org.joml.Vector3f;
 
-import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
-
-public interface Drawable {
+public interface Animateable {
 
     default void initializeGraphicsTest() {
         float[] vertices = new float[]{
@@ -27,14 +25,9 @@ public interface Drawable {
             2, 3, 0
         };
 
-//        this.model = new Model(vertices, texture, indices);
         setModel(new Model(vertices, texture, indices));
 //        this.texture = defaultTexture;
-//        this.texture = new Animation(6, "anim");
-        //todo create texture in the class that implements this.
-        setTexture(defaultTexture);
-
-
+        setAnimation(new Animation(6, "anim"));
 
         Transform transform = new Transform();
         transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
@@ -50,22 +43,23 @@ public interface Drawable {
 
         shader.bind();
         shader.setUniform("sampler", 0);
-        shader.setUniform("projection", this.getTransform().getProjection(camera.getProjection()));
-        getTexture().bind(0);
+        shader.setUniform("projection", getTransform().getProjection(camera.getProjection()));
+        getAnimation().bind(tick);
         getModel().render();
     }
 
+    BoundingBox getBoundingBox();
+
     void setModel(Model model);
 
-    Model getModel();
+    void setAnimation(Animation animation);
 
     void setTransform(Transform transform);
 
     Transform getTransform();
 
-    void setTexture(Texture texture);
+    Model getModel();
 
-    Texture getTexture();
+    Animation getAnimation();
 
-    BoundingBox getBoundingBox();
 }
