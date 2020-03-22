@@ -47,7 +47,6 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.system.MemoryStack.create;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -58,9 +57,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Graphics implements Component {
 
     public static final String DEFAULT = "DEFAULT";
-
-    public static Texture defaultTexture;
-    public static Animation defaultAnimation;
     public static final HashMap<Class<? extends Body>, HashMap<String, Supplier<Renderer>>> renderers = new HashMap<>();
 
     private long window;
