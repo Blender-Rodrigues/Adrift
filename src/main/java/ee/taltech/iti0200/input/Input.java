@@ -68,6 +68,7 @@ public class Input implements Component {
 
     public void update(long tick) {
         Iterator<KeyEvent> iterator = events.iterator();
+        updateMouse();
         while (iterator.hasNext()) {
             KeyEvent event = iterator.next();
             event.event.run();
@@ -108,37 +109,42 @@ public class Input implements Component {
 
     private void playerShoot() {
         if (player.isAlive()) {
-            player.shoot(getMousePosition());
+            player.shoot();
         }
     }
 
+    private void updateMouse() {
+        Vector currentPosition = getMousePosition();
+        Vector windowSize = getWindowSize();
+        screenToCamera(currentPosition, windowSize);
+        Vector physicsPosition = cameraToPhysics(currentPosition);
+        player.setLookingAt(physicsPosition);
+    }
+
+    private Vector cameraToPhysics(Vector cameraPosition) {
+        double x = cameraPosition.getX() - camera.getPosition().get(0);
+        double y = cameraPosition.getY() + camera.getPosition().get(1);
+        y *= -1;
+        return new Vector(x, y);
+    }
+
+    private void screenToCamera(Vector screenPosition, Vector windowSize) {
+        screenPosition.scaleAdd(-0.5, windowSize, screenPosition);
+        screenPosition.scale(camera.getZoom());
+    }
+
+    private Vector getWindowSize() {
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        glfwGetWindowSize(window, width, height);
+        return new Vector(width.get(0), height.get(0));
+    }
+
     private Vector getMousePosition() {
-        // Get mouse position in screen coordinates.
         DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(window, xBuffer, yBuffer);
-        double x = xBuffer.get(0);
-        double y = yBuffer.get(0);
-
-        // Get window size.
-        IntBuffer w = BufferUtils.createIntBuffer(1);
-        IntBuffer h = BufferUtils.createIntBuffer(1);
-        glfwGetWindowSize(window, w, h);
-        int width = w.get(0);
-        int height = h.get(0);
-
-        // Transform screen coordinates to camera coordinates.
-        x -= width / 2.0;
-        y -= height / 2.0;
-        x *= camera.getZoom();
-        y *= camera.getZoom();
-
-        //Transform camera coordinates to physics coordinates.
-        x -= camera.getPosition().get(0);
-        y += camera.getPosition().get(1);
-        y *= -1;
-
-        return new Vector(x, y);
+        return new Vector(xBuffer.get(0), yBuffer.get(0));
     }
 
     private void bind(KeyEvent event) {
