@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static ee.taltech.iti0200.application.ServerGame.SERVER_ID;
+import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -50,6 +51,11 @@ public class Receiver implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(exclude, target);
+    }
+
+    @Override
+    public String toString() {
+        return format("Receiver{exclude=%s, target=%s}", exclude, target);
     }
 
 }

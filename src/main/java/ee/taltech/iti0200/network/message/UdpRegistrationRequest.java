@@ -14,4 +14,9 @@ public class UdpRegistrationRequest implements Message {
         return Receiver.SERVER;
     }
 
+    @Override
+    public String toString() {
+        return "UdpRegistrationRequest{}";
+    }
+
 }

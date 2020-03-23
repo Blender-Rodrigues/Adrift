@@ -22,7 +22,7 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
     public void handle(RemoveEntity event) {
         Entity entity = world.getEntity(event.getId());
         if (entity == null) {
-            logger.debug("Entity {} already removed", event.getId());
+            logger.warn("Entity {} already removed", event.getId());
             return;
         }
 

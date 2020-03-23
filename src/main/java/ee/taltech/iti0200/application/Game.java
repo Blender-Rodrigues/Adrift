@@ -74,7 +74,7 @@ abstract public class Game {
             tick = timer.sleep();
         }
 
-        logger.info("Terminating, game time: " + tick);
+        logger.warn("Terminating, game time: " + tick);
 
         terminate();
     }

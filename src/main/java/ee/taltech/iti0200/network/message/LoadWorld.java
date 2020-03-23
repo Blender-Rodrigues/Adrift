@@ -6,6 +6,8 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 import java.util.List;
 
+import static java.lang.String.format;
+
 public class LoadWorld implements Message {
 
     private List<Entity> entities;
@@ -34,6 +36,11 @@ public class LoadWorld implements Message {
     @Override
     public Receiver getReceiver() {
         return receiver;
+    }
+
+    @Override
+    public String toString() {
+        return format("LoadWorld{spawn=%s, entities=%s}", spawn, entities.size());
     }
 
 }

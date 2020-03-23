@@ -6,6 +6,8 @@ import ee.taltech.iti0200.network.message.Receiver;
 
 import java.util.UUID;
 
+import static java.lang.String.format;
+
 public class CreateEntity extends Event {
 
     private Entity entity;
@@ -23,6 +25,11 @@ public class CreateEntity extends Event {
 
     public UUID getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return format("CreateEntity{%s}", entity);
     }
 
 }

@@ -156,4 +156,9 @@ public class ConnectionToServer extends Connection {
 
     }
 
+    @Override
+    public String toString() {
+        return format("Connection{server, %s:%d}", address.getHostAddress(), tcpPort);
+    }
+
 }

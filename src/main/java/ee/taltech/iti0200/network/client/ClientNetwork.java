@@ -3,11 +3,11 @@ package ee.taltech.iti0200.network.client;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
-import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.message.LoadWorld;
 import ee.taltech.iti0200.network.message.Message;
+import ee.taltech.iti0200.network.message.Receiver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.application.Game.eventBus;
-import static ee.taltech.iti0200.application.ServerGame.SERVER_ID;
 import static java.net.InetAddress.getByName;
 
 public class ClientNetwork extends Network {
@@ -63,11 +62,11 @@ public class ClientNetwork extends Network {
             .stream()
             .filter(event -> {
                 Receiver receiver = event.getReceiver();
-                if (receiver.equals(Receiver.EVERYONE)) {
+                if (Receiver.EVERYONE.equals(receiver)) {
                     event.setReceiver(Receiver.SERVER);
                     return true;
                 }
-                return event.getReceiver().matches(SERVER_ID);
+                return Receiver.SERVER.equals(event.getReceiver());
             })
             .collect(Collectors.toList());
 

@@ -5,6 +5,7 @@ import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,17 +23,20 @@ public class EntityCreateHandler implements Subscriber<CreateEntity> {
     public void handle(CreateEntity event) {
         Entity entity = event.getEntity();
         if (world.getEntity(entity.getId()) != null) {
-            logger.debug("Entity {} already created", entity);
+            logger.warn("Entity {} already created", entity);
             return;
         }
 
+        Level level = Level.DEBUG;
+
         if (entity instanceof Living) {
             ((Living) entity).setWorld(world);
+            level = Level.INFO;
         }
 
         world.addEntity(entity);
 
-        logger.debug("Added {} to the world", entity);
+        logger.log(level, "Added {} to the world", entity);
     }
 
 }

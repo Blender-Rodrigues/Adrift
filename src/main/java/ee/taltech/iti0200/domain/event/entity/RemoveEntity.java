@@ -8,6 +8,8 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 import java.util.UUID;
 
+import static java.lang.String.format;
+
 public class RemoveEntity extends Event implements Message {
 
     private UUID id;
@@ -28,6 +30,11 @@ public class RemoveEntity extends Event implements Message {
     @Override
     public Protocol getChannel() {
         return Protocol.TCP;
+    }
+
+    @Override
+    public String toString() {
+        return format("RemoveEntity{%s}", id);
     }
 
 }

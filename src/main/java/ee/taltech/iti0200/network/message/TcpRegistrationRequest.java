@@ -4,6 +4,8 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 import java.util.UUID;
 
+import static java.lang.String.format;
+
 public class TcpRegistrationRequest implements Message {
 
     private UUID id;
@@ -30,6 +32,11 @@ public class TcpRegistrationRequest implements Message {
     @Override
     public Receiver getReceiver() {
         return Receiver.SERVER;
+    }
+
+    @Override
+    public String toString() {
+        return format("TcpRegistrationRequest{id=%s, udpPort=%d}", id, udpPort);
     }
 
 }

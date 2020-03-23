@@ -8,6 +8,8 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 import java.util.UUID;
 
+import static java.lang.String.format;
+
 public class UpdateVector extends Event {
 
     private UUID id;
@@ -36,6 +38,11 @@ public class UpdateVector extends Event {
     @Override
     public Protocol getChannel() {
         return Protocol.UDP;
+    }
+
+    @Override
+    public String toString() {
+        return format("UpdateVector{%s[%s] -> %s}", id, position, speed);
     }
 
 }

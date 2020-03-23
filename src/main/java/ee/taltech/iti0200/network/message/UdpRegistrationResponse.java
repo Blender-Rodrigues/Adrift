@@ -20,4 +20,9 @@ public class UdpRegistrationResponse implements Message {
         return receiver;
     }
 
+    @Override
+    public String toString() {
+        return "UdpRegistrationResponse{}";
+    }
+
 }

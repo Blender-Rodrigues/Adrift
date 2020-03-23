@@ -7,6 +7,8 @@ import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.physics.Vector;
 import org.apache.logging.log4j.core.net.Protocol;
 
+import static java.lang.String.format;
+
 public class GunShot extends Event implements Message {
 
     private Gun gun;
@@ -29,6 +31,11 @@ public class GunShot extends Event implements Message {
     @Override
     public Protocol getChannel() {
         return Protocol.TCP;
+    }
+
+    @Override
+    public String toString() {
+        return format("GunShot{%s -> %s}", gun, direction);
     }
 
 }
