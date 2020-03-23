@@ -1,9 +1,13 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
+
+import static ee.taltech.iti0200.application.Game.eventBus;
+import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class Player extends Living {
 
@@ -15,7 +19,7 @@ public class Player extends Living {
     private static final double FRICTION_COEFFICIENT = 0.99;
     private static final int JUMP_AMOUNT_LIMIT = 2;
     private static final double JUMP_DELTA_V = 10.0;
-    private static final int MAX_HEALTH = 100;
+    private static final int MAX_HEALTH = 200;
     private static final int FIRE_RATE = 90;
 
     private int jumpsLeft;
@@ -34,8 +38,7 @@ public class Player extends Living {
             return;
         }
 
-        Projectile projectile = gun.shoot(speed, world.getTime());
-        world.addEntity(projectile);
+        eventBus.dispatch(new GunShot(gun, speed, SERVER));
     }
 
     public double getJumpDeltaV() {

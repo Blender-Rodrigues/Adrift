@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.network;
 
 import ee.taltech.iti0200.network.message.Message;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static java.lang.String.format;
+import static org.apache.logging.log4j.core.net.Protocol.TCP;
 
 public class Listener extends Thread {
 
@@ -83,14 +85,20 @@ public class Listener extends Thread {
             errors = 0;
             Class<? extends Message> type = response.getClass();
 
+            log(response);
+
             if (handlers.containsKey(type)) {
                 handlers.get(type).accept(response);
                 continue;
             }
 
             messenger.writeInbox(response);
-            logger.error("Message {} received", type.getSimpleName());
         }
+    }
+
+    private void log(Message message) {
+        Level level = message.getChannel().equals(TCP) ? Level.DEBUG : Level.TRACE;
+        logger.log(level, "Received {} from {}", message, connection);
     }
 
 }

@@ -1,11 +1,14 @@
 package ee.taltech.iti0200.network;
 
 import ee.taltech.iti0200.network.message.Message;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+
+import static org.apache.logging.log4j.core.net.Protocol.TCP;
 
 public class Sender extends Thread {
 
@@ -28,15 +31,20 @@ public class Sender extends Thread {
             try {
                 Message message = messenger.readOutbox();
                 if (message != null) {
-                    logger.info("Sending {} message", message.getClass().getSimpleName());
                     output.writeObject(message);
                     output.flush();
+                    log(message);
                 }
             } catch (IOException e) {
                 logger.error("Failed to send message", e);
             }
             Thread.yield();
         }
+    }
+
+    private void log(Message message) {
+        Level level = message.getChannel().equals(TCP) ? Level.DEBUG : Level.TRACE;
+        logger.log(level, "Sent {} to {}", message, connection);
     }
 
 }

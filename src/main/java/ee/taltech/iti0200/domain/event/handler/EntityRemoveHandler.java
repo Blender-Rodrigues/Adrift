@@ -3,8 +3,8 @@ package ee.taltech.iti0200.domain.event.handler;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Projectile;
-import ee.taltech.iti0200.domain.event.RemoveEntity;
 import ee.taltech.iti0200.domain.event.Subscriber;
+import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,14 +20,18 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
 
     @Override
     public void handle(RemoveEntity event) {
-        Entity entity = event.getEntity();
+        Entity entity = world.getEntity(event.getId());
+        if (entity == null) {
+            logger.warn("Entity {} already removed", event.getId());
+            return;
+        }
+
         world.removeEntity(entity);
 
         if (entity instanceof Projectile) {
-            logger.debug("Removed {} with ID {} from the world", entity, event.getId());
-            event.stop();
+            logger.debug("Removed {} from the world", entity);
         } else {
-            logger.info("Removed {} with ID {} from the world", entity, event.getId());
+            logger.info("Removed {} from the world", entity);
         }
     }
 

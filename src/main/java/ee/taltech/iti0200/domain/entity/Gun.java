@@ -31,7 +31,7 @@ public class Gun extends Entity {
         speed.normalize();
         speed.scale(PROJECTILE_SPEED);
 
-        return new Projectile(new Vector(boundingBox.getCentre()), speed, damage, owner);
+        return new Projectile(new Vector(owner.getBoundingBox().getCentre()), speed, damage, owner);
     }
 
 }

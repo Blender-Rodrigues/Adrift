@@ -8,6 +8,7 @@ public class Living extends Damageable {
     private static final long serialVersionUID = 1L;
 
     protected transient World world;
+    protected boolean alive = true;
 
     public Living(double mass, BoundingBox boundingBox, World world, int health) {
         super(mass, boundingBox, health);
@@ -19,11 +20,13 @@ public class Living extends Damageable {
         this.world = world;
     }
 
-    /**
-     * Called for living things on every game tick
-     */
-    public void update(long tick) {
+    public boolean isAlive() {
+        return alive;
+    }
 
+    public Living setAlive(boolean alive) {
+        this.alive = alive;
+        return this;
     }
 
 }

@@ -19,12 +19,6 @@ public class Messenger {
         this.alive = alive;
     }
 
-    public Messenger() {
-        alive = new AtomicBoolean(true);
-        outbox = new ConcurrentLinkedQueue<>();
-        inbox = new ConcurrentLinkedQueue<>();
-    }
-
     public LinkedList<Message> readInbox() {
         LinkedList<Message> content;
         synchronized(inbox) {
@@ -45,10 +39,6 @@ public class Messenger {
             }
             return outbox.poll();
         }
-    }
-
-    public void writeOutbox(Message message) {
-        outbox.add(message);
     }
 
     public void writeOutbox(List<Message> messages) {

@@ -3,10 +3,13 @@ package ee.taltech.iti0200.network.server;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.domain.event.CreatePlayer;
+import ee.taltech.iti0200.domain.event.entity.CreateEntity;
+import ee.taltech.iti0200.domain.event.entity.CreatePlayer;
 import ee.taltech.iti0200.domain.event.Subscriber;
+import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.message.LoadWorld;
+import ee.taltech.iti0200.physics.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,18 +38,18 @@ public class PlayerJoinHandler implements Subscriber<CreatePlayer> {
 
         ArrayList<Entity> entities = new ArrayList<>(world.getEntities());
 
-        Player player = new Player(event.getPosition(), world);
-        player.setId(event.getId());
-        player.setXSpeed(event.getSpeed().x);
-        player.setYSpeed(event.getSpeed().y);
+        Vector position = world.nextPlayerSpawnPoint();
 
-        logger.info("Added new player {} to the world at {}", event.getId(), event.getPosition());
+        Player player = (Player) event.getEntity();
+        player.getBoundingBox().getCentre().set(position);
 
         world.addEntity(player);
 
+        logger.info("Added new {} to the world", player);
+
         messenger.writeOutbox(asList(
-            event,
-            new LoadWorld(entities, event.getId())
+            new CreateEntity(player, new Receiver(event.getId()).exclude()),
+            new LoadWorld(entities, position, new Receiver(event.getId()))
         ));
     }
 

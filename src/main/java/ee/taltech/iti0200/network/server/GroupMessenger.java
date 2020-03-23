@@ -10,8 +10,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.singletonList;
-
 public class GroupMessenger extends Messenger {
 
     private final Set<ConnectionToClient> clients;
@@ -27,11 +25,6 @@ public class GroupMessenger extends Messenger {
     }
 
     @Override
-    public void writeOutbox(Message message) {
-        writeOutbox(singletonList(message));
-    }
-
-    @Override
     public void writeOutbox(List<Message> messages) {
         if (messages.isEmpty()) {
             return;
@@ -39,7 +32,7 @@ public class GroupMessenger extends Messenger {
 
         clients.forEach(client -> sendToClient(
             messages.stream()
-                .filter(message -> message.deliverTo(client.getId()))
+                .filter(message -> message.getReceiver().matches(client.getId()))
                 .collect(Collectors.toList()),
             client
         ));

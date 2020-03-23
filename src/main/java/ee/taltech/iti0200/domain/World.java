@@ -50,7 +50,6 @@ public class World {
 
     public void update(long tick) {
         time = tick;
-        livingEntities.forEach(entity -> entity.update(tick));
     }
 
     public void mapTerrain() {
@@ -62,6 +61,10 @@ public class World {
                     .map(pos -> new SimpleEntry<>(new Vector(pos, maxY), (Terrain) entity));
             })
             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+    }
+
+    public Vector nextPlayerSpawnPoint() {
+        return new Vector(20.0, 40.0);
     }
 
     public long getTime() {
@@ -124,6 +127,7 @@ public class World {
 
         if (entity instanceof Living) {
             livingEntities.remove(entity);
+            ((Living) entity).setAlive(false);
         }
 
         if (entity.isMovable()) {

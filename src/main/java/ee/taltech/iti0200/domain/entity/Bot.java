@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -8,6 +9,9 @@ import javax.vecmath.Vector2d;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Random;
+
+import static ee.taltech.iti0200.application.Game.eventBus;
+import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class Bot extends Living {
 
@@ -33,14 +37,10 @@ public class Bot extends Living {
         this.movable = true;
     }
 
-    @Override
     public void update(long tick) {
-        super.update(tick);
-        if (tick % 10 == 0) {
-            move();
-            if (gun.canShoot(tick)) {
-                lookForPlayer().ifPresent(target -> world.addEntity(gun.shoot(target, tick)));
-            }
+        move();
+        if (gun.canShoot(tick)) {
+            lookForPlayer().ifPresent(target -> eventBus.dispatch(new GunShot(gun, target, SERVER)));
         }
     }
 

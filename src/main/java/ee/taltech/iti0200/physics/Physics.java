@@ -1,22 +1,24 @@
 package ee.taltech.iti0200.physics;
 
 import ee.taltech.iti0200.application.Component;
-import ee.taltech.iti0200.domain.*;
+import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.physics.BoundingBox.clamp;
 
 public class Physics implements Component {
 
-    private World world;
+    protected World world;
     private Logger logger = LogManager.getLogger(Physics.class);
 
     private static final Vector GRAVITY = new Vector(0, -9.81);
@@ -30,14 +32,11 @@ public class Physics implements Component {
     public void update(long tick) {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
-        List<Living> livingEntites = world.getLivingEntities();
-        List<Projectile> projectiles = world.getProjectiles();
         Map<Vector, Terrain> terrainMap = world.getTerrainMap();
         checkForFloor(movableBodies, terrainMap);
         applyDrag(movableBodies);
         moveBodies(movableBodies, world.getTimeStep());
         checkForCollisions(movableBodies, imMovableBodies);
-        checkForProjectileHits(livingEntites, projectiles);
         applyGravity(movableBodies);
     }
 
@@ -89,19 +88,6 @@ public class Physics implements Component {
                .collect(Collectors.toList());
 
            resolveCollision(moving, colliding);
-        }
-    }
-
-    private void checkForProjectileHits(List<Living> livingEntites, List<Projectile> projectiles) {
-        for (Projectile projectile: projectiles) {
-            Optional<Living> colliding = livingEntites.stream()
-                .filter(projectile::intersects)
-                .findAny();
-
-            if (colliding.isPresent()) {
-                projectile.onCollide(colliding.get());
-                colliding.get().onCollide(projectile);
-            }
         }
     }
 

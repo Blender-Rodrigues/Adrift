@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
@@ -102,7 +103,24 @@ public class Entity extends Body {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + boundingBox.getCentre().rounded();
+        return getClass().getSimpleName() + boundingBox.getCentre().rounded() + "[" + id + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Entity entity = (Entity) o;
+        return id.equals(entity.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }

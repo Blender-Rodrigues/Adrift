@@ -1,12 +1,14 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.domain.event.DealDamage;
-import ee.taltech.iti0200.domain.event.RemoveEntity;
+import ee.taltech.iti0200.application.Game;
+import ee.taltech.iti0200.domain.event.entity.DealDamage;
+import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
 import static ee.taltech.iti0200.application.Game.eventBus;
+import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
 
 public class Projectile extends Entity implements DamageSource {
 
@@ -41,10 +43,10 @@ public class Projectile extends Entity implements DamageSource {
         }
 
         if (other instanceof Damageable) {
-            eventBus.dispatch(new DealDamage(this, (Damageable) other));
+            eventBus.dispatch(new DealDamage(this, (Damageable) other, EVERYONE));
         }
 
-        eventBus.dispatch(new RemoveEntity(this));
+        eventBus.dispatch(new RemoveEntity(this, EVERYONE));
     }
 
 }

@@ -1,13 +1,26 @@
 package ee.taltech.iti0200.domain.event;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class EventBus {
 
-    private HashMap<Class<? extends Event>, List<Subscriber<Event>>> subscribers = new HashMap<>();
+    private final Logger logger = LogManager.getLogger(EventBus.class);
+
+    protected HashMap<Class<? extends Event>, List<Subscriber<Event>>> subscribers = new HashMap<>();
+    protected UUID id;
+
     private List<Event> queue = new LinkedList<>();
+
+    public EventBus(UUID id) {
+        this.id = id;
+    }
 
     @SuppressWarnings("unchecked")
     public void subscribe(Class<? extends Event> type, Subscriber<? extends Event> subscriber) {
@@ -19,24 +32,51 @@ public class EventBus {
     }
 
     public void dispatch(Event event) {
+        queue.add(event);
+    }
+
+    public void propagateType(Class<? extends Event> type) {
+        queue = queue.stream()
+            .peek(event -> {
+                if (type.isInstance(event)) {
+                    propagate(event);
+                }
+            })
+            .filter(event -> !type.isInstance(event))
+            .collect(Collectors.toList());
+    }
+
+    public List<Event> propagateAll() {
+        List<Event> sendToNetwork = new LinkedList<>(queue);
+
+        queue.clear();
+
+        return sendToNetwork.stream()
+            .peek(this::propagate)
+            .filter(event -> !event.isStopped())
+            .collect(Collectors.toList());
+    }
+
+    protected void propagate(Event event) {
+        if (event.getReceiver() == null) {
+            logger.error("Event {} is missing a receiver", event.getClass());
+            event.stop();
+            return;
+        }
+
         Class<? extends Event> type = event.getClass();
         if (!subscribers.containsKey(type)) {
             return;
         }
-        queue.add(event);
-    }
 
-    public void propagate() {
-        queue.forEach(event -> {
-            Class<? extends Event> type = event.getClass();
-            for (Subscriber<Event> subscriber: subscribers.get(type)) {
-                if (event.isStopped()) {
-                    return;
-                }
+        for (Subscriber<Event> subscriber: subscribers.get(type)) {
+            if (event.isStopped()) {
+                return;
+            }
+            if (event.receiver.matches(id)) {
                 subscriber.handle(event);
             }
-        });
-        queue.clear();
+        }
     }
 
 }

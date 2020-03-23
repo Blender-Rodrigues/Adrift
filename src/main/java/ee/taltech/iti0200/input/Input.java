@@ -4,8 +4,6 @@ import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.physics.Vector;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,7 +31,6 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class Input implements Component {
 
-    private Logger logger = LogManager.getLogger(Input.class);
     private Player player;
     private long window;
     private Set<KeyEvent> events = new HashSet<>();
@@ -50,7 +47,7 @@ public class Input implements Component {
         bind(new KeyEvent(GLFW_KEY_A, this::playerMoveLeft, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_D, this::playerMoveRight, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_W, this::playerJump, GLFW_PRESS));
-        bind(new KeyEvent(GLFW_KEY_E, player::shoot, GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_E, this::playerShoot, GLFW_PRESS));
 
         bind(new KeyEvent(GLFW_KEY_RIGHT, camera::moveRight, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_LEFT, camera::moveLeft, GLFW_PRESS, GLFW_REPEAT));
@@ -76,27 +73,37 @@ public class Input implements Component {
     }
 
     private void playerMoveLeft() {
+        if (!player.isAlive()) {
+            return;
+        }
         if (player.isOnFloor()) {
             player.accelerate(new Vector(-0.5, 0.0));
         } else {
             player.accelerate(new Vector(-0.2, 0.0));
         }
-        logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
     private void playerMoveRight() {
+        if (!player.isAlive()) {
+            return;
+        }
         if (player.isOnFloor()) {
             player.accelerate(new Vector(0.5, 0.0));
         } else {
             player.accelerate(new Vector(0.2, 0.0));
         }
-        logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
     private void playerJump() {
-        if (player.getJumpsLeft() > 0) {
+        if (player.isAlive() && player.getJumpsLeft() > 0) {
             player.setJumpsLeft(player.getJumpsLeft() - 1);
             player.accelerate(new Vector(0.0, player.getJumpDeltaV()));
+        }
+    }
+
+    private void playerShoot() {
+        if (player.isAlive()) {
+            player.shoot();
         }
     }
 
