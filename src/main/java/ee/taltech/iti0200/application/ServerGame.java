@@ -5,6 +5,7 @@ import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.domain.event.handler.GunShotHandler;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.server.ServerNetwork;
+import ee.taltech.iti0200.physics.ServerPhysics;
 
 import java.util.UUID;
 
@@ -18,13 +19,13 @@ public class ServerGame extends Game {
     public ServerGame(Integer tcpPort) {
         super(SERVER_ID);
         this.tcpPort = tcpPort;
-        Game.isServer = true;
     }
 
     @Override
     protected void initialize() throws Exception {
         world.initialize();
         eventBus.subscribe(GunShot.class, new GunShotHandler(world));
+        components.add(new ServerPhysics(world));
         network = new ServerNetwork(world, tcpPort);
         components.add(network);
         components.add(new Intelligence(world));

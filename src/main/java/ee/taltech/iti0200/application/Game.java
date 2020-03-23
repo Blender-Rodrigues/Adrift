@@ -10,7 +10,6 @@ import ee.taltech.iti0200.domain.event.handler.EntityCreateHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityDamageHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityRemoveHandler;
 import ee.taltech.iti0200.domain.event.handler.MoveBodyHandler;
-import ee.taltech.iti0200.physics.Physics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,13 +23,11 @@ import static java.util.Comparator.comparingInt;
 abstract public class Game {
 
     public static EventBus eventBus;
-    private UUID id;
-    public static boolean isClient = false;
-    public static boolean isServer = false;
 
     protected World world;
     protected List<Component> components = new LinkedList<>();
 
+    private UUID id;
     private Timer timer;
     private long tick = 0;
     private Logger logger;
@@ -41,7 +38,7 @@ abstract public class Game {
         Thread.currentThread().setName(getClass().getSimpleName());
         world = new World(0.0, 40.0, 0.0, 40.0, 0.05);
         timer = new Timer(60F);
-        components.add(new Physics(world));
+
         logger = LogManager.getLogger(Game.class);
     }
 

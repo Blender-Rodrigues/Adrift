@@ -5,6 +5,7 @@ import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.client.ClientNetwork;
+import ee.taltech.iti0200.physics.Physics;
 
 import java.net.UnknownHostException;
 import java.util.UUID;
@@ -25,7 +26,6 @@ public class ClientGame extends Game {
         super(CLIENT_ID);
         this.host = host;
         this.tcpPort = tcpPort;
-        Game.isClient = true;
 
         player = new Player(world.nextPlayerSpawnPoint(), world);
         player.setId(CLIENT_ID);
@@ -44,6 +44,7 @@ public class ClientGame extends Game {
 
     @Override
     protected void initialize() throws UnknownHostException {
+        components.add(new Physics(world));
         network = new ClientNetwork(world, host, tcpPort, player);
         components.add(network);
         world.addEntity(player);
