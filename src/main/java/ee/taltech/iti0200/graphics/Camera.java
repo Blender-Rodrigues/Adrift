@@ -88,6 +88,10 @@ public class Camera {
         setZoom(zoom);
     }
 
+    public float getZoom() {
+        return zoom;
+    }
+
     public void togglePlayerCam() {
         followingPlayer = !followingPlayer;
     }

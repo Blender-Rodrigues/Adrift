@@ -33,12 +33,13 @@ public class Player extends Living {
         this.gun = new Gun(boundingBox, FIRE_RATE, this);
     }
 
-    public void shoot() {
+    public void shoot(Vector target) {
         if (!gun.canShoot(world.getTime())) {
             return;
         }
 
-        eventBus.dispatch(new GunShot(gun, speed, SERVER));
+        target.sub(boundingBox.getCentre());
+        eventBus.dispatch(new GunShot(gun, target, SERVER));
     }
 
     public double getJumpDeltaV() {

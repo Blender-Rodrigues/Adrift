@@ -4,7 +4,10 @@ import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.physics.Vector;
+import org.lwjgl.BufferUtils;
 
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,6 +29,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
@@ -103,8 +108,37 @@ public class Input implements Component {
 
     private void playerShoot() {
         if (player.isAlive()) {
-            player.shoot();
+            player.shoot(getMousePosition());
         }
+    }
+
+    private Vector getMousePosition() {
+        // Get mouse position in screen coordinates.
+        DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
+        DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(window, xBuffer, yBuffer);
+        double x = xBuffer.get(0);
+        double y = yBuffer.get(0);
+
+        // Get window size.
+        IntBuffer w = BufferUtils.createIntBuffer(1);
+        IntBuffer h = BufferUtils.createIntBuffer(1);
+        glfwGetWindowSize(window, w, h);
+        int width = w.get(0);
+        int height = h.get(0);
+
+        // Transform screen coordinates to camera coordinates.
+        x -= width / 2.0;
+        y -= height / 2.0;
+        x *= camera.getZoom();
+        y *= camera.getZoom();
+
+        //Transform camera coordinates to physics coordinates.
+        x -= camera.getPosition().get(0);
+        y += camera.getPosition().get(1);
+        y *= -1;
+
+        return new Vector(x, y);
     }
 
     private void bind(KeyEvent event) {
