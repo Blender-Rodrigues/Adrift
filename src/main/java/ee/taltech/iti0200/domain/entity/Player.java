@@ -44,7 +44,6 @@ public class Player extends Living {
     }
 
     public void setLookingAt(Vector targetPosition) {
-        System.out.println(targetPosition);
         targetPosition.sub(boundingBox.getCentre());
         targetPosition.normalize();
         lookingAt = targetPosition;

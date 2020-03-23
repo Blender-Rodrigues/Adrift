@@ -4,10 +4,7 @@ import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.physics.Vector;
-import org.lwjgl.BufferUtils;
 
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,8 +26,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
-import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
-import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
@@ -41,11 +36,13 @@ public class Input implements Component {
     private Set<KeyEvent> events = new HashSet<>();
     private Map<Integer, KeyEvent> bindings = new HashMap<>();
     private Camera camera;
+    private Mouse mouse;
 
     public Input(long window, Player player, Camera camera) {
         this.player = player;
         this.window = window;
         this.camera = camera;
+        this.mouse = new Mouse(this.camera, this.window);
     }
 
     public void initialize() {
@@ -114,37 +111,8 @@ public class Input implements Component {
     }
 
     private void updateMouse() {
-        Vector currentPosition = getMousePosition();
-        Vector windowSize = getWindowSize();
-        screenToCamera(currentPosition, windowSize);
-        Vector physicsPosition = cameraToPhysics(currentPosition);
-        player.setLookingAt(physicsPosition);
-    }
-
-    private Vector cameraToPhysics(Vector cameraPosition) {
-        double x = cameraPosition.getX() - camera.getPosition().get(0);
-        double y = cameraPosition.getY() + camera.getPosition().get(1);
-        y *= -1;
-        return new Vector(x, y);
-    }
-
-    private void screenToCamera(Vector screenPosition, Vector windowSize) {
-        screenPosition.scaleAdd(-0.5, windowSize, screenPosition);
-        screenPosition.scale(camera.getZoom());
-    }
-
-    private Vector getWindowSize() {
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        glfwGetWindowSize(window, width, height);
-        return new Vector(width.get(0), height.get(0));
-    }
-
-    private Vector getMousePosition() {
-        DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
-        DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
-        glfwGetCursorPos(window, xBuffer, yBuffer);
-        return new Vector(xBuffer.get(0), yBuffer.get(0));
+        mouse.update();
+        player.setLookingAt(mouse.getPhysicsPosition());
     }
 
     private void bind(KeyEvent event) {
