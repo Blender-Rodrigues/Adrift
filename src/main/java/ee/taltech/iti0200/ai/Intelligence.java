@@ -3,7 +3,6 @@ package ee.taltech.iti0200.ai;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.physics.Vector;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,8 +19,8 @@ public class Intelligence implements Component {
 
     @Override
     public void initialize() {
-        bots.add(new Bot(new Vector(10.0, 4.0), world));
-        bots.add(new Bot(new Vector(30.0, 4.0), world));
+        bots.add(new Bot(world.nextPlayerSpawnPoint(), world));
+        bots.add(new Bot(world.nextPlayerSpawnPoint(), world));
 
         bots.forEach(world::addEntity);
     }

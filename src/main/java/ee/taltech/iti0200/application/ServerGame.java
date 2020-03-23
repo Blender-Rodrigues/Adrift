@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.application;
 
 import ee.taltech.iti0200.ai.Intelligence;
+import ee.taltech.iti0200.domain.Layout;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.domain.event.handler.GunShotHandler;
 import ee.taltech.iti0200.network.Network;
@@ -23,6 +24,7 @@ public class ServerGame extends Game {
 
     @Override
     protected void initialize() throws Exception {
+        new Layout(LAYOUT_NAME).populateWorld(world);
         world.initialize();
         eventBus.subscribe(GunShot.class, new GunShotHandler(world));
         components.add(new ServerPhysics(world));
