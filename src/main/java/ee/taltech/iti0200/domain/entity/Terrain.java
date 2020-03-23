@@ -7,7 +7,7 @@ public class Terrain extends Damageable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Vector SIZE = new Vector(2.00, 2.00);
+    private static final Vector SIZE = new Vector(1.00, 1.00);
     private static final double MASS = Double.POSITIVE_INFINITY;
     private static final double ELASTICITY = 0.9;
     private static final double FRICTION_COEFFICIENT = 0.9;

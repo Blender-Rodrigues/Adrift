@@ -22,7 +22,11 @@ import static java.util.Comparator.comparingInt;
 
 abstract public class Game {
 
+    protected static final String LAYOUT_NAME = "eros.jpg";
+
     public static EventBus eventBus;
+
+    private final Logger logger = LogManager.getLogger(Game.class);
 
     protected World world;
     protected List<Component> components = new LinkedList<>();
@@ -30,16 +34,13 @@ abstract public class Game {
     private UUID id;
     private Timer timer;
     private long tick = 0;
-    private Logger logger;
 
     public Game(UUID id) {
         eventBus = new EventBus(id);
         this.id = id;
         Thread.currentThread().setName(getClass().getSimpleName());
-        world = new World(0.0, 40.0, 0.0, 40.0, 0.05);
+        world = new World(0.0, 600, 0.0, 600.0, 0.05);
         timer = new Timer(60F);
-
-        logger = LogManager.getLogger(Game.class);
     }
 
     void run() {

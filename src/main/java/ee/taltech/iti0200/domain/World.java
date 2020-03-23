@@ -7,6 +7,7 @@ import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,17 +20,18 @@ import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
 
 public class World {
 
-    protected HashMap<UUID, Entity> entities = new HashMap<>();
-    protected List<Living> livingEntities = new ArrayList<>();
-    protected List<Entity> movableBodies = new ArrayList<>();
-    protected List<Entity> imMovableBodies = new ArrayList<>();
-    protected Map<Vector, Terrain> terrainMap;
-    protected double xMin;
-    protected double xMax;
-    protected double yMin;
-    protected double yMax;
-    protected long time;
-    protected double timeStep;
+    private HashMap<UUID, Entity> entities = new HashMap<>();
+    private List<Living> livingEntities = new ArrayList<>();
+    private List<Entity> movableBodies = new ArrayList<>();
+    private List<Entity> imMovableBodies = new ArrayList<>();
+    private Map<Vector, Terrain> terrainMap;
+    private ArrayDeque<Vector> spawnPoints = new ArrayDeque<>();
+    private double xMin;
+    private double xMax;
+    private double yMin;
+    private double yMax;
+    private long time;
+    private double timeStep;
 
     public World(double xMin, double xMax, double yMin, double yMax, double timeStep) {
         this.xMin = xMin;
@@ -37,14 +39,10 @@ public class World {
         this.yMin = yMin;
         this.yMax = yMax;
         this.timeStep = timeStep;
+        spawnPoints.add(new Vector(0, 0));
     }
 
     public void initialize() {
-        for (int i = 0; i < 20; i++) {
-            addEntity(new Terrain(new Vector(i * 2.0 + 1.0, 1.0)));
-        }
-        addEntity(new Terrain(new Vector(1.0, 3.0)));
-        addEntity(new Terrain(new Vector(39.0, 3.0)));
         mapTerrain();
     }
 
@@ -63,8 +61,15 @@ public class World {
             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
     }
 
+    public World setSpawnPoints(ArrayDeque<Vector> spawnPoints) {
+        this.spawnPoints = spawnPoints;
+        return this;
+    }
+
     public Vector nextPlayerSpawnPoint() {
-        return new Vector(20.0, 40.0);
+        Vector position = spawnPoints.pop();
+        spawnPoints.addLast(position);
+        return position;
     }
 
     public long getTime() {

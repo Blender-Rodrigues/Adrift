@@ -6,8 +6,9 @@ import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.client.ClientNetwork;
 import ee.taltech.iti0200.physics.Physics;
+import ee.taltech.iti0200.physics.Vector;
 
-import java.net.UnknownHostException;
+import java.io.IOException;
 import java.util.UUID;
 
 public class ClientGame extends Game {
@@ -27,7 +28,7 @@ public class ClientGame extends Game {
         this.host = host;
         this.tcpPort = tcpPort;
 
-        player = new Player(world.nextPlayerSpawnPoint(), world);
+        player = new Player(new Vector(0, 0), world);
         player.setId(CLIENT_ID);
 
         graphics = new Graphics(world, player);
@@ -43,7 +44,7 @@ public class ClientGame extends Game {
     }
 
     @Override
-    protected void initialize() throws UnknownHostException {
+    protected void initialize() throws IOException {
         components.add(new Physics(world));
         network = new ClientNetwork(world, host, tcpPort, player);
         components.add(network);

@@ -45,8 +45,13 @@ public class ClientNetwork extends Network {
 
         worldData.getEntities().forEach(world::addEntity);
         world.mapTerrain();
+        player.getBoundingBox().getCentre().set(worldData.getSpawn());
 
-        logger.info("Loaded {} entities", worldData.getEntities().size());
+        logger.info(
+            "Loaded {} entities, set player coordinates to {}",
+            worldData.getEntities().size(),
+            worldData.getSpawn()
+        );
     }
 
     @Override
