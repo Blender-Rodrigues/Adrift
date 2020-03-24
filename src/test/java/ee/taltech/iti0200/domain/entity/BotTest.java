@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.domain.entity;
 
+import ee.taltech.iti0200.ai.HealthyBrain;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 class BotTest {
 
@@ -28,7 +30,7 @@ class BotTest {
         Vector position = new Vector(1, 3);
         World world = mock(World.class);
 
-        Bot given = new Bot(position, world);
+        Bot given = new Bot(position, world, null);
         given.setHealth(5);
         given.setXSpeed(7);
         given.setYSpeed(9);
@@ -44,6 +46,24 @@ class BotTest {
         assertThat(actual.getSpeed().x).isEqualTo(7);
         assertThat(actual.getSpeed().y).isEqualTo(9);
         assertThat(actual.isMovable()).isTrue();
+    }
+
+    @Test
+    void deserializedGetsABabyBrain() throws Exception {
+        File file = new File(directory, "Bot.txt");
+
+        Vector position = new Vector(1, 3);
+        World world = mock(World.class);
+        HealthyBrain brain = mock(HealthyBrain.class);
+
+        Bot given = new Bot(position, world, brain);
+
+        serialize(given, file);
+        Bot actual = deserialize(file);
+
+        actual.update(1);
+
+        verifyZeroInteractions(brain);
     }
 
     private void serialize(Bot bot, File file) throws IOException {
