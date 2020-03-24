@@ -20,10 +20,11 @@ public class Player extends Living {
     private static final int JUMP_AMOUNT_LIMIT = 2;
     private static final double JUMP_DELTA_V = 10.0;
     private static final int MAX_HEALTH = 200;
-    private static final int FIRE_RATE = 90;
+    private static final int FIRE_RATE = 20;
 
     private int jumpsLeft;
     private Gun gun;
+    private Vector lookingAt;
 
     public Player(Vector position, World world) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
@@ -31,6 +32,7 @@ public class Player extends Living {
         this.jumpsLeft = JUMP_AMOUNT_LIMIT;
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.gun = new Gun(boundingBox, FIRE_RATE, this);
+        this.lookingAt = new Vector(1f, 0f);
     }
 
     public void shoot() {
@@ -38,7 +40,13 @@ public class Player extends Living {
             return;
         }
 
-        eventBus.dispatch(new GunShot(gun, speed, SERVER));
+        eventBus.dispatch(new GunShot(gun, lookingAt, SERVER));
+    }
+
+    public void setLookingAt(Vector targetPosition) {
+        targetPosition.sub(boundingBox.getCentre());
+        targetPosition.normalize();
+        lookingAt = targetPosition;
     }
 
     public double getJumpDeltaV() {
