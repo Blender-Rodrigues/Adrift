@@ -19,8 +19,8 @@ public class Intelligence implements Component {
 
     @Override
     public void initialize() {
-        bots.add(new Bot(world.nextPlayerSpawnPoint(), world));
-        bots.add(new Bot(world.nextPlayerSpawnPoint(), world));
+        bots.add(createBot());
+        bots.add(createBot());
 
         bots.forEach(world::addEntity);
     }
@@ -40,6 +40,13 @@ public class Intelligence implements Component {
                 iterator.remove();
             }
         }
+    }
+
+    private Bot createBot() {
+        HealthyBrain brain = new HealthyBrain(world);
+        Bot bot = new Bot(world.nextPlayerSpawnPoint(), world, brain);
+        brain.bind(bot);
+        return bot;
     }
 
 }
