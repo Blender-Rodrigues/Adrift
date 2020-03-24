@@ -53,8 +53,8 @@ public class Mouse {
         return new Vector(xBuffer.get(0), yBuffer.get(0));
     }
 
-
     public Vector getPhysicsPosition() {
         return physicsPosition;
     }
+
 }
