@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.domain.event.handler;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.Subscriber;
@@ -27,6 +28,9 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
         }
 
         world.removeEntity(entity);
+        if (entity instanceof Bot) {
+            ((Bot) entity).getBrain().kill();
+        }
 
         if (entity instanceof Projectile) {
             logger.debug("Removed {} from the world", entity);
