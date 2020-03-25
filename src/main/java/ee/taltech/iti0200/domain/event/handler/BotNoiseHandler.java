@@ -15,6 +15,10 @@ public class BotNoiseHandler implements Subscriber<GunShot> {
 
     @Override
     public void handle(GunShot event) {
+        if (bot.getGun().getId().equals(event.getGun().getId())) {
+            return;
+        }
+
         bot.getBrain().updateSensor(Sensor.AUDIO, event.getGun().getBoundingBox().getCentre(), event.getGun());
     }
 

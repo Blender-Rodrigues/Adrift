@@ -5,7 +5,6 @@ import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Living;
-import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -20,6 +19,14 @@ import static ee.taltech.iti0200.network.message.Receiver.SERVER;
  */
 public class Panic extends Goal {
 
+    private static final double LOOK_ANGLE = 0.3;
+    private static final int LOOK_DELAY = 10;
+    private static final int GUNSHOT_LOOK_DISTANCE = 40;
+    private static final int GUNSHOT_TRIGGER_HAPPY_DISTANCE = 30;
+    private static final int ADRENALINE_GUN_SHOT = 80;
+    private static final int ADRENALINE_DAMAGE = 100;
+    private static final int ADRENALINE_SPOT_LIVING = 40;
+
     public Panic(Bot bot, World world) {
         super(bot, world);
     }
@@ -27,24 +34,36 @@ public class Panic extends Goal {
     @Override
     public void execute(long tick) {
         move(new Vector(RANDOM.nextDouble() - 0.5, 0));
-        lookFor(tick, 0.6, 10, Living.class);
+        if (tick % LOOK_DELAY == 0) {
+            lookFor(bot.getSpeed(), LOOK_ANGLE, Living.class);
+        }
     }
 
     @Override
-    public long react(Sensor sensor, Vector direction, Entity other) {
+    public long react(long tick, Sensor sensor, Vector location, Vector direction, Entity other) {
         if (sensor == VISUAL && other instanceof Living) {
-            eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
-            return 40;
+            if (bot.canShoot(tick)) {
+                eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
+            }
+            return ADRENALINE_SPOT_LIVING;
         }
 
         if (sensor == AUDIO && other instanceof Gun) {
-            // TODO: if the gunshot was close enough, turn head to look towards to see if anyone is there
-            double distance = bot.getBoundingBox().getCentre().distance(direction);
-            return (long) Math.max(80 - distance, 0);
+            double distance = bot.getBoundingBox().getCentre().distance(location);
+
+            if (distance < GUNSHOT_TRIGGER_HAPPY_DISTANCE) {
+                if (RANDOM.nextBoolean() && bot.canShoot(tick)) {
+                    eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
+                }
+            } else if (distance < GUNSHOT_LOOK_DISTANCE) {
+                lookFor(direction, LOOK_ANGLE, Living.class);
+            }
+
+            return (long) Math.max(ADRENALINE_GUN_SHOT - distance, 0);
         }
 
         if (sensor == DAMAGE) {
-            return 100;
+            return ADRENALINE_DAMAGE;
         }
 
         return 0;

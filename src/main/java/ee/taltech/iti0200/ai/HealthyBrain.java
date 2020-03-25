@@ -58,12 +58,18 @@ public class HealthyBrain implements Brain {
     }
 
     @Override
-    public void updateSensor(Sensor sensor, Vector direction, Entity other) {
+    public void updateSensor(Sensor sensor, Vector location, Entity other) {
         if (!bot.isAlive()) {
             return;
         }
+
         logger.trace(this);
-        adrenaline += active.react(sensor, direction, other);
+
+        Vector direction = new Vector(location);
+        direction.sub(bot.getBoundingBox().getCentre());
+        direction.normalize();
+
+        adrenaline += active.react(world.getTime(), sensor, new Vector(location), direction, other);
         if (adrenaline < 0) {
             adrenaline = 0;
         }

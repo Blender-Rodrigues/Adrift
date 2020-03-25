@@ -19,33 +19,44 @@ import static ee.taltech.iti0200.network.message.Receiver.SERVER;
  */
 public class LookForPlayer extends Goal {
 
+    private static final double LOOK_ANGLE = 0.2;
+    private static final int LOOK_DELAY = 15;
+    private static final int GUNSHOT_LOOK_DISTANCE = 20;
+    private static final int ADRENALINE_GUN_SHOT = 20;
+    private static final int ADRENALINE_DAMAGE = 50;
+    private static final int ADRENALINE_SPOT_PLAYER = 20;
+
     public LookForPlayer(Bot bot, World world) {
         super(bot, world);
     }
 
     @Override
     public void execute(long tick) {
-        move(new Vector(RANDOM.nextDouble() - 0.5, 0)); // TODO: add path finding towards most recent player position
-        if (bot.canShoot(tick)) {
-            lookFor(tick, 0.3, 15, Player.class);
+        move(new Vector(RANDOM.nextDouble() - 0.5, 0));
+        if (bot.canShoot(tick) && tick % LOOK_DELAY == 0) {
+            lookFor(bot.getSpeed(), LOOK_ANGLE, Player.class);
         }
     }
 
     @Override
-    public long react(Sensor sensor, Vector direction, Entity other) {
+    public long react(long tick, Sensor sensor, Vector location, Vector direction, Entity other) {
         if (sensor == VISUAL && other instanceof Player) {
-            eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
-            return 20;
+            if (bot.canShoot(tick)) {
+                eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
+            }
+            return ADRENALINE_SPOT_PLAYER;
         }
 
         if (sensor == AUDIO && other instanceof Gun) {
-            // TODO: if the gunshot was close enough, turn head to look towards to see if a player is there
-            double distance = bot.getBoundingBox().getCentre().distance(direction);
-            return (long) Math.max(20 - distance, 0);
+            double distance = bot.getBoundingBox().getCentre().distance(location);
+            if (distance < GUNSHOT_LOOK_DISTANCE) {
+                lookFor(direction, LOOK_ANGLE, Player.class);
+            }
+            return (long) Math.max(ADRENALINE_GUN_SHOT - distance, 0);
         }
 
         if (sensor == DAMAGE) {
-            return 50;
+            return ADRENALINE_DAMAGE;
         }
 
         return 0;

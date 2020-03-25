@@ -68,11 +68,7 @@ public class Bot extends Living {
             return;
         }
 
-        Vector direction = new Vector(otherBody.getBoundingBox().getCentre());
-        direction.sub(boundingBox.getCentre());
-        direction.normalize();
-
-        brain.updateSensor(Sensor.TACTILE, direction, (Entity) otherBody);
+        brain.updateSensor(Sensor.TACTILE, otherBody.getBoundingBox().getCentre(), (Entity) otherBody);
     }
 
     /**
