@@ -21,9 +21,9 @@ class WanderTest {
 
         Wander wander = new Wander(bot, null);
 
-        long actual = wander.react(AUDIO, new Vector(20, 42), gun);
+        long actual = wander.react(0, AUDIO, new Vector(10, 42), new Vector(0, 0), gun);
 
-        assertThat(actual).isEqualTo(28);
+        assertThat(actual).isEqualTo(18);
     }
 
 }
