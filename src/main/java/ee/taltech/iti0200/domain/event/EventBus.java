@@ -31,6 +31,13 @@ public class EventBus {
         subscribers.get(type).add((Subscriber<Event>) subscriber);
     }
 
+    public void unsubscribe(Class<? extends Event> type, Subscriber<? extends Event> subscriber) {
+        if (!subscribers.containsKey(type)) {
+            return;
+        }
+        subscribers.get(type).remove(subscriber);
+    }
+
     public void dispatch(Event event) {
         queue.add(event);
     }

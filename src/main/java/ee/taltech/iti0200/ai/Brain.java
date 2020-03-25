@@ -12,4 +12,6 @@ public interface Brain {
 
     void updateSensor(Sensor sensor, Vector direction, Entity other);
 
+    void kill();
+
 }

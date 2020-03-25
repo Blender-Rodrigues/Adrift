@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.ai.BabyBrain;
+import ee.taltech.iti0200.ai.InertBrain;
 import ee.taltech.iti0200.ai.Brain;
 import ee.taltech.iti0200.ai.Sensor;
 import ee.taltech.iti0200.domain.World;
@@ -25,8 +25,8 @@ public class Bot extends Living {
     private transient Brain brain;
 
     private Vector acceleration;
-    private Gun gun;
 
+    private Gun gun;
     public Bot(Vector position, World world, Brain brain) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
         this.brain = brain;
@@ -39,6 +39,10 @@ public class Bot extends Living {
 
     public Gun getGun() {
         return gun;
+    }
+
+    public Brain getBrain() {
+        return brain;
     }
 
     public boolean canShoot(long tick) {
@@ -73,7 +77,7 @@ public class Bot extends Living {
      */
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
-        brain = new BabyBrain();
+        brain = new InertBrain();
     }
 
 }
