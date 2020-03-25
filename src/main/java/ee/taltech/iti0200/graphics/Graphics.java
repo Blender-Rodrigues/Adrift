@@ -178,9 +178,9 @@ public class Graphics implements Component {
 
     private void createRenderers() {
         Texture defaultTexture = new Texture("", "default");
-        Animation playerDefault = new Animation(2, "animations/default/", "default.player", 20);
-        Animation playerJump = new Animation(2, "animations/default/", "jump.player", 20);
-        Animation botDefault = new Animation(2, "animations/default/", "default.bot", 20);
+        Animation playerDefault = new Animation(2, "animations/player/", "player.default", 20);
+        Animation playerJump = new Animation(2, "animations/player/", "player.jump", 20);
+        Animation botDefault = new Animation(2, "animations/bot/", "bot.default", 20);
 
         HashMap<String, Supplier<Renderer>> defaultRenderer = new HashMap<>();
         defaultRenderer.put(DEFAULT, () -> new Drawable(defaultTexture));
