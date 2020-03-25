@@ -5,6 +5,9 @@ import ee.taltech.iti0200.ai.Brain;
 import ee.taltech.iti0200.ai.Sensor;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.graphics.Animateable;
+import ee.taltech.iti0200.graphics.Animation;
+import ee.taltech.iti0200.graphics.Renderer;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
