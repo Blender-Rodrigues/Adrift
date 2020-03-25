@@ -4,6 +4,7 @@ import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
+import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.AbstractMap.SimpleEntry;
@@ -15,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
 
 public class World {
 
@@ -113,8 +112,8 @@ public class World {
 
     public void addEntity(Entity entity) {
         entities.put(entity.getId(), entity);
-        if (defaultTexture != null) {
-            entity.initializeGraphics();
+        if (!Graphics.renderers.isEmpty()) {
+            Graphics.setRenderer(entity);
         }
         if (entity.isMovable()) {
             movableBodies.add(entity);

@@ -2,12 +2,18 @@ package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Graphics;
+import ee.taltech.iti0200.graphics.Renderer;
+import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
 import static ee.taltech.iti0200.application.Game.eventBus;
 import static ee.taltech.iti0200.network.message.Receiver.SERVER;
+
+import static ee.taltech.iti0200.graphics.Graphics.DEFAULT;
 
 public class Player extends Living {
 
@@ -59,6 +65,12 @@ public class Player extends Living {
 
     public int getJumpsLeft() {
         return this.jumpsLeft;
+    }
+
+    @Override
+    public void render(Shader shader, Camera camera, long tick) {
+        String renderer = jumpsLeft < JUMP_AMOUNT_LIMIT ? "jump" : DEFAULT;
+        renderers.get(renderer).render(shader, camera, tick);
     }
 
     @Override
