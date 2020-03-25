@@ -3,17 +3,14 @@ package ee.taltech.iti0200.domain.entity;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.Graphics;
-import ee.taltech.iti0200.graphics.Renderer;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
 import static ee.taltech.iti0200.application.Game.eventBus;
-import static ee.taltech.iti0200.network.message.Receiver.SERVER;
-
 import static ee.taltech.iti0200.graphics.Graphics.DEFAULT;
+import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class Player extends Living {
 

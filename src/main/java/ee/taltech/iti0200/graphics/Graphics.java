@@ -182,7 +182,7 @@ public class Graphics implements Component {
         glfwSwapBuffers(window); // swap the color buffers
     }
 
-    private void createRenderers() {
+    private void createRenderers() throws IOException {
         Texture defaultTexture = new Texture("", "default");
         Animation playerDefault = new Animation(2, "animations/player/", "player.default", 20);
         Animation playerJump = new Animation(2, "animations/player/", "player.jump", 20);
