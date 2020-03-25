@@ -12,6 +12,7 @@ import static ee.taltech.iti0200.ai.Sensor.AUDIO;
 import static ee.taltech.iti0200.ai.Sensor.DAMAGE;
 import static ee.taltech.iti0200.ai.Sensor.TACTILE;
 import static ee.taltech.iti0200.ai.Sensor.VISUAL;
+import static java.lang.Math.max;
 
 /**
  * Mostly harmless unless agitated
@@ -20,6 +21,13 @@ public class Wander extends Goal {
 
     private static final double SIDE_WAYS_MAX = 1 / Math.sqrt(2);
     private static final double SPEED = 0.1;
+    private static final double LOOK_ANGLE = 0.2;
+    private static final int LOOK_DELAY = 20;
+    private static final int GUNSHOT_LOOK_DISTANCE = 30;
+    private static final int ADRENALINE_WALL_BUMP = 20;
+    private static final int ADRENALINE_GUN_SHOT = 50;
+    private static final int ADRENALINE_DAMAGE = 150;
+    private static final int ADRENALINE_SPOT_PLAYER = 80;
 
     private double towards = SPEED;
 
@@ -30,32 +38,36 @@ public class Wander extends Goal {
     @Override
     public void execute(long tick) {
         move(new Vector(towards, 0));
-        lookFor(tick, 0.2, 20, Player.class);
+        if (tick % LOOK_DELAY == 0) {
+            lookFor(bot.getSpeed(), LOOK_ANGLE, Player.class);
+        }
     }
 
     @Override
-    public long react(Sensor sensor, Vector direction, Entity other) {
+    public long react(long tick, Sensor sensor, Vector location, Vector direction, Entity other) {
         if (sensor == TACTILE && other instanceof Terrain) {
             boolean isSideways = Math.abs(direction.getX()) > SIDE_WAYS_MAX;
             if (!isSideways) {
                 return 0;
             }
             towards = direction.getX() > 0 ? -SPEED : SPEED;
-            return 20;
+            return ADRENALINE_WALL_BUMP;
         }
 
         if (sensor == AUDIO && other instanceof Gun) {
-            // TODO: if the gunshot was close enough, turn head to look towards to see if a player is there
-            double distance = bot.getBoundingBox().getCentre().distance(direction);
-            return (long) Math.max(50 - distance, 0);
+            double distance = bot.getBoundingBox().getCentre().distance(location);
+            if (distance < GUNSHOT_LOOK_DISTANCE) {
+                lookFor(direction, LOOK_ANGLE, Player.class);
+            }
+            return (long) max(ADRENALINE_GUN_SHOT - distance, 0);
         }
 
         if (sensor == DAMAGE) {
-            return 150;
+            return ADRENALINE_DAMAGE;
         }
 
         if (sensor == VISUAL && other instanceof Player) {
-            return 80;
+            return ADRENALINE_SPOT_PLAYER;
         }
 
         return 0;
