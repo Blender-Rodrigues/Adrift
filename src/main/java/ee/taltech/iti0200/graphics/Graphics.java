@@ -195,7 +195,15 @@ public class Graphics implements Component {
     }
 
     private Matrix4f getRotation(Vector pointedAt) {
-        return new Matrix4f().setRotationXYZ(0F, 0F, - (float) (Math.atan2(pointedAt.getX(), pointedAt.getY()) - Math.PI / 2));
+        float rotationAngle = - (float) (Math.atan2(pointedAt.getX(), pointedAt.getY()));
+        Matrix4f rotationMatrix;
+        if (rotationAngle < 0) {
+            return new Matrix4f().setRotationXYZ(0F, 0F, rotationAngle + (float) Math.PI / 2);
+        }
+        Matrix4f mirrorMatrix = new Matrix4f().m00(-1);
+        rotationMatrix = new Matrix4f().setRotationXYZ(0F, 0F, - rotationAngle + (float) Math.PI / 2);
+        rotationMatrix = mirrorMatrix.mul(rotationMatrix);
+        return rotationMatrix;
     }
 
     private void createRenderers() {
