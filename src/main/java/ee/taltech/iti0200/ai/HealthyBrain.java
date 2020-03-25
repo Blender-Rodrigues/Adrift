@@ -40,8 +40,8 @@ public class HealthyBrain implements Brain {
         goals.put(100L, new LookForPlayer(bot, world));
         goals.put(1000L, new Panic(bot, world));
 
-        subscribers.put(DealDamage.class,new BotHurtHandler(bot));
-        subscribers.put(GunShot.class,new BotNoiseHandler(bot));
+        subscribers.put(DealDamage.class, new BotHurtHandler(bot));
+        subscribers.put(GunShot.class, new BotNoiseHandler(bot));
 
         subscribers.forEach((key, value) -> eventBus.subscribe(key, value));
     }
@@ -50,7 +50,7 @@ public class HealthyBrain implements Brain {
         if (!bot.isAlive()) {
             return;
         }
-        if (tick % 10 == 0 && adrenaline > 0) {
+        if (tick % 5 == 0 && adrenaline > 0) {
             adrenaline -= 1;
         }
         active = goals.floorEntry(adrenaline).getValue();
