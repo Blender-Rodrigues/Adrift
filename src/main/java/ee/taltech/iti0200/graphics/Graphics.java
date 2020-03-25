@@ -7,12 +7,15 @@ import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.Vector;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import javax.vecmath.Vector2d;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.HashMap;
@@ -172,9 +175,21 @@ public class Graphics implements Component {
 
         camera.update();
 
-        world.getEntities().forEach(entity -> entity.render(shader, camera, tick));
+        Matrix4f rotation = new Matrix4f();
+        world.getEntities().stream()
+            .filter(entity -> !(entity instanceof Gun))
+            .forEach(entity -> entity.render(shader, camera, tick, rotation));
+
+        rotation.setRotationXYZ(0F, 0F, 1F);
+        world.getEntities().stream()
+            .filter(entity -> entity instanceof Gun)
+            .forEach(entity -> entity.render(shader, camera, tick, getRotation(((Gun) entity).getPointedAt())));
 
         glfwSwapBuffers(window); // swap the color buffers
+    }
+
+    private Matrix4f getRotation(Vector pointedAt) {
+        return new Matrix4f().setRotationXYZ(0F, 0F, - (float) (Math.atan2(pointedAt.getX(), pointedAt.getY()) - Math.PI / 2));
     }
 
     private void createRenderers() {

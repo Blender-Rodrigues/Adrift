@@ -9,6 +9,7 @@ import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
+import org.joml.Matrix4f;
 
 import static ee.taltech.iti0200.application.Game.eventBus;
 import static ee.taltech.iti0200.network.message.Receiver.SERVER;
@@ -26,7 +27,7 @@ public class Player extends Living {
     private static final int JUMP_AMOUNT_LIMIT = 2;
     private static final double JUMP_DELTA_V = 10.0;
     private static final int MAX_HEALTH = 200;
-    private static final int FIRE_RATE = 2;
+    private static final int FIRE_RATE = 4;
 
     private int jumpsLeft;
     private Vector lookingAt;
@@ -52,6 +53,7 @@ public class Player extends Living {
         targetPosition.sub(boundingBox.getCentre());
         targetPosition.normalize();
         lookingAt = targetPosition;
+        gun.setPointedAt(lookingAt);
     }
 
     public double getJumpDeltaV() {
@@ -67,9 +69,9 @@ public class Player extends Living {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
+    public void render(Shader shader, Camera camera, long tick, Matrix4f rotation) {
         String renderer = jumpsLeft < JUMP_AMOUNT_LIMIT ? "jump" : DEFAULT;
-        renderers.get(renderer).render(shader, camera, tick);
+        renderers.get(renderer).render(shader, camera, tick, rotation);
     }
 
     @Override

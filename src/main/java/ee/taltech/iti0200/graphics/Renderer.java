@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.domain.entity.Entity;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public abstract class Renderer {
@@ -41,12 +42,13 @@ public abstract class Renderer {
         return this;
     }
 
-    public void render(Shader shader, Camera camera, long tick) {
+    public void render(Shader shader, Camera camera, long tick, Matrix4f rotation) {
         transform.pos.set(new Vector3f((float) entity.getBoundingBox().getCentre().x, (float) entity.getBoundingBox().getCentre().y, 0));
 
         shader.bind();
         shader.setUniform("sampler", 0);
         shader.setUniform("projection", transform.getProjection(camera.getProjection()));
+        shader.setUniform("rotation", rotation);
     }
 
 }

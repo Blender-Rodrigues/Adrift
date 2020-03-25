@@ -5,6 +5,7 @@ import ee.taltech.iti0200.graphics.Renderer;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
+import org.joml.Matrix4f;
 
 import java.util.Objects;
 import java.util.HashMap;
@@ -52,8 +53,8 @@ public class Entity extends Body {
         return this;
     }
 
-    public void render(Shader shader, Camera camera, long tick) {
-        renderers.get(DEFAULT).render(shader, camera, tick);
+    public void render(Shader shader, Camera camera, long tick, Matrix4f rotation) {
+        renderers.get(DEFAULT).render(shader, camera, tick, rotation);
     }
 
     @Override

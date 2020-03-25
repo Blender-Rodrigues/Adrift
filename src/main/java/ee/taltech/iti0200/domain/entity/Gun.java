@@ -13,11 +13,13 @@ public class Gun extends Entity {
     private int damage = 10;
     private long fireRate;
     private Living owner;
+    private Vector pointedAt;
 
     public Gun(BoundingBox boundingBox, long fireRate, Living owner) {
         super(0, boundingBox);
         this.fireRate = fireRate;
         this.owner = owner;
+        this.pointedAt = new Vector(1, 0);
     }
 
     public boolean canShoot(long tick) {
@@ -32,6 +34,15 @@ public class Gun extends Entity {
         speed.scale(PROJECTILE_SPEED);
 
         return new Projectile(new Vector(owner.getBoundingBox().getCentre()), speed, damage, owner);
+    }
+
+    public Vector getPointedAt() {
+        return pointedAt;
+    }
+
+    public void setPointedAt(Vector pointedAt) {
+        this.pointedAt = new Vector(pointedAt);
+        this.pointedAt.normalize();
     }
 
 }
