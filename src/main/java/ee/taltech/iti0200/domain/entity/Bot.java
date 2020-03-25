@@ -29,7 +29,6 @@ public class Bot extends Living {
 
     private Vector acceleration;
 
-    private Gun gun;
     public Bot(Vector position, World world, Brain brain) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
         this.brain = brain;
@@ -38,10 +37,6 @@ public class Bot extends Living {
         this.acceleration = new Vector(0.0, 0.0);
         this.gun = new Gun(boundingBox, FIRE_RATE, this);
         this.movable = true;
-    }
-
-    public Gun getGun() {
-        return gun;
     }
 
     public Brain getBrain() {

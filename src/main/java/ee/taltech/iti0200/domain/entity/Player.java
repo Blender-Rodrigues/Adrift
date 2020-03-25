@@ -26,10 +26,9 @@ public class Player extends Living {
     private static final int JUMP_AMOUNT_LIMIT = 2;
     private static final double JUMP_DELTA_V = 10.0;
     private static final int MAX_HEALTH = 200;
-    private static final int FIRE_RATE = 20;
+    private static final int FIRE_RATE = 2;
 
     private int jumpsLeft;
-    private Gun gun;
     private Vector lookingAt;
 
     public Player(Vector position, World world) {

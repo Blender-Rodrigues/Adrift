@@ -4,6 +4,7 @@ import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Body;
 import org.joml.Vector3f;
@@ -178,6 +179,7 @@ public class Graphics implements Component {
 
     private void createRenderers() {
         Texture defaultTexture = new Texture("", "default");
+        Texture gunTexture = new Texture("animations/gun/", "shotgun");
         Animation playerDefault = new Animation(2, "animations/player/", "player.default", 20);
         Animation playerJump = new Animation(2, "animations/player/", "player.jump", 20);
         Animation botDefault = new Animation(2, "animations/bot/", "bot.default", 20);
@@ -185,6 +187,10 @@ public class Graphics implements Component {
         HashMap<String, Supplier<Renderer>> defaultRenderer = new HashMap<>();
         defaultRenderer.put(DEFAULT, () -> new Drawable(defaultTexture));
         renderers.put(Entity.class, defaultRenderer);
+
+        HashMap<String, Supplier<Renderer>> gunRenderer = new HashMap<>();
+        gunRenderer.put(DEFAULT, () -> new Drawable(gunTexture));
+        renderers.put(Gun.class, gunRenderer);
 
         HashMap<String, Supplier<Renderer>> playerRenderer = new HashMap<>();
         playerRenderer.put(DEFAULT, () -> new Animateable(playerDefault));
