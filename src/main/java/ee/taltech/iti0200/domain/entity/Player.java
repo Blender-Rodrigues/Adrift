@@ -26,7 +26,7 @@ public class Player extends Living {
     private static final double FRICTION_COEFFICIENT = 0.99;
     private static final int JUMP_AMOUNT_LIMIT = 2;
     private static final double JUMP_DELTA_V = 10.0;
-    private static final int MAX_HEALTH = 200;
+    private static final int MAX_HEALTH = 150;
     private static final int FIRE_RATE = 4;
 
     private int jumpsLeft;

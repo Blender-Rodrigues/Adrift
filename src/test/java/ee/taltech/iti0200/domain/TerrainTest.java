@@ -11,8 +11,8 @@ class TerrainTest {
     @Test
     void makeNewTerrain() {
         Terrain terrain = new Terrain(new Vector(0.0, 0.0));
-        assertEquals(1.0, terrain.getBoundingBox().getSize().getX());
-        assertEquals(1.0, terrain.getBoundingBox().getSize().getY());
+        assertEquals(0.5, terrain.getBoundingBox().getSize().getX());
+        assertEquals(0.5, terrain.getBoundingBox().getSize().getY());
     }
 
 }

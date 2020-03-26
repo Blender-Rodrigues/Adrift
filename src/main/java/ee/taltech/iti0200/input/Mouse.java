@@ -23,23 +23,11 @@ public class Mouse {
 
     public void update() {
         Vector currentPosition = getMousePosition();
-        Vector windowSize = getWindowSize();
-        screenToCamera(currentPosition, windowSize);
-        physicsPosition = cameraToPhysics(currentPosition);
-    }
-    private Vector cameraToPhysics(Vector cameraPosition) {
-        double x = cameraPosition.getX() - camera.getPosition().get(0);
-        double y = cameraPosition.getY() + camera.getPosition().get(1);
-        y *= -1;
-        return new Vector(x, y);
+        Vector cameraPosition = camera.screenToCamera(currentPosition);
+        physicsPosition = camera.cameraToPhysics(cameraPosition);
     }
 
-    private void screenToCamera(Vector screenPosition, Vector windowSize) {
-        screenPosition.scaleAdd(-0.5, windowSize, screenPosition);
-        screenPosition.scale(camera.getZoom());
-    }
-
-    private Vector getWindowSize() {
+    public Vector getWindowSize() {
         IntBuffer width = BufferUtils.createIntBuffer(1);
         IntBuffer height = BufferUtils.createIntBuffer(1);
         glfwGetWindowSize(window, width, height);

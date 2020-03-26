@@ -22,8 +22,8 @@ public class Bot extends Living {
     private static final double MASS = 70.0;
     private static final double ELASTICITY = 0.25;
     private static final double FRICTION_COEFFICIENT = 0.99;
-    private static final int MAX_HEALTH = 100;
-    private static final int FIRE_RATE = 9;
+    private static final int MAX_HEALTH = 150;
+    private static final int FIRE_RATE = 4;
 
     private transient Brain brain;
 

@@ -1,6 +1,8 @@
 package ee.taltech.iti0200.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
 import java.io.BufferedReader;
