@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
