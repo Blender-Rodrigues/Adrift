@@ -1,13 +1,11 @@
 package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.domain.entity.Terrain;
+import ee.taltech.iti0200.graphics.Image;
 import ee.taltech.iti0200.physics.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.List;
 
 public class Layout {
 
-    private static final String PATH = "./build/resources/main/layouts/";
+    private static final String PATH = "layouts/";
     private static final int AIR = -16700000;
     private static final int SPAWN = -1;
 
@@ -59,17 +57,16 @@ public class Layout {
     /**
      * Height is flipped around to match image orientation.
      */
-    private void readTerrain(String filename) throws IOException {
-        BufferedImage image = ImageIO.read(new File(filename));
+    private void readTerrain(String file) throws IOException {
+        Image image = new Image(file);
 
         width = image.getWidth();
         height = image.getHeight();
-
-        int[] pixelsRaw = image.getRGB(0, 0, width, height, null, 0, width);
+        int[] rawPixels = image.getRawPixels();
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                int pixel = pixelsRaw[i * width + j];
+                int pixel = rawPixels[i * width + j];
                 if (pixel < AIR) {
                     continue;
                 }

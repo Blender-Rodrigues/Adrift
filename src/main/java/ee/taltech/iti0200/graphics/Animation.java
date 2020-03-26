@@ -5,6 +5,7 @@ import java.io.IOException;
 public class Animation {
 
     private Texture[] frames;
+    private long lastTick;
     private int pointer;
     private int delay;
 
@@ -19,7 +20,8 @@ public class Animation {
     }
 
     public void bind(long tick) {
-        if (tick % delay == 0) {
+        if (tick % delay == 0 && tick > lastTick) {
+            lastTick = tick;
             pointer++;
         }
         if (pointer >= frames.length) {
