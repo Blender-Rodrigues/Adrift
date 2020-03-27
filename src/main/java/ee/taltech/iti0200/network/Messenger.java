@@ -3,6 +3,7 @@ package ee.taltech.iti0200.network;
 import ee.taltech.iti0200.network.message.Message;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,12 +17,6 @@ public class Messenger {
         this.inbox = inbox;
         this.outbox = outbox;
         this.alive = alive;
-    }
-
-    public Messenger() {
-        alive = new AtomicBoolean(true);
-        outbox = new ConcurrentLinkedQueue<>();
-        inbox = new ConcurrentLinkedQueue<>();
     }
 
     public LinkedList<Message> readInbox() {
@@ -46,9 +41,9 @@ public class Messenger {
         }
     }
 
-    public void writeOutbox(LinkedList<Message> data) {
+    public void writeOutbox(List<Message> messages) {
         synchronized(outbox) {
-            outbox.addAll(data);
+            outbox.addAll(messages);
         }
     }
 

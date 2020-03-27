@@ -1,62 +1,84 @@
 package ee.taltech.iti0200.network.client;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.Network;
+import ee.taltech.iti0200.network.message.LoadWorld;
 import ee.taltech.iti0200.network.message.Message;
-import ee.taltech.iti0200.network.message.Ping;
+import ee.taltech.iti0200.network.message.Receiver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.net.Protocol;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
+import static ee.taltech.iti0200.application.Game.eventBus;
+import static java.net.InetAddress.getByName;
 
 public class ClientNetwork extends Network {
 
     private final Logger logger = LogManager.getLogger(ClientNetwork.class);
-    private final Messenger messenger = new Messenger();
-    private final UUID id = UUID.randomUUID();
+    private final ConcurrentLinkedQueue<Message> inbox = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Message> tcpOutbox = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Message> udpOutbox = new ConcurrentLinkedQueue<>();
+    private final AtomicBoolean alive = new AtomicBoolean(true);
+    private final Messenger messenger = new ClientMessenger(inbox, tcpOutbox,udpOutbox, alive);
     private final ConnectionToServer connection;
+    private Player player;
 
-    public ClientNetwork(World world, String host, Integer tcpPort) throws UnknownHostException {
+    public ClientNetwork(World world, String host, Integer tcpPort, Player player) throws UnknownHostException {
         super(world);
-        connection = new ConnectionToServer(InetAddress.getByName(host), tcpPort, messenger, id);
+        this.player = player;
+        this.connection = new ConnectionToServer(getByName(host), tcpPort, inbox, tcpOutbox, udpOutbox, alive, player);
     }
 
     @Override
     public void initialize() throws IOException, ClassNotFoundException {
         connection.initialize();
+        LoadWorld worldData = connection.getWorldData();
+
+        worldData.getEntities().forEach(world::addEntity);
+        world.mapTerrain();
+        player.getBoundingBox().getCentre().set(worldData.getSpawn());
+
+        logger.info(
+            "Loaded {} entities, set player coordinates to {}",
+            worldData.getEntities().size(),
+            worldData.getSpawn()
+        );
     }
 
     @Override
-    public void update(long tick) {
-        LinkedList<Message> messages = messenger.readInbox();
-
-        // TODO: temporary generic example of handling messages
-        messages.forEach(message -> logger.debug(
-            "Client received {}: {}",
-            message.getClass().getSimpleName(),
-            message.toString()
-        ));
+    protected Messenger getMessenger() {
+        return messenger;
     }
 
     @Override
     public void propagate(long tick) {
         Thread.yield();
 
-        // TODO: temporary generic example of sending a message
-        if (tick % 1000 == 0) {
-            LinkedList<Message> messages = new LinkedList<>();
+        List<Message> events = eventBus.propagateAll()
+            .stream()
+            .filter(event -> {
+                Receiver receiver = event.getReceiver();
+                if (Receiver.EVERYONE.equals(receiver)) {
+                    event.setReceiver(Receiver.SERVER);
+                    return true;
+                }
+                return Receiver.SERVER.equals(event.getReceiver());
+            })
+            .collect(Collectors.toList());
 
-            messages.add(new Ping(tick, id, Protocol.TCP));
-            messages.add(new Ping(tick, id, Protocol.UDP));
+        // TODO: send only if the player has moved
+        events.add(new UpdateVector(player, Receiver.SERVER));
 
-            messenger.writeOutbox(messages);
-        }
+        messenger.writeOutbox(events);
     }
 
     @Override

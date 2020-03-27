@@ -1,22 +1,8 @@
 package ee.taltech.iti0200.physics;
 
-import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.Model;
-import ee.taltech.iti0200.graphics.Shader;
-import ee.taltech.iti0200.graphics.Texture;
-import ee.taltech.iti0200.graphics.Transform;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.joml.Vector3f;
+import java.io.Serializable;
 
-import java.io.IOException;
-
-import static ee.taltech.iti0200.graphics.Graphics.defaultTexture;
-import static org.lwjgl.opengl.GL11.*;
-
-public class Body {
-
-    private final Logger logger = LogManager.getLogger(Body.class);
+public class Body implements Serializable {
 
     protected double mass;
     protected double inverseMass;
@@ -26,34 +12,15 @@ public class Body {
     protected double elasticity;
     protected double frictionCoefficient;
     protected double dragFromSurface;
-    private boolean collideable;
+    protected boolean collideable = false;
 
-    private Model model;
-    private Texture texture;
-    private Transform transform;
-
-    public Body(double mass, BoundingBox boundingBox, boolean collideable) {
+    public Body(double mass, BoundingBox boundingBox) {
         this.mass = mass;
         this.speed = new Vector(0.0, 0.0);
         this.inverseMass = 1 / mass;
         this.boundingBox = boundingBox;
-        this.collideable = collideable;
         this.elasticity = 1;
         this.frictionCoefficient = 1;
-    }
-
-    public Body(double mass, Vector min, Vector max, boolean collideable) {
-        this(mass, new BoundingBox(min, max), collideable);
-    }
-
-    public Body(
-        double mass,
-        Vector size,
-        Vector position,
-        boolean collideable,
-        boolean usingPositionAndSize
-    ) {
-        this(mass, new BoundingBox(position, size, usingPositionAndSize), collideable);
     }
 
     public void move(double timeToMove) {
@@ -71,7 +38,7 @@ public class Body {
     }
 
     public void drag() {
-        this.setXSpeed(this.dragFromSurface * this.frictionCoefficient * this.getSpeed().getX());
+        this.setXSpeed(this.dragFromSurface * this.frictionCoefficient * speed.getX());
     }
 
     public double getMass() {
@@ -128,53 +95,6 @@ public class Body {
 
     public void onCollide(Body otherBody) {
 
-    }
-
-    public void initializeGraphics() {
-        float[] vertices = new float[]{
-            -1f, 1f, 0,
-            1f, 1f, 0,
-            1f, -1f, 0,
-            -1f, -1f, 0
-        };
-
-        float[] texture = new float[]{
-            0, 0,
-            1, 0,
-            1, 1,
-            0, 1
-        };
-
-        int[] indices = new int[]{
-            0, 1, 2,
-            2, 3, 0
-        };
-
-        model = new Model(vertices, texture, indices);
-        this.texture = defaultTexture;
-
-        transform = new Transform();
-        transform.scale = new Vector3f((float) getBoundingBox().getSize().getX(), (float) getBoundingBox().getSize().getY(), 1);
-
-
-    }
-
-    public void changeTexture(String filename) {
-        try {
-            this.texture = new Texture(filename);
-        } catch (IOException e) {
-            logger.error("Failed to change texture: " + e.getMessage(), e);
-        }
-    }
-
-    public void render(Shader shader, Camera camera) {
-        transform.pos.set(new Vector3f((float) this.boundingBox.getCentre().x, (float) this.boundingBox.getCentre().y, 0));
-
-        shader.bind();
-        shader.setUniform("sampler", 0);
-        shader.setUniform("projection", transform.getProjection(camera.getProjection()));
-        texture.bind(0);
-        model.render();
     }
 
 }

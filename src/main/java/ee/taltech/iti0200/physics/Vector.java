@@ -2,6 +2,9 @@ package ee.taltech.iti0200.physics;
 
 import javax.vecmath.Vector2d;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 public class Vector extends Vector2d {
 
     public Vector(double x, double y) {
@@ -26,6 +29,10 @@ public class Vector extends Vector2d {
     public void elementWiseMultiple(Vector2d vector) {
         this.setX(this.getX() * vector.getX());
         this.setY(this.getY() * vector.getY());
+    }
+
+    public double distance(Vector to) {
+        return sqrt(pow(x - to.getX(), 2) + pow(y - to.getY(), 2));
     }
 
     public Vector rounded() {

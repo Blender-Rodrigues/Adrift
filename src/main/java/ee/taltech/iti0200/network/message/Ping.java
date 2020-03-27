@@ -7,13 +7,15 @@ import java.util.UUID;
 public class Ping implements Message {
 
     private Protocol channel;
+    private Receiver receiver;
     private long time;
     private UUID id;
 
-    public Ping(long time, UUID id, Protocol channel) {
+    public Ping(long time, UUID id, Protocol channel, Receiver receiver) {
         this.time = time;
         this.id = id;
         this.channel = channel;
+        this.receiver = receiver;
     }
 
     public long getTime() {
@@ -27,6 +29,11 @@ public class Ping implements Message {
     @Override
     public Protocol getChannel() {
         return channel;
+    }
+
+    @Override
+    public Receiver getReceiver() {
+        return receiver;
     }
 
     @Override

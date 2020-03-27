@@ -1,17 +1,17 @@
 package ee.taltech.iti0200.graphics;
 
-import ee.taltech.iti0200.domain.Player;
+import ee.taltech.iti0200.domain.entity.Player;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Camera {
 
-    public static final int CAMERA_SENSITIVITY = 25;
+    public static final float CAMERA_SENSITIVITY = 20f;
     public static final int RENDER_SCALE_MULTIPLIER = 1;
 
     /* zoom in and zoom out are "inverted" -> the smaller the value, the farther the camera is from the map */
-    public static final float MINIMUM_ZOOM_VALUE = 0.05f;
-    public static final float MAXIMUM_ZOOM_VALUE = 10.0f;
+    public static final float MINIMUM_ZOOM_VALUE = 0.005f;
+    public static final float MAXIMUM_ZOOM_VALUE = 0.2f;
 
     private Vector3f position;
     private Matrix4f projection;
@@ -29,11 +29,11 @@ public class Camera {
     public Camera(int width, int height, Player player) {
         this.width = width;
         this.height = height;
-        this.zoom = 1f;
+        this.zoom = 0.03f;
         this.player = player;
 
         position = new Vector3f(0, 0, 0);
-        projection = new Matrix4f().setOrtho2D(-width / 2f, width / 2f, -height / 2f, height / 2f);
+        setZoom(zoom);
     }
 
     public void setPosition(Vector3f position) {
@@ -63,29 +63,33 @@ public class Camera {
     }
 
     public void moveLeft() {
-        position.add(new Vector3f(CAMERA_SENSITIVITY, 0, 0));
+        position.add(new Vector3f(CAMERA_SENSITIVITY * zoom, 0, 0));
     }
 
     public void moveRight() {
-        position.add(new Vector3f(-CAMERA_SENSITIVITY, 0, 0));
+        position.add(new Vector3f(-CAMERA_SENSITIVITY * zoom, 0, 0));
     }
 
     public void moveUp() {
-        position.add(new Vector3f(0, -CAMERA_SENSITIVITY, 0));
+        position.add(new Vector3f(0, -CAMERA_SENSITIVITY * zoom, 0));
     }
 
     public void moveDown() {
-        position.add(new Vector3f(0, CAMERA_SENSITIVITY, 0));
+        position.add(new Vector3f(0, CAMERA_SENSITIVITY * zoom, 0));
     }
 
     public void zoomIn() {
-        zoom = zoom / 1.05f;
+        zoom = Math.max(zoom / 1.05f, MINIMUM_ZOOM_VALUE);
         setZoom(zoom);
     }
 
     public void zoomOut() {
-        zoom = zoom * 1.05f;
+        zoom = Math.min(zoom * 1.05f, MAXIMUM_ZOOM_VALUE);
         setZoom(zoom);
+    }
+
+    public float getZoom() {
+        return zoom;
     }
 
     public void togglePlayerCam() {

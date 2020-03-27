@@ -1,13 +1,9 @@
 package ee.taltech.iti0200.input;
 
 import ee.taltech.iti0200.application.Component;
-import ee.taltech.iti0200.domain.Player;
-import ee.taltech.iti0200.domain.Projectile;
-import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.physics.Vector;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,43 +14,45 @@ import java.util.Set;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_F;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_I;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_O;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_8;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class Input implements Component {
 
-    private Logger logger = LogManager.getLogger(Input.class);
     private Player player;
     private long window;
     private Set<KeyEvent> events = new HashSet<>();
     private Map<Integer, KeyEvent> bindings = new HashMap<>();
     private Camera camera;
-    private World world;
+    private Mouse mouse;
 
-    public Input(long window, Player player, Camera camera, World world) {
+    public Input(long window, Player player, Camera camera) {
         this.player = player;
         this.window = window;
         this.camera = camera;
-        this.world = world;
+        this.mouse = new Mouse(this.camera, this.window);
     }
 
     public void initialize() {
         bind(new KeyEvent(GLFW_KEY_A, this::playerMoveLeft, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_D, this::playerMoveRight, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_W, this::playerJump, GLFW_PRESS));
-        bind(new KeyEvent(GLFW_KEY_E, this::playerShoot, GLFW_PRESS));
+        bind(new KeyEvent(GLFW_MOUSE_BUTTON_LEFT, this::playerShoot, GLFW_PRESS));
 
         bind(new KeyEvent(GLFW_KEY_RIGHT, camera::moveRight, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_LEFT, camera::moveLeft, GLFW_PRESS, GLFW_REPEAT));
@@ -65,11 +63,13 @@ public class Input implements Component {
         bind(new KeyEvent(GLFW_KEY_O, camera::zoomOut, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_F, camera::togglePlayerCam, GLFW_PRESS));
 
-        glfwSetKeyCallback(window, this::invoke);
+        glfwSetKeyCallback(window, this::invokeKey);
+        glfwSetMouseButtonCallback(window, this::invokeMouse);
     }
 
     public void update(long tick) {
         Iterator<KeyEvent> iterator = events.iterator();
+        updateMouse();
         while (iterator.hasNext()) {
             KeyEvent event = iterator.next();
             event.event.run();
@@ -80,43 +80,59 @@ public class Input implements Component {
     }
 
     private void playerMoveLeft() {
+        if (!player.isAlive()) {
+            return;
+        }
         if (player.isOnFloor()) {
             player.accelerate(new Vector(-0.5, 0.0));
         } else {
             player.accelerate(new Vector(-0.2, 0.0));
         }
-        logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
     private void playerMoveRight() {
+        if (!player.isAlive()) {
+            return;
+        }
         if (player.isOnFloor()) {
             player.accelerate(new Vector(0.5, 0.0));
         } else {
             player.accelerate(new Vector(0.2, 0.0));
         }
-        logger.debug("Player at: " + player.getBoundingBox().getCentre());
     }
 
     private void playerJump() {
-        if (player.getJumpsLeft() > 0) {
+        if (player.isAlive() && player.getJumpsLeft() > 0) {
             player.setJumpsLeft(player.getJumpsLeft() - 1);
             player.accelerate(new Vector(0.0, player.getJumpDeltaV()));
         }
     }
 
     private void playerShoot() {
-        Vector speed = new Vector(player.getSpeed());
-        speed.scale(2);
+        if (player.isAlive()) {
+            player.shoot();
+        }
+    }
 
-        Vector position = new Vector(player.getBoundingBox().getCentre());
-
-        Projectile projectile = new Projectile(position, speed);
-
-        world.addBody(projectile, true);
+    private void updateMouse() {
+        mouse.update();
+        player.setLookingAt(mouse.getPhysicsPosition());
     }
 
     private void bind(KeyEvent event) {
         bindings.put(event.key, event);
+    }
+
+    private void invokeKey(long window, int key, int scanCode, int action, int mods) {
+        if (key >= GLFW_KEY_SPACE) {
+            invoke(window, key, scanCode, action, mods);
+        }
+    }
+
+    private void invokeMouse(long window, int key, int action, int mods) {
+        if (key <= GLFW_MOUSE_BUTTON_8) {
+            invoke(window, key, 0, action, mods);
+        }
     }
 
     private void invoke(long window, int key, int scanCode, int action, int mods) {

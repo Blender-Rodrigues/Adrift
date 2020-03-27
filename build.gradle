@@ -57,6 +57,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-core:2.13.0"
     implementation "javax.vecmath:vecmath:1.5.2"
     implementation "org.joml:joml:1.9.22"
+    implementation "com.google.guava:guava:28.2-jre"
 
     runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
@@ -64,6 +65,8 @@ dependencies {
 
     testImplementation "org.assertj:assertj-core:3.11.1"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.6.0"
+    testImplementation "org.mockito:mockito-core:2.+"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:5.6.0"
 }
 

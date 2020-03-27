@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static java.lang.String.format;
+
 public class ConnectionToClient extends Connection {
 
     private final ConcurrentLinkedQueue<Message> tcpOutbox = new ConcurrentLinkedQueue<>();
@@ -51,6 +53,11 @@ public class ConnectionToClient extends Connection {
         }
         ConnectionToClient connection = (ConnectionToClient) other;
         return Objects.equals(address, connection.address) && Objects.equals(tcpPort, connection.tcpPort);
+    }
+
+    @Override
+    public String toString() {
+        return format("Connection{client=%s, %s:%d}", id, address.getHostAddress(), tcpPort);
     }
 
 }

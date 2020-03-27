@@ -3,5 +3,6 @@ out/
 .gradle/
 .idea/
 build/
+logs/
 *.log
 *.iml

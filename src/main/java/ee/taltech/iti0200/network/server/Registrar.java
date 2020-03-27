@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.network.server;
 
+import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.Listener;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.PacketObjectInputStream;
@@ -101,7 +102,7 @@ public class Registrar extends Thread {
             }
 
             try {
-                tcpOutput.writeObject(new UdpRegistrationResponse());
+                tcpOutput.writeObject(new UdpRegistrationResponse(new Receiver(connection.getId())));
                 tcpOutput.flush();
                 connection.finalized();
                 clients.add(connection);
@@ -133,7 +134,7 @@ public class Registrar extends Thread {
                 new Listener("Server UDP", udpInput, udpMessenger, connection, udpHandlers).start();
                 new Sender("Server UDP", udpOutput, udpMessenger, connection).start();
 
-                tcpOutput.writeObject(new TcpRegistrationResponse(udpPort));
+                tcpOutput.writeObject(new TcpRegistrationResponse(udpPort, new Receiver(request.getId())));
                 tcpOutput.flush();
             } catch (IOException e) {
                 logger.error("Failed to respond to client register request: " + e.getMessage(), e);

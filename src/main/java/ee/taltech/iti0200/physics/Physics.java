@@ -1,10 +1,10 @@
 package ee.taltech.iti0200.physics;
 
 import ee.taltech.iti0200.application.Component;
-import ee.taltech.iti0200.domain.Entity;
-import ee.taltech.iti0200.domain.Projectile;
-import ee.taltech.iti0200.domain.Terrain;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.entity.Terrain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +18,7 @@ import static ee.taltech.iti0200.physics.BoundingBox.clamp;
 
 public class Physics implements Component {
 
-    private World world;
+    protected World world;
     private Logger logger = LogManager.getLogger(Physics.class);
 
     private static final Vector GRAVITY = new Vector(0, -9.81);

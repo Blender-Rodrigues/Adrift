@@ -1,11 +1,15 @@
 package ee.taltech.iti0200.network.client;
 
+import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.entity.CreatePlayer;
+import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.Connection;
 import ee.taltech.iti0200.network.Listener;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.PacketObjectInputStream;
 import ee.taltech.iti0200.network.PacketObjectOutputStream;
 import ee.taltech.iti0200.network.Sender;
+import ee.taltech.iti0200.network.message.LoadWorld;
 import ee.taltech.iti0200.network.message.Message;
 import ee.taltech.iti0200.network.message.TcpRegistrationRequest;
 import ee.taltech.iti0200.network.message.TcpRegistrationResponse;
@@ -21,20 +25,37 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.String.format;
 
 public class ConnectionToServer extends Connection {
 
     private final Logger logger = LogManager.getLogger(ConnectionToServer.class);
-    private final Messenger messenger;
-    private final UUID id;
+    private final ConcurrentLinkedQueue<Message> inbox;
+    private final ConcurrentLinkedQueue<Message> tcpOutbox;
+    private final ConcurrentLinkedQueue<Message> udpOutbox;
+    private final AtomicBoolean alive;
+    private final Player player;
 
-    public ConnectionToServer(InetAddress address, int tcpPort, Messenger messenger, UUID id) {
+    private LoadWorld worldData;
+
+    public ConnectionToServer(
+        InetAddress address,
+        int tcpPort,
+        ConcurrentLinkedQueue<Message> inbox,
+        ConcurrentLinkedQueue<Message> tcpOutbox,
+        ConcurrentLinkedQueue<Message> udpOutbox,
+        AtomicBoolean alive,
+        Player player
+    ) {
         super(address, tcpPort);
-        this.messenger = messenger;
-        this.id = id;
+        this.inbox = inbox;
+        this.tcpOutbox = tcpOutbox;
+        this.udpOutbox = udpOutbox;
+        this.alive = alive;
+        this.player = player;
     }
 
     /**
@@ -53,12 +74,8 @@ public class ConnectionToServer extends Connection {
         tcpSocket.setSoTimeout(RETRY);
 
         TcpRegistrationResponse response = (TcpRegistrationResponse) retry(TcpRegistrationResponse.class, tcpInput, () -> {
-            try {
-                tcpOutput.writeObject(new TcpRegistrationRequest(id, udpSocket.getLocalPort()));
-                tcpOutput.flush();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            tcpOutput.writeObject(new TcpRegistrationRequest(player.getId(), udpSocket.getLocalPort()));
+            tcpOutput.flush();
         });
 
         logger.info("Received UDP port {} from server", response.getUdpPort());
@@ -66,12 +83,13 @@ public class ConnectionToServer extends Connection {
         udpOutput = new PacketObjectOutputStream(udpSocket, address, response.getUdpPort());
 
         retry(UdpRegistrationResponse.class, tcpInput, () -> {
-            try {
-                udpOutput.writeObject(new UdpRegistrationRequest());
-                logger.debug("Trying to register UDP against port " + response.getUdpPort());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            udpOutput.writeObject(new UdpRegistrationRequest());
+            logger.debug("Trying to register UDP against port " + response.getUdpPort());
+        });
+
+        worldData = (LoadWorld) retry(LoadWorld.class, tcpInput, () -> {
+            tcpOutput.writeObject(new CreatePlayer(player, Receiver.SERVER));
+            tcpOutput.flush();
         });
 
         tcpSocket.setSoTimeout(0);
@@ -79,14 +97,21 @@ public class ConnectionToServer extends Connection {
         udpOutput = new PacketObjectOutputStream(udpSocket, address, response.getUdpPort());
         udpInput = new PacketObjectInputStream(udpSocket);
 
-        new Sender("Client TCP", tcpOutput, messenger, this).start();
-        new Sender("Client UDP", udpOutput, messenger, this).start();
+        Messenger tcpMessenger = new Messenger(inbox, tcpOutbox, alive);
+        Messenger udpMessenger = new Messenger(inbox, udpOutbox, alive);
 
-        new Listener("Client TCP", tcpInput, messenger, this).start();
-        new Listener("Client UDP", udpInput, messenger, this).start();
+        new Sender("Client TCP", tcpOutput, tcpMessenger, this).start();
+        new Sender("Client UDP", udpOutput, udpMessenger, this).start();
+
+        new Listener("Client TCP", tcpInput, tcpMessenger, this).start();
+        new Listener("Client UDP", udpInput, udpMessenger, this).start();
 
         finalized();
         logger.info("Connected to " + address.getHostName());
+    }
+
+    public LoadWorld getWorldData() {
+        return worldData;
     }
 
     /**
@@ -96,7 +121,7 @@ public class ConnectionToServer extends Connection {
     private Message retry(
         Class<? extends Message> type,
         ObjectInputStream stream,
-        Runnable runnable
+        RelaxedRunnable runnable
     ) throws IOException, ClassNotFoundException {
         runnable.run();
 
@@ -122,6 +147,18 @@ public class ConnectionToServer extends Connection {
         }
 
         throw new RuntimeException(format("Failed to get a response from server in %d ms", TIMEOUT));
+    }
+
+    @FunctionalInterface
+    public interface RelaxedRunnable {
+
+        void run() throws IOException, ClassNotFoundException;
+
+    }
+
+    @Override
+    public String toString() {
+        return format("Connection{server, %s:%d}", address.getHostAddress(), tcpPort);
     }
 
 }
