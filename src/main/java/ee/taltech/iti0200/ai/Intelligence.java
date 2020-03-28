@@ -1,6 +1,8 @@
 package ee.taltech.iti0200.ai;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.di.factory.BotFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 
@@ -12,15 +14,18 @@ public class Intelligence implements Component {
 
     private List<Bot> bots = new ArrayList<>();
     private World world;
+    private BotFactory botFactory;
 
-    public Intelligence(World world) {
+    @Inject
+    public Intelligence(World world, BotFactory botFactory) {
         this.world = world;
+        this.botFactory = botFactory;
     }
 
     @Override
     public void initialize() {
-        bots.add(createBot());
-        bots.add(createBot());
+        bots.add(botFactory.create());
+        bots.add(botFactory.create());
 
         bots.forEach(world::addEntity);
     }
@@ -40,13 +45,6 @@ public class Intelligence implements Component {
                 iterator.remove();
             }
         }
-    }
-
-    private Bot createBot() {
-        HealthyBrain brain = new HealthyBrain(world);
-        Bot bot = new Bot(world.nextPlayerSpawnPoint(), world, brain);
-        brain.bind(bot);
-        return bot;
     }
 
 }

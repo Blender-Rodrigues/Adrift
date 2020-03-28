@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.input;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.physics.Vector;
 import org.lwjgl.BufferUtils;
@@ -16,7 +18,8 @@ public class Mouse {
     private Camera camera;
     private long window;
 
-    public Mouse(Camera camera, long window) {
+    @Inject
+    public Mouse(@WindowId long window, Camera camera) {
         this.camera = camera;
         this.window = window;
     }

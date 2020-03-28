@@ -1,54 +1,81 @@
 package ee.taltech.iti0200.application;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.LocalPlayer;
+import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.entity.CreateEntity;
+import ee.taltech.iti0200.domain.event.entity.DealDamage;
+import ee.taltech.iti0200.domain.event.entity.EntityCollide;
+import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
+import ee.taltech.iti0200.domain.event.entity.UpdateVector;
+import ee.taltech.iti0200.domain.event.handler.CollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.EntityCreateHandler;
+import ee.taltech.iti0200.domain.event.handler.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.handler.EntityRemoveHandler;
+import ee.taltech.iti0200.domain.event.handler.MoveBodyHandler;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.Network;
-import ee.taltech.iti0200.network.client.ClientNetwork;
 import ee.taltech.iti0200.physics.Physics;
-import ee.taltech.iti0200.physics.Vector;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.util.UUID;
 
 public class ClientGame extends Game {
 
-    public static final UUID CLIENT_ID = UUID.randomUUID();
+    private final Logger logger = LogManager.getLogger(ClientGame.class);
 
-    protected Player player;
-
+    private Player player;
     private Graphics graphics;
-    private Input input;
     private Network network;
-    private String host;
-    private Integer tcpPort;
 
-    public ClientGame(String host, Integer tcpPort) {
-        super(CLIENT_ID);
-        this.host = host;
-        this.tcpPort = tcpPort;
+    @Inject
+    public ClientGame(
+        World world,
+        EventBus eventBus,
+        Timer timer,
+        @LocalPlayer Player player,
+        Graphics graphics,
+        Network network,
+        Input input,
+        Physics physics,
+        EntityDamageHandler damageHandler,
+        EntityRemoveHandler entityRemoveHandler,
+        EntityCreateHandler entityCreateHandler,
+        MoveBodyHandler moveBodyHandler,
+        CollisionHandler collisionHandler
+    ) {
+        super(world, eventBus, timer);
+        this.player = player;
+        this.graphics = graphics;
+        this.network = network;
 
-        player = new Player(new Vector(0, 0), world);
-        player.setId(CLIENT_ID);
-
-        graphics = new Graphics(world, player);
-        input = new Input(graphics.getWindow(), player, graphics.getCamera());
-
+        components.add(physics);
         components.add(graphics);
         components.add(input);
+        components.add(network);
+
+        eventBus.subscribe(DealDamage.class, damageHandler);
+        eventBus.subscribe(RemoveEntity.class, entityRemoveHandler);
+        eventBus.subscribe(CreateEntity.class, entityCreateHandler);
+        eventBus.subscribe(UpdateVector.class, moveBodyHandler);
+        eventBus.subscribe(EntityCollide.class, collisionHandler);
+    }
+
+    @Override
+    protected void initialize() {
+        world.addEntity(player);
+        player.setGun(new FastGun(player.getBoundingBox()));
+
+        logger.info("Added {} to the world", player);
     }
 
     @Override
     protected void loop(long tick) {
         network.propagate(tick);
-    }
-
-    @Override
-    protected void initialize() throws IOException {
-        components.add(new Physics(world));
-        network = new ClientNetwork(world, host, tcpPort, player);
-        components.add(network);
-        world.addEntity(player);
     }
 
     @Override

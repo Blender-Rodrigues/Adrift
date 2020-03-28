@@ -6,6 +6,7 @@ import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Terrain;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.physics.Vector;
 
 import static ee.taltech.iti0200.ai.Sensor.AUDIO;
@@ -31,8 +32,8 @@ public class Wander extends Goal {
 
     private double towards = SPEED;
 
-    public Wander(Bot bot, World world) {
-        super(bot, world);
+    public Wander(Bot bot, World world, EventBus eventBus) {
+        super(bot, world, eventBus);
     }
 
     @Override

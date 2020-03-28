@@ -7,17 +7,21 @@ public class Gun extends Entity {
 
     private static final long serialVersionUID = 1L;
 
-    private static final double PROJECTILE_SPEED = 15;
-
-    private long cooldown = 0;
-    private int damage = 10;
-    private long fireRate;
     private Living owner;
 
-    public Gun(BoundingBox boundingBox, long fireRate, Living owner) {
+    protected long cooldown = 0;
+    protected int damage = 10;
+    protected long fireRate = 90;
+    protected double projectileSpeed = 10;
+
+    public Gun(BoundingBox boundingBox) {
         super(0, boundingBox);
-        this.fireRate = fireRate;
+    }
+
+    public Gun setOwner(Living owner) {
         this.owner = owner;
+        this.boundingBox = owner.getBoundingBox();
+        return this;
     }
 
     public boolean canShoot(long tick) {
@@ -25,11 +29,15 @@ public class Gun extends Entity {
     }
 
     public Projectile shoot(Vector direction, long tick) {
+        if (owner == null) {
+            throw new RuntimeException("Trying to shoot a gun without an owner");
+        }
+
         cooldown = tick + fireRate;
 
         Vector speed = new Vector(direction);
         speed.normalize();
-        speed.scale(PROJECTILE_SPEED);
+        speed.scale(projectileSpeed);
 
         return new Projectile(new Vector(owner.getBoundingBox().getCentre()), speed, damage, owner);
     }

@@ -1,7 +1,10 @@
 package ee.taltech.iti0200.network.client;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.Network;
@@ -12,30 +15,29 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-
-import static ee.taltech.iti0200.application.Game.eventBus;
-import static java.net.InetAddress.getByName;
 
 public class ClientNetwork extends Network {
 
     private final Logger logger = LogManager.getLogger(ClientNetwork.class);
-    private final ConcurrentLinkedQueue<Message> inbox = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<Message> tcpOutbox = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<Message> udpOutbox = new ConcurrentLinkedQueue<>();
-    private final AtomicBoolean alive = new AtomicBoolean(true);
-    private final Messenger messenger = new ClientMessenger(inbox, tcpOutbox,udpOutbox, alive);
+    private final Messenger messenger;
     private final ConnectionToServer connection;
+
     private Player player;
 
-    public ClientNetwork(World world, String host, Integer tcpPort, Player player) throws UnknownHostException {
-        super(world);
+    @Inject
+    public ClientNetwork(
+        World world,
+        EventBus eventBus,
+        @LocalPlayer Player player,
+        ConnectionToServer connection,
+        Messenger messenger
+    ) {
+        super(world, eventBus);
         this.player = player;
-        this.connection = new ConnectionToServer(getByName(host), tcpPort, inbox, tcpOutbox, udpOutbox, alive, player);
+        this.messenger = messenger;
+        this.connection = connection;
     }
 
     @Override

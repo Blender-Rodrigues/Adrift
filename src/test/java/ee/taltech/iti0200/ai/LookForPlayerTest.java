@@ -5,6 +5,7 @@ import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Terrain;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class LookForPlayerTest {
         world.initialize();
 
         // when
-        LookForPlayer goal = new LookForPlayer(bot, world);
+        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class));
         long reaction = goal.react(0, AUDIO, playerLocation, direction, gun);
 
         // then
@@ -78,7 +79,7 @@ class LookForPlayerTest {
         world.initialize();
 
         // when
-        LookForPlayer goal = new LookForPlayer(bot, world);
+        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class));
         long reaction = goal.react(0, AUDIO, playerLocation, direction, gun);
 
         // then

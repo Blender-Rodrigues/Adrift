@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.domain.event;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.GameId;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +20,8 @@ public class EventBus {
 
     private List<Event> queue = new LinkedList<>();
 
-    public EventBus(UUID id) {
+    @Inject
+    public EventBus(@GameId UUID id) {
         this.id = id;
     }
 

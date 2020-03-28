@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.domain.event.handler;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
@@ -15,6 +16,7 @@ public class EntityCreateHandler implements Subscriber<CreateEntity> {
 
     private World world;
 
+    @Inject
     public EntityCreateHandler(World world) {
         this.world = world;
     }

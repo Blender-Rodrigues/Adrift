@@ -5,13 +5,13 @@ import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.physics.Vector;
 
 import static ee.taltech.iti0200.ai.Sensor.AUDIO;
 import static ee.taltech.iti0200.ai.Sensor.DAMAGE;
 import static ee.taltech.iti0200.ai.Sensor.VISUAL;
-import static ee.taltech.iti0200.application.Game.eventBus;
 import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 /**
@@ -26,8 +26,8 @@ public class LookForPlayer extends Goal {
     private static final int ADRENALINE_DAMAGE = 50;
     private static final int ADRENALINE_SPOT_PLAYER = 20;
 
-    public LookForPlayer(Bot bot, World world) {
-        super(bot, world);
+    public LookForPlayer(Bot bot, World world, EventBus eventBus) {
+        super(bot, world, eventBus);
     }
 
     @Override
