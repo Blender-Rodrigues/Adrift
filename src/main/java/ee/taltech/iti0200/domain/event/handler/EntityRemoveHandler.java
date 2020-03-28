@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.domain.event.handler;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
@@ -15,6 +16,7 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
 
     private World world;
 
+    @Inject
     public EntityRemoveHandler(World world) {
         this.world = world;
     }

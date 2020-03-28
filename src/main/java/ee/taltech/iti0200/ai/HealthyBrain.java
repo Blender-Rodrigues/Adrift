@@ -3,20 +3,12 @@ package ee.taltech.iti0200.ai;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.event.Event;
-import ee.taltech.iti0200.domain.event.Subscriber;
-import ee.taltech.iti0200.domain.event.entity.DealDamage;
-import ee.taltech.iti0200.domain.event.entity.GunShot;
-import ee.taltech.iti0200.domain.event.handler.BotHurtHandler;
-import ee.taltech.iti0200.domain.event.handler.BotNoiseHandler;
 import ee.taltech.iti0200.physics.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.TreeMap;
 
-import static ee.taltech.iti0200.application.Game.eventBus;
 import static java.lang.String.format;
 
 public class HealthyBrain implements Brain {
@@ -25,27 +17,23 @@ public class HealthyBrain implements Brain {
 
     private Bot bot;
     private World world;
+    private Runnable onDeath;
     private Goal active;
     private long adrenaline = 0;
     private TreeMap<Long, Goal> goals = new TreeMap<>();
-    protected HashMap<Class<? extends Event>, Subscriber<? extends Event>> subscribers = new HashMap<>();
 
     public HealthyBrain(World world) {
         this.world = world;
     }
 
-    public void bind(Bot bot) {
+    @Override
+    public void bind(Bot bot, TreeMap<Long, Goal> goals, Runnable onDeath) {
         this.bot = bot;
-        goals.put(0L, new Wander(bot, world));
-        goals.put(100L, new LookForPlayer(bot, world));
-        goals.put(1000L, new Panic(bot, world));
-
-        subscribers.put(DealDamage.class, new BotHurtHandler(bot));
-        subscribers.put(GunShot.class, new BotNoiseHandler(bot));
-
-        subscribers.forEach((key, value) -> eventBus.subscribe(key, value));
+        this.goals = goals;
+        this.onDeath = onDeath;
     }
 
+    @Override
     public void followGoal(long tick) {
         if (!bot.isAlive()) {
             return;
@@ -77,7 +65,7 @@ public class HealthyBrain implements Brain {
 
     @Override
     public void kill() {
-        subscribers.forEach((key, value) -> eventBus.unsubscribe(key, value));
+        onDeath.run();
     }
 
     @Override

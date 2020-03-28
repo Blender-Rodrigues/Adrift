@@ -4,12 +4,16 @@ import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.physics.Vector;
 
+import java.util.TreeMap;
+
 public class InertBrain implements Brain {
 
-    public void bind(Bot bot) {
+    @Override
+    public void bind(Bot bot, TreeMap<Long, Goal> goals, Runnable onDeath) {
         // Not used on client side
     }
 
+    @Override
     public void followGoal(long tick) {
         // Not used on client side
     }

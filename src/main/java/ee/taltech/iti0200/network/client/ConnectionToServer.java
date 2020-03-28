@@ -1,5 +1,13 @@
 package ee.taltech.iti0200.network.client;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.ConcurrentInbox;
+import ee.taltech.iti0200.di.annotations.ConcurrentTcpOutbox;
+import ee.taltech.iti0200.di.annotations.ConcurrentUdpOutbox;
+import ee.taltech.iti0200.di.annotations.ConnectionAlive;
+import ee.taltech.iti0200.di.annotations.LocalPlayer;
+import ee.taltech.iti0200.di.annotations.ServerHost;
+import ee.taltech.iti0200.di.annotations.ServerTcpPort;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.entity.CreatePlayer;
 import ee.taltech.iti0200.network.message.Receiver;
@@ -41,14 +49,15 @@ public class ConnectionToServer extends Connection {
 
     private LoadWorld worldData;
 
+    @Inject
     public ConnectionToServer(
-        InetAddress address,
-        int tcpPort,
-        ConcurrentLinkedQueue<Message> inbox,
-        ConcurrentLinkedQueue<Message> tcpOutbox,
-        ConcurrentLinkedQueue<Message> udpOutbox,
-        AtomicBoolean alive,
-        Player player
+        @ServerHost InetAddress address,
+        @ServerTcpPort int tcpPort,
+        @ConcurrentInbox ConcurrentLinkedQueue<Message> inbox,
+        @ConcurrentTcpOutbox ConcurrentLinkedQueue<Message> tcpOutbox,
+        @ConcurrentUdpOutbox ConcurrentLinkedQueue<Message> udpOutbox,
+        @ConnectionAlive AtomicBoolean alive,
+        @LocalPlayer Player player
     ) {
         super(address, tcpPort);
         this.inbox = inbox;

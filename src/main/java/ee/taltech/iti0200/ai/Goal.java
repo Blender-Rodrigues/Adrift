@@ -5,6 +5,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Terrain;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.Comparator;
@@ -22,10 +23,12 @@ public abstract class Goal {
 
     protected Bot bot;
     protected World world;
+    protected EventBus eventBus;
 
-    public Goal(Bot bot, World world) {
+    public Goal(Bot bot, World world, EventBus eventBus) {
         this.bot = bot;
         this.world = world;
+        this.eventBus = eventBus;
     }
 
     abstract public void execute(long tick);

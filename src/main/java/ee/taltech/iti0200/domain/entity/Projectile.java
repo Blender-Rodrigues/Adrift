@@ -1,14 +1,7 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.application.Game;
-import ee.taltech.iti0200.domain.event.entity.DealDamage;
-import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
-import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
-
-import static ee.taltech.iti0200.application.Game.eventBus;
-import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
 
 public class Projectile extends Entity implements DamageSource {
 
@@ -24,6 +17,7 @@ public class Projectile extends Entity implements DamageSource {
         this.damage = damage;
         this.owner = owner;
         this.movable = true;
+        this.elasticity = 0;
     }
 
     @Override
@@ -34,19 +28,6 @@ public class Projectile extends Entity implements DamageSource {
     @Override
     public Living getOwner() {
         return owner;
-    }
-
-    @Override
-    public void onCollide(Body other) {
-        if (other.equals(owner)) {
-            return;
-        }
-
-        if (other instanceof Damageable) {
-            eventBus.dispatch(new DealDamage(this, (Damageable) other, EVERYONE));
-        }
-
-        eventBus.dispatch(new RemoveEntity(this, EVERYONE));
     }
 
 }

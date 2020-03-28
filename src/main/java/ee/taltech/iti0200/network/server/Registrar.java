@@ -1,5 +1,9 @@
 package ee.taltech.iti0200.network.server;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.ConcurrentInbox;
+import ee.taltech.iti0200.di.annotations.ConnectionAlive;
+import ee.taltech.iti0200.di.annotations.ServerClients;
 import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.Listener;
 import ee.taltech.iti0200.network.Messenger;
@@ -36,11 +40,12 @@ public class Registrar extends Thread {
     private final ConcurrentLinkedQueue<Message> inbox;
     private final AtomicBoolean alive;
 
+    @Inject
     public Registrar(
         ServerSocket serverSocket,
-        Set<ConnectionToClient> clients,
-        ConcurrentLinkedQueue<Message> inbox,
-        AtomicBoolean alive
+        @ServerClients Set<ConnectionToClient> clients,
+        @ConcurrentInbox ConcurrentLinkedQueue<Message> inbox,
+        @ConnectionAlive AtomicBoolean alive
     ) {
         this.serverSocket = serverSocket;
         this.clients = clients;
