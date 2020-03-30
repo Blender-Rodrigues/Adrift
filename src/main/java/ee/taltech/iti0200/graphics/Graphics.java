@@ -186,7 +186,6 @@ public class Graphics implements Component {
             .filter(entity -> !(entity instanceof Gun))
             .forEach(entity -> entity.render(shader, camera, tick, rotation));
 
-        rotation.setRotationXYZ(0F, 0F, 1F);
         world.getEntities().stream()
             .filter(entity -> entity instanceof Gun)
             .forEach(entity -> entity.render(shader, camera, tick, getRotation(((Gun) entity).getPointedAt())));

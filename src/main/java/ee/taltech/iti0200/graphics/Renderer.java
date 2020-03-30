@@ -1,6 +1,8 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Vector;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -48,6 +50,9 @@ public abstract class Renderer {
         transform.pos.set(location);
 
         Vector cameraVector = camera.physicsToCamera(entity.getBoundingBox().getCentre());
+        cameraVector.setX(cameraVector.getX() * 2 / (camera.getZoom() * camera.getWidth()));
+        cameraVector.setY(- cameraVector.getY() * 2 / (camera.getZoom() * camera.getHeight()));
+
         Matrix4f locationMatrix = new Matrix4f().setTranslation((float) cameraVector.getX(), (float) cameraVector.getY(), 0);
         Matrix4f inverseLocationMatrix = new Matrix4f().setTranslation((float) - cameraVector.getX(), (float) - cameraVector.getY(), 0);
 

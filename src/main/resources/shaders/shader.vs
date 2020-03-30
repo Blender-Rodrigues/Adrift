@@ -13,7 +13,7 @@ uniform mat4 inverseLocation;
 void main() {
     tex_coords = textures;
     gl_Position = projection * vec4(vertices, 1);
-    gl_Position = location * gl_Position;
-    gl_Position = rotation * gl_Position;
     gl_Position = inverseLocation * gl_Position;
+    gl_Position = rotation * gl_Position;
+    gl_Position = location * gl_Position;
 }

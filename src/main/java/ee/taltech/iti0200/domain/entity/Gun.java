@@ -40,6 +40,10 @@ public class Gun extends Entity {
         return pointedAt;
     }
 
+    public Living getOwner() {
+        return owner;
+    }
+
     public void setPointedAt(Vector pointedAt) {
         this.pointedAt = new Vector(pointedAt);
         this.pointedAt.normalize();

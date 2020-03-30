@@ -125,6 +125,14 @@ public class Camera {
         return zoom;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public void togglePlayerCam() {
         followingPlayer = !followingPlayer;
     }
