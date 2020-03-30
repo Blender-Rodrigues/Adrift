@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.graphics;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Vector;
 import org.joml.Matrix4f;
@@ -9,35 +11,36 @@ public class Camera {
 
     public static final float CAMERA_SENSITIVITY = 20f;
     public static final int RENDER_SCALE_MULTIPLIER = 1;
-
     /* zoom in and zoom out are "inverted" -> the smaller the value, the farther the camera is from the map */
     public static final float MINIMUM_ZOOM_VALUE = 0.005f;
     public static final float MAXIMUM_ZOOM_VALUE = 0.2f;
+    public static final float INITIAL_ZOOM_VALUE = 0.03f;
 
-    private Vector3f position;
+    private Vector3f position = new Vector3f(0, 0, 0);
     private Matrix4f projection;
     private Matrix4f target;
     private Matrix4f pos;
-
+    private float zoom = INITIAL_ZOOM_VALUE;
     private int width;
     private int height;
     private Vector windowSize;
 
-    private float zoom;
-
     private Player player;
     private boolean followingPlayer = true;
 
-    public Camera(int width, int height, Player player) {
-        this.width = width;
-        this.height = height;
-        this.windowSize = new Vector(width, height);
-
-        this.zoom = 0.03f;
+    @Inject
+    public Camera(@LocalPlayer Player player) {
         this.player = player;
+    }
 
-        position = new Vector3f(0, 0, 0);
-        setZoom(zoom);
+    public Camera setWidth(int width) {
+        this.width = width;
+        return this;
+    }
+
+    public Camera setHeight(int height) {
+        this.height = height;
+        return this;
     }
 
     public void setPosition(Vector3f position) {
@@ -45,13 +48,14 @@ public class Camera {
     }
 
     // TODO: a better way to set zoom, rather than creating a new projection.
-    public void setZoom(float zoom) {
+    public Camera setZoom(float zoom) {
         projection = new Matrix4f().setOrtho2D(
             -width * zoom / 2f,
             width * zoom / 2f,
             -height * zoom / 2f,
             height * zoom / 2f
         );
+        return this;
     }
 
     public Vector3f getPosition() {

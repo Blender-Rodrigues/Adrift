@@ -1,15 +1,16 @@
 package ee.taltech.iti0200.domain.event.handler;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static ee.taltech.iti0200.application.Game.eventBus;
 import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
 
 public class GunShotHandler implements Subscriber<GunShot> {
@@ -17,9 +18,12 @@ public class GunShotHandler implements Subscriber<GunShot> {
     private final Logger logger = LogManager.getLogger(GunShotHandler.class);
 
     private World world;
+    private EventBus eventBus;
 
-    public GunShotHandler(World world) {
+    @Inject
+    public GunShotHandler(World world, EventBus eventBus) {
         this.world = world;
+        this.eventBus = eventBus;
     }
 
     @Override

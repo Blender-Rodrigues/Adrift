@@ -16,8 +16,9 @@ public class Sender extends Thread {
 
     private final Logger logger = LogManager.getLogger(Sender.class);
     private final ObjectOutputStream output;
-    protected final Messenger messenger;
-    protected final Connection connection;
+
+    private final Messenger messenger;
+    private final Connection connection;
 
     public Sender(String name, ObjectOutputStream output, Messenger messenger, Connection connection) {
         setName(name + " Sender " + counter++);

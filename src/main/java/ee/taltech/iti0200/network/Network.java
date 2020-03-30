@@ -3,19 +3,20 @@ package ee.taltech.iti0200.network;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.event.Event;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import ee.taltech.iti0200.network.message.Message;
 
 import java.util.LinkedList;
 
-import static ee.taltech.iti0200.application.Game.eventBus;
-
 abstract public class Network implements Component {
 
     protected final World world;
+    protected final EventBus eventBus;
 
-    public Network(World world) {
+    public Network(World world, EventBus eventBus) {
         this.world = world;
+        this.eventBus = eventBus;
     }
 
     abstract public void propagate(long tick);

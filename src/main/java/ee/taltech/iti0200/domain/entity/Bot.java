@@ -1,13 +1,8 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.ai.InertBrain;
 import ee.taltech.iti0200.ai.Brain;
-import ee.taltech.iti0200.ai.Sensor;
+import ee.taltech.iti0200.ai.InertBrain;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.physics.Body;
-import ee.taltech.iti0200.graphics.Animateable;
-import ee.taltech.iti0200.graphics.Animation;
-import ee.taltech.iti0200.graphics.Renderer;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -22,12 +17,12 @@ public class Bot extends Living {
     private static final double MASS = 70.0;
     private static final double ELASTICITY = 0.25;
     private static final double FRICTION_COEFFICIENT = 0.99;
-    private static final int MAX_HEALTH = 150;
-    private static final int FIRE_RATE = 4;
+    private static final int MAX_HEALTH = 100;
 
     private transient Brain brain;
 
     private Vector acceleration;
+    private Gun gun;
 
     public Bot(Vector position, World world, Brain brain) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
@@ -35,8 +30,17 @@ public class Bot extends Living {
         this.elasticity = ELASTICITY;
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.acceleration = new Vector(0.0, 0.0);
-        this.gun = new Gun(boundingBox, FIRE_RATE, this);
         this.movable = true;
+    }
+
+    public Gun getGun() {
+        return gun;
+    }
+
+    public Bot setGun(Gun gun) {
+        this.gun = gun;
+        gun.setOwner(this);
+        return this;
     }
 
     public Brain getBrain() {
@@ -44,7 +48,7 @@ public class Bot extends Living {
     }
 
     public boolean canShoot(long tick) {
-        return gun.canShoot(tick);
+        return gun != null && gun.canShoot(tick);
     }
 
     public Vector getAcceleration() {
@@ -53,17 +57,6 @@ public class Bot extends Living {
 
     public void update(long tick) {
         brain.followGoal(tick);
-    }
-
-    @Override
-    public void onCollide(Body otherBody) {
-        super.onCollide(otherBody);
-
-        if (!(otherBody instanceof Entity)) {
-            return;
-        }
-
-        brain.updateSensor(Sensor.TACTILE, otherBody.getBoundingBox().getCentre(), (Entity) otherBody);
     }
 
     /**

@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.network.server;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Player;
@@ -24,6 +25,7 @@ public class PlayerJoinHandler implements Subscriber<CreatePlayer> {
     private World world;
     private Messenger messenger;
 
+    @Inject
     public PlayerJoinHandler(World world, Messenger messenger) {
         this.world = world;
         this.messenger = messenger;

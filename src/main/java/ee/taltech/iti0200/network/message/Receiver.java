@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static ee.taltech.iti0200.application.ServerGame.SERVER_ID;
+import static ee.taltech.iti0200.di.ServerModule.SERVER_ID;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

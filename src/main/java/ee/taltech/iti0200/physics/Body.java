@@ -93,8 +93,4 @@ public class Body implements Serializable {
         this.dragFromSurface = dragFromSurface;
     }
 
-    public void onCollide(Body otherBody) {
-
-    }
-
 }

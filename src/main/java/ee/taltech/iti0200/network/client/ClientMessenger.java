@@ -1,5 +1,10 @@
 package ee.taltech.iti0200.network.client;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.ConcurrentInbox;
+import ee.taltech.iti0200.di.annotations.ConcurrentTcpOutbox;
+import ee.taltech.iti0200.di.annotations.ConcurrentUdpOutbox;
+import ee.taltech.iti0200.di.annotations.ConnectionAlive;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.message.Message;
 import org.apache.logging.log4j.core.net.Protocol;
@@ -14,11 +19,12 @@ public class ClientMessenger extends Messenger {
     private final ConcurrentLinkedQueue<Message> tcpOutbox;
     private final ConcurrentLinkedQueue<Message> udpOutbox;
 
+    @Inject
     public ClientMessenger(
-        ConcurrentLinkedQueue<Message> inbox,
-        ConcurrentLinkedQueue<Message> tcpOutbox,
-        ConcurrentLinkedQueue<Message> udpOutbox,
-        AtomicBoolean alive
+        @ConcurrentInbox ConcurrentLinkedQueue<Message> inbox,
+        @ConcurrentTcpOutbox ConcurrentLinkedQueue<Message> tcpOutbox,
+        @ConcurrentUdpOutbox ConcurrentLinkedQueue<Message> udpOutbox,
+        @ConnectionAlive AtomicBoolean alive
     ) {
         super(inbox, null, alive);
         this.tcpOutbox = tcpOutbox;

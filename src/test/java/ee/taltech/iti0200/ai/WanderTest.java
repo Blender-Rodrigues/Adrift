@@ -19,7 +19,7 @@ class WanderTest {
         Bot bot = mock(Bot.class, RETURNS_DEEP_STUBS);
         when(bot.getBoundingBox().getCentre()).thenReturn(new Vector(40, 51));
 
-        Wander wander = new Wander(bot, null);
+        Wander wander = new Wander(bot, null, null);
 
         long actual = wander.react(0, AUDIO, new Vector(10, 42), new Vector(0, 0), gun);
 

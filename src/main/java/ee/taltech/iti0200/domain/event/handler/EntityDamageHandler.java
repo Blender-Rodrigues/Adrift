@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.domain.event.handler;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.DamageSource;
 import ee.taltech.iti0200.domain.entity.Damageable;
@@ -15,6 +16,7 @@ public class EntityDamageHandler implements Subscriber<DealDamage> {
 
     private World world;
 
+    @Inject
     public EntityDamageHandler(World world) {
         this.world = world;
     }
