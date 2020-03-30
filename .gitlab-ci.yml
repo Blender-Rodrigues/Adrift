@@ -1,0 +1,17 @@
+stages:
+  - test
+
+test:
+  tags:
+    - iti0200
+  stage: test
+  image: openjdk:8-jdk-alpine
+  script:
+    - pwd
+    - ls -la
+    - chmod 700 gradlew
+    - ./gradlew clean test build
+  artifacts:
+    paths:
+      - build/reports/
+      - build/test-results/

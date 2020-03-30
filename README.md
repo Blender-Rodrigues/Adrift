@@ -6,6 +6,10 @@ Hopefully Intellij is smart enough to detect gradle files and offer to use .grad
 on the next startup, but just in case gradle can also be installed on your machine via
 https://docs.gradle.org/current/userguide/installation.html
 
+## Multiplayer
+
+Game server is currently: `104.248.243.136:8880`
+
 ## Commit messages
 
 Start your commit message with `#x` (where x is the issue number in gitlab) and then add a sentence 
@@ -32,3 +36,19 @@ Settings > Log Highlighting (Ideolog) > Add
 And after that you can start adding formatting in the box left below,
  
 E.g. `^\[ERROR]` highlight line, foreground red etc
+
+## CI
+
+Setting up the container for the game:
+```
+docker build -t jaakkytt/escape-from-eros:latest .
+docker push jaakkytt/escape-from-eros:latest
+docker run -d --network host --restart=always --name escape-from-eros jaakkytt/escape-from-eros:latest
+```
+
+Setting up the Gitlab runner:
+```
+docker build -t jaakkytt/runner:latest -f RunnerDockerfile .
+docker push jaakkytt/runner:latest
+docker run -d --name gitlab-runner --restart always -v /var/run/docker.sock:/var/run/docker.sock jaakkytt/runner:latest
+```
