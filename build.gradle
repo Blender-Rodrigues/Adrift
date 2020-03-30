@@ -39,8 +39,14 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+archivesBaseName = 'escape-from-eros'
+version = '0.5'
+group = 'ee.taltech.iti0200'
+
 sourceSets.main.java.srcDirs = ['src/main/java']
+sourceSets.main.resources.srcDirs = ['src/main/resources']
 sourceSets.test.java.srcDirs = ['src/test/java']
+sourceSets.test.resources.srcDirs = ['src/test/resources']
 
 test {
     useJUnitPlatform()
@@ -60,6 +66,7 @@ dependencies {
     implementation "com.google.guava:guava:28.2-jre"
     implementation "com.google.inject:guice:4.2.3"
     implementation "com.google.inject.extensions:guice-assistedinject:4.2.3"
+    implementation "org.apache.commons:commons-lang3:3.10"
 
     runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"

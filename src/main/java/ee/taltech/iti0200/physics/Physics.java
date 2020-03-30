@@ -9,7 +9,8 @@ import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
 import ee.taltech.iti0200.network.message.Receiver;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,7 +166,7 @@ public class Physics implements Component {
         double collidingBodyElasticity = getCollidingBodyElasticity(bestResolveStrategyIndex, collidingBodies);
         movingBody.move(bestResolveStrategy);
 
-        collisions.add(new Pair<>(movingBody, collidingBody));
+        collisions.add(new ImmutablePair<>(movingBody, collidingBody));
 
         elasticitySoFar = getNewElasticityOfCollision(elasticitySoFar, movedSoFar, bestResolveStrategy, collidingBodyElasticity);
         movedSoFar.add(bestResolveStrategy);

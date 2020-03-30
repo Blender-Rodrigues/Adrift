@@ -5,7 +5,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +30,7 @@ public class ServerPhysics extends Physics {
             living.stream()
                 .filter(projectile::intersects)
                 .findAny()
-                .ifPresent(entity -> collisions.add(new Pair<>(projectile, entity)));
+                .ifPresent(entity -> collisions.add(new ImmutablePair<>(projectile, entity)));
         }
     }
 
