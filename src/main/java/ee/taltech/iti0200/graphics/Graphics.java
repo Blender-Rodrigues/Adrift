@@ -8,6 +8,7 @@ import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Body;
+import ee.taltech.iti0200.physics.BoundingBox;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -29,6 +30,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -45,6 +47,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryStack.stackPush;
 
 /**
@@ -61,6 +64,8 @@ public class Graphics implements Component {
     private World world;
     private Shader shader;
     private Camera camera;
+    private int frameHeight;
+    private int frameWidth;
 
     @Inject
     public Graphics(World world, @WindowId long window, Camera camera) {
@@ -71,7 +76,6 @@ public class Graphics implements Component {
 
     @Override
     public void initialize() throws IOException {
-
         // Get the thread stack and push a new frame
         try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
@@ -79,6 +83,8 @@ public class Graphics implements Component {
 
             // Get the window size passed to glfwCreateWindow
             glfwGetWindowSize(window, pWidth, pHeight);
+            frameHeight = pHeight.get(0);
+            frameWidth = pWidth.get(0);
 
             // Get the resolution of the primary monitor
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -86,14 +92,21 @@ public class Graphics implements Component {
             // Center the window
             glfwSetWindowPos(
                 window,
-                (vidmode.width() - pWidth.get(0)) / 2,
-                (vidmode.height() - pHeight.get(0)) / 2
+                (vidmode.width() - frameHeight) / 2,
+                (vidmode.height() - frameWidth) / 2
             );
 
-            // Set size to camera, TODO: this should also happen in update() in case of a resize event
-            camera.setWidth(pWidth.get(0)).setHeight(pHeight.get(0)).setZoom(INITIAL_ZOOM_VALUE);
+            camera.setWidth(frameWidth).setHeight(frameHeight).setZoom(INITIAL_ZOOM_VALUE);
 
         } // the stack frame is popped automatically
+
+        glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
+            if (w > 0 && h > 0 && (frameWidth != w || frameHeight != h)) {
+                camera.setHeight(h).setWidth(w).setZoom(camera.getZoom());
+                frameWidth = w;
+                frameHeight = h;
+            }
+        });
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
@@ -143,14 +156,39 @@ public class Graphics implements Component {
     @Override
     public void update(long tick) {
         glfwPollEvents();
+        glViewport(0, 0, frameWidth, frameHeight);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
         camera.update();
-
-        world.getEntities().forEach(entity -> entity.render(shader, camera, tick));
+        renderInView(tick);
 
         glfwSwapBuffers(window); // swap the color buffers
+    }
+
+    /**
+     * Render entities that happen to be in view of the camera
+     * Add 10 pixel padding around the viewport to have something rendered there when traveling fast
+     * Negating camera coordinates as they seem to have opposite values of the world coordinates
+     */
+    private void renderInView(long tick) {
+        Vector3f pos = new Vector3f(camera.getPosition()).negate();
+        float zoom = camera.getZoom();
+
+        double w = 10 + camera.getWidth() / 2.0 * zoom;
+        double h = 10 + camera.getHeight() / 2.0 * zoom;
+        double minX = (pos.x - w);
+        double maxX = (pos.x + w);
+        double minY = (pos.y - h);
+        double maxY = (pos.y + h);
+
+        for (Entity entity : world.getEntities()) {
+            BoundingBox box = entity.getBoundingBox();
+            if (box.getMinX() < minX || box.getMaxX() > maxX || box.getMinY() < minY || box.getMinY() > maxY) {
+                continue;
+            }
+            entity.render(shader, camera, tick);
+        }
     }
 
     private void createRenderers() throws IOException {
