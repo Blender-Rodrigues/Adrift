@@ -30,9 +30,17 @@ public class Camera {
         this.player = player;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
     public Camera setWidth(int width) {
         this.width = width;
         return this;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public Camera setHeight(int height) {
