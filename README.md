@@ -1,14 +1,36 @@
 # Escape from Eros
 
+## Documentation
+
+[AI](docs/ai.md)
+[Network](docs/network.md)
+
+## Multiplayer
+
+Game server is currently located at: `104.248.243.136:8880`
+
+To see the logs or restart the server:
+```bash
+ssh username@104.248.243.136 docker logs -f escape-from-eros
+ssh username@104.248.243.136 docker restart escape-from-eros
+```
+
+## Game modes
+
+The main Game class can be run in 3 different modes by providing one set of these arguments:
+* (no arguments, single player mode)
+* client [server ip, defaults to localhost] [server tcp port, defaults to 8880]
+* server [server tcp port, defaults to 8880]
+
+## Tests
+
+Gitlab is configured to run tests on every branch, don't merge branches which have failing tests.
+
 ## Project setup locally
 
 Hopefully Intellij is smart enough to detect gradle files and offer to use .gradlew that's included in the repo
 on the next startup, but just in case gradle can also be installed on your machine via
 https://docs.gradle.org/current/userguide/installation.html
-
-## Multiplayer
-
-Game server is currently: `104.248.243.136:8880`
 
 ## Commit messages
 
@@ -18,10 +40,6 @@ or a similar guide for to get the ideas what should be and shouldn't be covered 
  
 But P.S. - do keep the issue reference at the start of the message please, makes much more sense to have a fixed position
 for that. 
-
-## Network flow chart
-
-![Network flow chart](networkflow.png)
 
 ## Log file formatting
 
