@@ -62,16 +62,17 @@ abstract public class Game {
         );
         logger.info("Starting game loop.");
 
-        while (isGameRunning()) {
-            components.forEach(component -> component.update(tick));
-            world.update(tick);
-            loop(tick);
-            tick = timer.sleep();
+        try {
+            while (isGameRunning()) {
+                components.forEach(component -> component.update(tick));
+                world.update(tick);
+                loop(tick);
+                tick = timer.sleep();
+            }
+        } finally {
+            logger.warn("Terminating, game time: " + tick);
+            terminate();
         }
-
-        logger.warn("Terminating, game time: " + tick);
-
-        terminate();
     }
 
     protected abstract void loop(long tick);
@@ -111,7 +112,11 @@ abstract public class Game {
 
         Injector injector = Guice.createInjector(modules);
 
-        injector.getInstance(Game.class).run();
+        try {
+            injector.getInstance(Game.class).run();
+        } catch (RecreateException exception) {
+            main(args);
+        }
     }
 
 }
