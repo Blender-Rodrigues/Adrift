@@ -17,7 +17,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
-import javax.vecmath.Vector2d;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.HashMap;
@@ -66,12 +65,14 @@ public class Graphics implements Component {
     private World world;
     private Shader shader;
     private Camera camera;
+    private CoordinateConverter converter;
 
     @Inject
-    public Graphics(World world, @WindowId long window, Camera camera) {
+    public Graphics(World world, @WindowId long window, Camera camera, CoordinateConverter converter) {
         this.world = world;
         this.camera = camera;
         this.window = window;
+        this.converter = converter;
     }
 
     @Override
@@ -188,21 +189,21 @@ public class Graphics implements Component {
         Animation botDefault = new Animation(2, "animations/bot/", "bot.default", 20);
 
         HashMap<String, Supplier<Renderer>> defaultRenderer = new HashMap<>();
-        defaultRenderer.put(DEFAULT, () -> new Drawable(defaultTexture));
+        defaultRenderer.put(DEFAULT, () -> new Drawable(defaultTexture, converter));
         renderers.put(Entity.class, defaultRenderer);
 
         HashMap<String, Supplier<Renderer>> gunRenderer = new HashMap<>();
-        gunRenderer.put(DEFAULT, () -> new Drawable(gunTexture));
+        gunRenderer.put(DEFAULT, () -> new Drawable(gunTexture, converter));
         renderers.put(Gun.class, gunRenderer);
         renderers.put(FastGun.class, gunRenderer);
 
         HashMap<String, Supplier<Renderer>> playerRenderer = new HashMap<>();
-        playerRenderer.put(DEFAULT, () -> new Animateable(playerDefault));
-        playerRenderer.put("jump", () -> new Animateable(playerJump));
+        playerRenderer.put(DEFAULT, () -> new Animateable(playerDefault, converter));
+        playerRenderer.put("jump", () -> new Animateable(playerJump, converter));
         renderers.put(Player.class, playerRenderer);
 
         HashMap<String, Supplier<Renderer>> botRenderer = new HashMap<>();
-        botRenderer.put(DEFAULT, () -> new Animateable(botDefault));
+        botRenderer.put(DEFAULT, () -> new Animateable(botDefault, converter));
         renderers.put(Bot.class, botRenderer);
     }
 

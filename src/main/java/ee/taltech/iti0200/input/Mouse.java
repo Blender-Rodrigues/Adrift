@@ -3,6 +3,7 @@ package ee.taltech.iti0200.input;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.CoordinateConverter;
 import ee.taltech.iti0200.physics.Vector;
 import org.lwjgl.BufferUtils;
 
@@ -17,17 +18,19 @@ public class Mouse {
     private Vector physicsPosition;
     private Camera camera;
     private long window;
+    private CoordinateConverter converter;
 
     @Inject
-    public Mouse(@WindowId long window, Camera camera) {
+    public Mouse(@WindowId long window, Camera camera, CoordinateConverter converter) {
         this.camera = camera;
         this.window = window;
+        this.converter = converter;
     }
 
     public void update() {
         Vector currentPosition = getMousePosition();
-        Vector cameraPosition = camera.screenToCamera(currentPosition);
-        physicsPosition = camera.cameraToPhysics(cameraPosition);
+        Vector cameraPosition = converter.screenToCamera(currentPosition);
+        physicsPosition = converter.cameraToPhysics(cameraPosition);
     }
 
     public Vector getWindowSize() {

@@ -12,6 +12,7 @@ public abstract class Renderer {
     private Entity entity;
     protected transient Model model;
     private transient Transform transform;
+    protected CoordinateConverter converter;
 
     public Renderer setEntity(Entity entity) {
         this.entity = entity;
@@ -49,7 +50,7 @@ public abstract class Renderer {
         Vector3f location = new Vector3f((float) entity.getBoundingBox().getCentre().x, (float) entity.getBoundingBox().getCentre().y, 0);
         transform.pos.set(location);
 
-        Vector cameraVector = camera.physicsToCamera(entity.getBoundingBox().getCentre());
+        Vector cameraVector = converter.physicsToCamera(entity.getBoundingBox().getCentre());
         cameraVector.setX(cameraVector.getX() * 2 / (camera.getZoom() * camera.getWidth()));
         cameraVector.setY(- cameraVector.getY() * 2 / (camera.getZoom() * camera.getHeight()));
 

@@ -3,7 +3,6 @@ package ee.taltech.iti0200.graphics;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.physics.Vector;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -67,35 +66,6 @@ public class Camera {
 
         target = projection.mul(pos, target);
         return target;
-    }
-
-    public Vector cameraToPhysics(Vector cameraPosition) {
-        double x = cameraPosition.getX() - getPosition().get(0);
-        double y = cameraPosition.getY() + getPosition().get(1);
-        y *= -1;
-        return new Vector(x, y);
-    }
-
-    public Vector screenToCamera(Vector screenPosition) {
-        Vector cameraPosition = new Vector();
-        cameraPosition.scaleAdd(-0.5, new Vector(width, height), screenPosition);
-        cameraPosition.scale(getZoom());
-        return cameraPosition;
-    }
-
-    public Vector cameraToScreen(Vector cameraVector) {
-        Vector screenVector = new Vector(cameraVector);
-        screenVector.scale(1 / getZoom());
-        screenVector.scaleAdd(0.5, new Vector(width, height), screenVector);
-        return screenVector;
-    }
-
-    public Vector physicsToCamera(Vector physicsPosition) {
-        double y = - physicsPosition.getY();
-        double x = physicsPosition.getX();
-        x += getPosition().get(0);
-        y -= getPosition().get(1);
-        return new Vector(x, y);
     }
 
     public void moveLeft() {
