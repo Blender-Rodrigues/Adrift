@@ -6,6 +6,7 @@ import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Body;
@@ -165,6 +166,9 @@ public class Graphics implements Component {
     }
 
     private Matrix4f getRotation(Vector pointedAt) {
+        if (pointedAt == null) {
+            pointedAt = new Vector(1, 0);
+        }
         float rotationAngle = - (float) (Math.atan2(pointedAt.getX(), pointedAt.getY()));
         Matrix4f rotationMatrix;
         if (rotationAngle < 0) {
@@ -190,6 +194,7 @@ public class Graphics implements Component {
         HashMap<String, Supplier<Renderer>> gunRenderer = new HashMap<>();
         gunRenderer.put(DEFAULT, () -> new Drawable(gunTexture));
         renderers.put(Gun.class, gunRenderer);
+        renderers.put(FastGun.class, gunRenderer);
 
         HashMap<String, Supplier<Renderer>> playerRenderer = new HashMap<>();
         playerRenderer.put(DEFAULT, () -> new Animateable(playerDefault));

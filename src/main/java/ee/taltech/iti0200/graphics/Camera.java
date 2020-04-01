@@ -23,7 +23,6 @@ public class Camera {
     private float zoom = INITIAL_ZOOM_VALUE;
     private int width;
     private int height;
-    private Vector windowSize;
 
     private Player player;
     private boolean followingPlayer = true;
@@ -79,7 +78,7 @@ public class Camera {
 
     public Vector screenToCamera(Vector screenPosition) {
         Vector cameraPosition = new Vector();
-        cameraPosition.scaleAdd(-0.5, windowSize, screenPosition);
+        cameraPosition.scaleAdd(-0.5, new Vector(width, height), screenPosition);
         cameraPosition.scale(getZoom());
         return cameraPosition;
     }
@@ -87,7 +86,7 @@ public class Camera {
     public Vector cameraToScreen(Vector cameraVector) {
         Vector screenVector = new Vector(cameraVector);
         screenVector.scale(1 / getZoom());
-        screenVector.scaleAdd(0.5, windowSize, screenVector);
+        screenVector.scaleAdd(0.5, new Vector(width, height), screenVector);
         return screenVector;
     }
 
