@@ -8,6 +8,7 @@ import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
+import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.network.message.Receiver;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,7 +31,7 @@ public class Physics implements Component {
     protected Set<Pair<Body, Body>> collisions = new HashSet<>();
     protected World world;
 
-    private EventBus eventBus;
+    protected EventBus eventBus;
 
     @Inject
     public Physics(World world, EventBus eventBus) {
@@ -291,7 +292,7 @@ public class Physics implements Component {
         return resolveStrategies;
     }
 
-    private void moveBodies(List<Entity> bodiesToMove, double timeStep) {
+    protected void moveBodies(List<Entity> bodiesToMove, double timeStep) {
         for (Entity body: bodiesToMove) {
             body.move(timeStep);
         }

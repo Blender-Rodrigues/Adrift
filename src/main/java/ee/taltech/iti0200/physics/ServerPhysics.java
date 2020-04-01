@@ -2,9 +2,12 @@ package ee.taltech.iti0200.physics;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
+import ee.taltech.iti0200.network.message.Receiver;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.HashSet;
@@ -31,6 +34,16 @@ public class ServerPhysics extends Physics {
                 .filter(projectile::intersects)
                 .findAny()
                 .ifPresent(entity -> collisions.add(new ImmutablePair<>(projectile, entity)));
+        }
+    }
+
+    @Override
+    protected void moveBodies(List<Entity> bodiesToMove, double timeStep) {
+        for (Entity body: bodiesToMove) {
+            body.move(timeStep);
+            if (world.entityOutOfBounds(body)) {
+                eventBus.dispatch(new RemoveEntity(body, Receiver.EVERYONE));
+            }
         }
     }
 

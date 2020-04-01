@@ -115,6 +115,11 @@ public class World {
         return entities.get(id);
     }
 
+    public boolean entityOutOfBounds(Entity entity) {
+        Vector centre = entity.getBoundingBox().getCentre();
+        return centre.getX() < xMin || centre.getX() > xMax || centre.getY() < yMin || centre.getY() > yMax;
+    }
+
     public void addEntity(Entity entity) {
         entities.put(entity.getId(), entity);
         if (!Graphics.renderers.isEmpty()) {
