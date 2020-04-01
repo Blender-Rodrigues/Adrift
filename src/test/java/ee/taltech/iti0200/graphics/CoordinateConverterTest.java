@@ -7,20 +7,21 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CameraTest {
+class CoordinateConverterTest {
 
-    Player player;
+    CoordinateConverter converter;
     Camera camera;
+    Player player;
 
     @BeforeEach
     void setUp() {
-        camera = new Camera(1200, 800, player);
+        converter = new CoordinateConverter(new Camera(player));
     }
 
     @Test
     void cameraToPhysicsAndBack() {
         Vector testVector = new Vector(500, 25);
-        Vector answerVector = camera.physicsToCamera(camera.cameraToPhysics(testVector));
+        Vector answerVector = converter.physicsToCamera(converter.cameraToPhysics(testVector));
         Vector roundedAnswer = new Vector(Math.round(answerVector.getX()), Math.round(answerVector.getY()));
         assertEquals(testVector, roundedAnswer);
     }
@@ -28,7 +29,7 @@ class CameraTest {
     @Test
     void physicsToCameraAndBack() {
         Vector testVector = new Vector(500, 25);
-        Vector answerVector = camera.cameraToPhysics(camera.physicsToCamera(testVector));
+        Vector answerVector = converter.cameraToPhysics(converter.physicsToCamera(testVector));
         Vector roundedAnswer = new Vector(Math.round(answerVector.getX()), Math.round(answerVector.getY()));
         assertEquals(testVector, roundedAnswer);
     }
@@ -36,7 +37,7 @@ class CameraTest {
     @Test
     void screenToCameraAndBack() {
         Vector testVector = new Vector(500, 25);
-        Vector answerVector = camera.cameraToScreen(camera.screenToCamera(testVector));
+        Vector answerVector = converter.cameraToScreen(converter.screenToCamera(testVector));
         Vector roundedAnswer = new Vector(Math.round(answerVector.getX()), Math.round(answerVector.getY()));
         assertEquals(testVector, roundedAnswer);
     }
@@ -44,7 +45,7 @@ class CameraTest {
     @Test
     void cameraToScreenAndBack() {
         Vector testVector = new Vector(500, 25);
-        Vector answerVector = camera.screenToCamera(camera.cameraToScreen(testVector));
+        Vector answerVector = converter.screenToCamera(converter.cameraToScreen(testVector));
         Vector roundedAnswer = new Vector(Math.round(answerVector.getX()), Math.round(answerVector.getY()));
         assertEquals(testVector, roundedAnswer);
     }

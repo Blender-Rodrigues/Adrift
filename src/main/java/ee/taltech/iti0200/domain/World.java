@@ -126,6 +126,7 @@ public class World {
         } else {
             imMovableBodies.add(entity);
         }
+
         if (entity instanceof Living) {
             ((Living) entity).setWorld(this);
             livingEntities.add((Living) entity);
