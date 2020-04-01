@@ -25,6 +25,7 @@ public class World {
     private List<Entity> imMovableBodies = new ArrayList<>();
     private Map<Vector, Terrain> terrainMap;
     private ArrayDeque<Vector> spawnPoints = new ArrayDeque<>();
+    private long entitiesRemoved = 0;
     private double xMin;
     private double xMax;
     private double yMin;
@@ -69,6 +70,10 @@ public class World {
         Vector position = spawnPoints.pop();
         spawnPoints.addLast(position);
         return position;
+    }
+
+    public long getEntitiesRemoved() {
+        return entitiesRemoved;
     }
 
     public long getTime() {
@@ -128,6 +133,7 @@ public class World {
 
     public void removeEntity(Entity entity) {
         entities.remove(entity.getId());
+        entitiesRemoved++;
 
         if (entity instanceof Living) {
             livingEntities.remove(entity);

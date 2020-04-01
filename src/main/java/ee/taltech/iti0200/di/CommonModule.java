@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class CommonModule extends AbstractModule {
 
-    protected static final String LAYOUT_NAME = "eros.jpg";
+    protected static final String LAYOUT_NAME = "station_small.jpg";
 
     protected World world = new World(0.0, 600, 0.0, 600.0, 0.05);
     protected UUID id = UUID.randomUUID();
