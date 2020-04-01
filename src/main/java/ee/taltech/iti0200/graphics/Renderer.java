@@ -1,8 +1,6 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.Gun;
-import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Vector;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -12,7 +10,11 @@ public abstract class Renderer {
     private Entity entity;
     protected transient Model model;
     private transient Transform transform;
-    protected CoordinateConverter converter;
+    private CoordinateConverter converter;
+
+    public Renderer(CoordinateConverter converter) {
+        this.converter = converter;
+    }
 
     public Renderer setEntity(Entity entity) {
         this.entity = entity;

@@ -7,8 +7,8 @@ public class Animateable extends Renderer {
     private transient Animation animation;
 
     public Animateable(Animation animation, CoordinateConverter converter) {
+        super(converter);
         this.animation = animation;
-        super.converter = converter;
     }
 
     @Override

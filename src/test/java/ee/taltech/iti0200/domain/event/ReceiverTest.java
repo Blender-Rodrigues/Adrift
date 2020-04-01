@@ -23,7 +23,6 @@ class ReceiverTest {
 
         assertThat(new Receiver(emptyList()).exclude().matches(first)).isTrue();
         assertThat(new Receiver(emptyList()).exclude().matches(second)).isTrue();
-
     }
 
 }

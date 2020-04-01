@@ -7,8 +7,8 @@ public class Drawable extends Renderer {
     private transient Texture texture;
 
     public Drawable(Texture texture, CoordinateConverter converter) {
+        super(converter);
         this.texture = texture;
-        super.converter = converter;
     }
 
     @Override

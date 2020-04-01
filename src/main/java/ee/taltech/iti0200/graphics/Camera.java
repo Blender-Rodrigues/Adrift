@@ -31,9 +31,17 @@ public class Camera {
         this.player = player;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
     public Camera setWidth(int width) {
         this.width = width;
         return this;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public Camera setHeight(int height) {
@@ -96,14 +104,6 @@ public class Camera {
 
     public float getZoom() {
         return zoom;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
     }
 
     public void togglePlayerCam() {
