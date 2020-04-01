@@ -46,7 +46,7 @@ public class Physics implements Component {
         Map<Vector, Terrain> terrainMap = world.getTerrainMap();
         checkForFloor(movableBodies, terrainMap);
         applyDrag(movableBodies);
-        moveBodies(movableBodies, world.getTimeStep());
+        movableBodies = moveBodies(movableBodies, world.getTimeStep());
         collisions = new HashSet<>();
         checkForCollisions(movableBodies, imMovableBodies);
         applyGravity(movableBodies);
@@ -292,10 +292,10 @@ public class Physics implements Component {
         return resolveStrategies;
     }
 
-    protected void moveBodies(List<Entity> bodiesToMove, double timeStep) {
-        for (Entity body: bodiesToMove) {
-            body.move(timeStep);
-        }
+    protected List<Entity> moveBodies(List<Entity> bodiesToMove, double timeStep) {
+        return bodiesToMove.stream()
+            .peek(body -> body.move(timeStep))
+            .collect(Collectors.toList());
     }
 
 }

@@ -12,6 +12,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ServerPhysics extends Physics {
 
@@ -38,13 +39,16 @@ public class ServerPhysics extends Physics {
     }
 
     @Override
-    protected void moveBodies(List<Entity> bodiesToMove, double timeStep) {
-        for (Entity body: bodiesToMove) {
-            body.move(timeStep);
-            if (world.entityOutOfBounds(body)) {
-                eventBus.dispatch(new RemoveEntity(body, Receiver.EVERYONE));
-            }
-        }
+    protected List<Entity> moveBodies(List<Entity> bodiesToMove, double timeStep) {
+        return super.moveBodies(bodiesToMove, timeStep).stream()
+            .filter(entity -> {
+                if (world.entityOutOfBounds(entity)) {
+                    eventBus.dispatch(new RemoveEntity(entity, Receiver.EVERYONE));
+                    return false;
+                } else {
+                    return true;
+                }
+            }).collect(Collectors.toList());
     }
 
 }
