@@ -36,6 +36,13 @@ public class Intelligence implements Component {
             return;
         }
 
+        // Condition is same as botAmount < playerAmount + 1
+        while (2 * bots.size() < world.getLivingEntities().size() + 1) {
+            Bot bot = botFactory.create();
+            bots.add(bot);
+            world.addEntity(bot);
+        }
+
         Iterator<Bot> iterator = bots.iterator();
         while (iterator.hasNext()) {
             Bot bot = iterator.next();
