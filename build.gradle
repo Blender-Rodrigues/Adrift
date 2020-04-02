@@ -1,56 +1,62 @@
 import org.gradle.internal.os.OperatingSystem
 
-// Specify repositories we'd like to fetch libraries from
 repositories {
     jcenter()
     mavenCentral()
-
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots/"
     }
 }
 
-// Plugins so gradle would take some assumptions about the project setup
 apply plugin: "java"
 apply plugin: "idea"
-
-// Pick for which platform the build result is going to be applied to.
-switch (OperatingSystem.current()) {
-    case OperatingSystem.LINUX:
-        def osArch = System.getProperty("os.arch")
-        project.ext.lwjglNatives = (
-            osArch.startsWith("arm") || osArch.startsWith("aarch64")
-                ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
-                : "natives-linux"
-        )
-        break
-    case OperatingSystem.WINDOWS:
-        project.ext.lwjglNatives = "natives-windows"
-        break
-    case OperatingSystem.MAC_OS:
-        project.ext.lwjglNatives = "natives-macos"
-        break
-}
-
-project.ext.lwjglVersion = "3.2.3"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-archivesBaseName = 'escape-from-eros'
-version = '0.5'
-group = 'ee.taltech.iti0200'
+test {
+    useJUnitPlatform()
+    testLogging.info.events = ["FAILED", "SKIPPED", "PASSED", "STANDARD_OUT", "STANDARD_ERROR"]
+}
 
 sourceSets.main.java.srcDirs = ['src/main/java']
 sourceSets.main.resources.srcDirs = ['src/main/resources']
 sourceSets.test.java.srcDirs = ['src/test/java']
 sourceSets.test.resources.srcDirs = ['src/test/resources']
 
-test {
-    useJUnitPlatform()
-    testLogging.info.events = ["FAILED", "SKIPPED", "PASSED", "STANDARD_OUT", "STANDARD_ERROR"]
+project.ext.lwjglVersion = "3.2.3"
+archivesBaseName = "escape-from-eros"
+group = "ee.taltech.iti0200"
+
+if (project.hasProperty("jarVersion")) {
+    project.version = project.jarVersion
+} else {
+    project.version = "0.5"
+}
+
+println "Running version: $project.version"
+
+if (project.hasProperty("lwjglNatives")) {
+    println "Using natives for lwjgl: $project.lwjglNatives"
+} else {
+    switch (OperatingSystem.current()) {
+        case OperatingSystem.LINUX:
+            def osArch = System.getProperty("os.arch")
+            project.ext.lwjglNatives = (
+                osArch.startsWith("arm") || osArch.startsWith("aarch64")
+                    ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
+                    : "natives-linux"
+            )
+            break
+        case OperatingSystem.WINDOWS:
+            project.ext.lwjglNatives = "natives-windows"
+            break
+        case OperatingSystem.MAC_OS:
+            project.ext.lwjglNatives = "natives-macos"
+            break
+    }
 }
 
 dependencies {

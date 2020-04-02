@@ -9,7 +9,10 @@ test:
   script:
     - chmod 700 gradlew
     - export NO_GUI=true
-    - ./gradlew clean test build
+    - ./gradlew clean test
+    - ./gradlew build -x test -PlwjglNatives=natives-windows -PjarVersion=windows
+    - ./gradlew build -x test -PlwjglNatives=natives-macos -PjarVersion=mac
+    - ./gradlew build -x test -PlwjglNatives=natives-linux -PjarVersion=linux
   artifacts:
     paths:
       - build/reports/

@@ -5,6 +5,7 @@ import org.lwjgl.BufferUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.FloatBuffer;
@@ -100,14 +101,14 @@ public class Shader {
     }
 
     private String readFile(String filename) throws IOException {
-        URL resource = getClass().getClassLoader().getResource(PATH + filename);
+        InputStream resource = getClass().getClassLoader().getResourceAsStream(PATH + filename);
         if (resource == null) {
             throw new IllegalArgumentException("Unable to find resource " + PATH + filename);
         }
 
         List<String> lines = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream()))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
             while (true) {
                 String line = reader.readLine();
                 if (line == null) {
