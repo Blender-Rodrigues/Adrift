@@ -7,10 +7,8 @@ test:
   stage: test
   image: openjdk:8-jdk-alpine
   script:
-    - pwd
-    - ls -la
     - chmod 700 gradlew
-    - ./gradlew clean test build
+    - ./gradlew clean test build --stacktrace
   artifacts:
     paths:
       - build/reports/
