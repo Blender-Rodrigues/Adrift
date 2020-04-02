@@ -56,7 +56,7 @@ class IntelligenceTest {
 
         intelligence.update(0);
         world.addEntity(mock(Player.class));
-        intelligence.update(10);
+        intelligence.update(300);
 
         verify(world, times(3)).addEntity(captor.capture());
         List<Bot> addedBots = captor.getAllValues();
@@ -79,7 +79,7 @@ class IntelligenceTest {
 
         intelligence.update(0);
         bot.setAlive(false);
-        intelligence.update(10);
+        intelligence.update(300);
 
         verify(world, times(2)).addEntity(captor.capture());
         List<Bot> addedBots = captor.getAllValues();
