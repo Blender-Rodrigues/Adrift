@@ -8,7 +8,7 @@ test:
   image: openjdk:8-jdk-alpine
   script:
     - chmod 700 gradlew
-    - ./gradlew clean test build --scan
+    - ./gradlew clean test build --debug
   artifacts:
     paths:
       - build/reports/
