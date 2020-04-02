@@ -8,13 +8,11 @@ import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -46,29 +44,25 @@ class WorldTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {-50, -1, 101, 150})
-    void testEntityOutOfBoundsByX(int xPosition) {
-        assertTrue(world.entityOutOfBounds(new Entity(0, new BoundingBox(
-            new Vector(xPosition, 50),
-            new Vector(10, 10)
-        ))));
-    }
+    @CsvSource({
+        "-50,50,true",
+        "-1,50,true",
+        "101,50,true",
+        "1500,50,true",
+        "50,-50,true",
+        "50,-1,true",
+        "50,101,true",
+        "50,1500,true",
+        "50,50,false",
+        "0,0,false",
+        "90,90,false"
+    })
+    void testEntityOutOfBoundsByX(int x, int y, boolean expected) {
+        BoundingBox boundingBox = new BoundingBox(new Vector(x, y), new Vector(10, 10));
 
-    @ParameterizedTest
-    @ValueSource(ints = {-50, -1, 101, 150})
-    void testEntityOutOfBoundsByY(int yPosition) {
-        assertTrue(world.entityOutOfBounds(new Entity(0, new BoundingBox(
-            new Vector(50, yPosition),
-            new Vector(10, 10)
-        ))));
-    }
+        boolean actual = world.entityOutOfBounds(new Entity(0, boundingBox));
 
-    @Test
-    void testEntityInBounds() {
-        assertFalse(world.entityOutOfBounds(new Entity(0, new BoundingBox(
-            new Vector(50, 50),
-            new Vector(10, 10)
-        ))));
+        assertThat(actual).isEqualTo(expected);
     }
 
 }

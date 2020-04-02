@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class OutOfBoundsTest {
+class ServerPhysicsTest {
 
     @Test
     void testMoveEntityOutOfBounds() {
@@ -37,4 +37,5 @@ class OutOfBoundsTest {
         assertThat(event.getReceiver()).isEqualTo(EVERYONE);
         assertThat(event.getId()).isEqualTo(id);
     }
+
 }
