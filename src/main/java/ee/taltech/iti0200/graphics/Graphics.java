@@ -240,10 +240,6 @@ public class Graphics implements Component {
             return;
         }
 
-        if (entity instanceof Gun) {
-            System.out.println("gun here");
-        }
-
         HashMap<String, Renderer> map = renderers.getOrDefault(entity.getClass(), renderers.get(Entity.class))
             .entrySet()
             .stream()
