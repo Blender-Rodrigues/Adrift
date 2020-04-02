@@ -66,9 +66,9 @@ public class Input implements Component {
     }
 
     public void initialize() {
+        bind(new KeyEvent(GLFW_KEY_W, this::playerJump, GLFW_PRESS));
         bind(new KeyEvent(GLFW_KEY_A, this::playerMoveLeft, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_D, this::playerMoveRight, GLFW_PRESS, GLFW_REPEAT));
-        bind(new KeyEvent(GLFW_KEY_W, this::playerJump, GLFW_PRESS));
         bind(new KeyEvent(GLFW_MOUSE_BUTTON_LEFT, this::playerShoot, GLFW_PRESS, GLFW_REPEAT));
 
         bind(new KeyEvent(GLFW_KEY_RIGHT, camera::moveRight, GLFW_PRESS, GLFW_REPEAT));
@@ -102,9 +102,9 @@ public class Input implements Component {
             return;
         }
         if (player.isOnFloor()) {
-            player.accelerate(new Vector(-0.5, 0.0));
+            player.accelerate(new Vector(-2, 0.0));
         } else {
-            player.accelerate(new Vector(-0.2, 0.0));
+            player.accelerate(new Vector(-0.25, 0.0));
         }
     }
 
@@ -113,14 +113,15 @@ public class Input implements Component {
             return;
         }
         if (player.isOnFloor()) {
-            player.accelerate(new Vector(0.5, 0.0));
+            player.accelerate(new Vector(2, 0.0));
         } else {
-            player.accelerate(new Vector(0.2, 0.0));
+            player.accelerate(new Vector(0.25, 0.0));
         }
     }
 
     private void playerJump() {
         if (player.isAlive() && player.getJumpsLeft() > 0) {
+            player.setOnFloor(false);
             player.setJumpsLeft(player.getJumpsLeft() - 1);
             player.accelerate(new Vector(0.0, player.getJumpDeltaV()));
         }
