@@ -30,6 +30,7 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
  *
  * P.S. Annotate gui tests with @GuiTest instead of @Test to ignore them in build server which doesn't have gui.
  */
+@DisabledIfEnvironmentVariable(named = "NO_GUI", matches = "true")
 abstract public class GraphicsTest {
 
     private static Long window;
