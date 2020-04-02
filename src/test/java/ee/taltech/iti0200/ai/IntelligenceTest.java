@@ -83,7 +83,7 @@ class IntelligenceTest {
 
         verify(world, times(2)).addEntity(captor.capture());
         List<Bot> addedBots = captor.getAllValues();
-        assertThat(addedBots.size()).isEqualTo(2);
+        assertThat(addedBots).hasSize(2);
         assertThat(addedBots.get(1).getId()).isEqualTo(id);
     }
 
