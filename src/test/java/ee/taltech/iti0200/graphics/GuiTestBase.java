@@ -21,7 +21,7 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
  * Don't use it together with Graphics class itself as it creates its own context.
  */
 @GuiTest
-abstract public class GraphicsTest {
+abstract public class GuiTestBase {
 
     private static Long window;
 
