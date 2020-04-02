@@ -26,6 +26,7 @@ abstract public class GraphicsTest {
 
     @BeforeAll
     static void beforeAll() {
+        System.setProperty("java.awt.headless", "true");
         Injector injector = Guice.createInjector(asList(new CommonModule(), new GuiModule()));
         window = injector.getInstance(Key.get(Long.class, WindowId.class));
 
@@ -38,6 +39,7 @@ abstract public class GraphicsTest {
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
         glfwTerminate();
+        System.setProperty("java.awt.headless", "false");
     }
 
 }
