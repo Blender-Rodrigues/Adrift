@@ -21,6 +21,11 @@ public class Living extends Damageable {
         return gun;
     }
 
+    public void setGun(Gun gun) {
+        this.gun = gun;
+        gun.setOwner(this);
+    }
+
     public void setWorld(World world) {
         this.world = world;
     }

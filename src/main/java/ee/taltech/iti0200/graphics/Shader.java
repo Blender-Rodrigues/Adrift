@@ -1,21 +1,41 @@
 package ee.taltech.iti0200.graphics;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.FloatBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
+import static org.lwjgl.opengl.GL20.GL_VALIDATE_STATUS;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL20.glAttachShader;
+import static org.lwjgl.opengl.GL20.glBindAttribLocation;
+import static org.lwjgl.opengl.GL20.glCompileShader;
+import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL20.glGetProgrami;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glLinkProgram;
+import static org.lwjgl.opengl.GL20.glShaderSource;
+import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL20.glValidateProgram;
 
 public class Shader {
 
-    private static final String PATH = "./build/resources/main/shaders/";
+    private static final String PATH = "shaders/";
 
     private int program = glCreateProgram();
 
@@ -80,16 +100,18 @@ public class Shader {
     }
 
     private String readFile(String filename) throws IOException {
-        StringBuilder string = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(new File(PATH + filename)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                string.append(line);
-                string.append("\n");
-            }
+        URL resource = getClass().getClassLoader().getResource(PATH + filename);
+        if (resource == null) {
+            throw new IllegalArgumentException("Unable to find resource " + PATH + filename);
         }
 
-        return string.toString();
+        try {
+            Path path = Paths.get(resource.toURI());
+            return String.join("\n", Files.readAllLines(path));
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Unable to find resource " + PATH + filename, e);
+        }
+
     }
 
 }

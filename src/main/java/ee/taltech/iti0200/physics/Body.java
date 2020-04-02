@@ -69,6 +69,14 @@ public class Body implements Serializable {
         this.speed = new Vector(this.speed.getX(), speed);
     }
 
+    public void setSpeed(Vector speed) {
+        this.speed = new Vector(speed);
+    }
+
+    public void setPosition(Vector position) {
+        this.boundingBox.getCentre().set(position);
+    }
+
     public void setElasticity(double elasticity) {
         this.elasticity = elasticity;
     }

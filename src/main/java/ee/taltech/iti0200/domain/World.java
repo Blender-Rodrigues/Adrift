@@ -1,7 +1,6 @@
 package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
@@ -118,9 +117,8 @@ public class World {
 
     public void addEntity(Entity entity) {
         entities.put(entity.getId(), entity);
-        if (!Graphics.renderers.isEmpty()) {
-            Graphics.setRenderer(entity);
-        }
+        Graphics.setRenderer(entity);
+
         if (entity.isMovable()) {
             movableBodies.add(entity);
         } else {
@@ -128,13 +126,10 @@ public class World {
         }
 
         if (entity instanceof Living) {
-            ((Living) entity).setWorld(this);
-            livingEntities.add((Living) entity);
-            Gun entityGun = ((Living) entity).getGun();
-            if (!Graphics.renderers.isEmpty()) {
-                Graphics.setRenderer(entityGun);
-            }
-            entities.put(entityGun.getId(), entityGun);
+            Living living = (Living) entity;
+            living.setWorld(this);
+            livingEntities.add(living);
+            Graphics.setRenderer(living.getGun());
         }
     }
 
@@ -145,7 +140,6 @@ public class World {
         if (entity instanceof Living) {
             livingEntities.remove(entity);
             ((Living) entity).setAlive(false);
-            entities.remove(((Living) entity).getGun().getId());
         }
 
         if (entity.isMovable()) {

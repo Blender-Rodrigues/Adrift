@@ -3,15 +3,15 @@ package ee.taltech.iti0200.graphics;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.di.annotations.WindowId;
+import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Body;
-import ee.taltech.iti0200.physics.Vector;
-import org.joml.Matrix4f;
 import ee.taltech.iti0200.physics.BoundingBox;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -20,9 +20,7 @@ import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -72,14 +70,14 @@ public class Graphics implements Component {
     private Camera camera;
     private int frameHeight;
     private int frameWidth;
-    private CoordinateConverter converter;
+    private RendererFactory factory;
 
     @Inject
-    public Graphics(World world, @WindowId long window, Camera camera, CoordinateConverter converter) {
+    public Graphics(World world, @WindowId long window, Camera camera, RendererFactory factory) {
         this.world = world;
         this.camera = camera;
         this.window = window;
-        this.converter = converter;
+        this.factory = factory;
     }
 
     @Override
@@ -141,7 +139,12 @@ public class Graphics implements Component {
 
         createRenderers();
 
-        world.getEntities().forEach(Graphics::setRenderer);
+        world.getEntities().forEach(entity -> {
+            setRenderer(entity);
+            if (entity instanceof Living) {
+                setRenderer(((Living) entity).getGun());
+            }
+        });
 
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
     }
@@ -191,35 +194,19 @@ public class Graphics implements Component {
         double minY = (pos.y - h);
         double maxY = (pos.y + h);
 
-        List<Gun> renderAfter = new ArrayList<>();
         for (Entity entity : world.getEntities()) {
             BoundingBox box = entity.getBoundingBox();
             if (box.getMinX() < minX || box.getMaxX() > maxX || box.getMinY() < minY || box.getMinY() > maxY) {
                 continue;
             }
-            if (entity instanceof Gun) {
-                renderAfter.add((Gun) entity);
-            } else {
-                entity.render(shader, camera, tick, new Matrix4f());
+            entity.render(shader, camera, tick);
+            if (entity instanceof Living) {
+                Gun gun = ((Living) entity).getGun();
+                if (gun != null) {
+                    gun.render(shader, camera, tick);
+                }
             }
-
         }
-        renderAfter.forEach(gun -> gun.render(shader, camera, tick, getRotation(gun.getPointedAt())));
-    }
-
-    private Matrix4f getRotation(Vector pointedAt) {
-        if (pointedAt == null) {
-            pointedAt = new Vector(1, 0);
-        }
-        float rotationAngle = - (float) (Math.atan2(pointedAt.getX(), pointedAt.getY()));
-        Matrix4f rotationMatrix;
-        if (rotationAngle < 0) {
-            return new Matrix4f().setRotationXYZ(0F, 0F, rotationAngle + (float) Math.PI / 2);
-        }
-        Matrix4f mirrorMatrix = new Matrix4f().m00(-1);
-        rotationMatrix = new Matrix4f().setRotationXYZ(0F, 0F, - rotationAngle + (float) Math.PI / 2);
-        rotationMatrix = mirrorMatrix.mul(rotationMatrix);
-        return rotationMatrix;
     }
 
     private void createRenderers() throws IOException {
@@ -230,25 +217,33 @@ public class Graphics implements Component {
         Animation botDefault = new Animation(2, "animations/bot/", "bot.default", 20);
 
         HashMap<String, Supplier<Renderer>> defaultRenderer = new HashMap<>();
-        defaultRenderer.put(DEFAULT, () -> new Drawable(defaultTexture, converter));
+        defaultRenderer.put(DEFAULT, () -> factory.create(defaultTexture));
         renderers.put(Entity.class, defaultRenderer);
 
         HashMap<String, Supplier<Renderer>> gunRenderer = new HashMap<>();
-        gunRenderer.put(DEFAULT, () -> new Drawable(gunTexture, converter));
+        gunRenderer.put(DEFAULT, () -> factory.create(gunTexture, RotatingDrawable.class));
         renderers.put(Gun.class, gunRenderer);
         renderers.put(FastGun.class, gunRenderer);
 
         HashMap<String, Supplier<Renderer>> playerRenderer = new HashMap<>();
-        playerRenderer.put(DEFAULT, () -> new Animateable(playerDefault, converter));
-        playerRenderer.put("jump", () -> new Animateable(playerJump, converter));
+        playerRenderer.put(DEFAULT, () -> factory.create(playerDefault));
+        playerRenderer.put("jump", () -> factory.create(playerJump));
         renderers.put(Player.class, playerRenderer);
 
         HashMap<String, Supplier<Renderer>> botRenderer = new HashMap<>();
-        botRenderer.put(DEFAULT, () -> new Animateable(botDefault, converter));
+        botRenderer.put(DEFAULT, () -> factory.create(botDefault));
         renderers.put(Bot.class, botRenderer);
     }
 
     public static void setRenderer(Entity entity) {
+        if (renderers.isEmpty() || entity == null) {
+            return;
+        }
+
+        if (entity instanceof Gun) {
+            System.out.println("gun here");
+        }
+
         HashMap<String, Renderer> map = renderers.getOrDefault(entity.getClass(), renderers.get(Entity.class))
             .entrySet()
             .stream()

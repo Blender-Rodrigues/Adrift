@@ -3,7 +3,7 @@ package ee.taltech.iti0200.domain.entity;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-public class Gun extends Entity {
+public class Gun extends Entity implements Rotatable {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +43,7 @@ public class Gun extends Entity {
         return new Projectile(new Vector(owner.getBoundingBox().getCentre()), speed, damage, owner);
     }
 
-    public Vector getPointedAt() {
+    public Vector getRotation() {
         return pointedAt;
     }
 
@@ -51,7 +51,7 @@ public class Gun extends Entity {
         return owner;
     }
 
-    public void setPointedAt(Vector pointedAt) {
+    public void setRotation(Vector pointedAt) {
         this.pointedAt = new Vector(pointedAt);
         this.pointedAt.normalize();
     }

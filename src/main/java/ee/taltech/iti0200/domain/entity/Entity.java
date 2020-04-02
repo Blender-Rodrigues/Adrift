@@ -53,8 +53,8 @@ public class Entity extends Body {
         return this;
     }
 
-    public void render(Shader shader, Camera camera, long tick, Matrix4f rotation) {
-        renderers.get(DEFAULT).render(shader, camera, tick, rotation);
+    public void render(Shader shader, Camera camera, long tick) {
+        renderers.get(DEFAULT).render(shader, camera, tick);
     }
 
     @Override

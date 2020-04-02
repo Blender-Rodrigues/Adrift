@@ -1,19 +1,16 @@
 package ee.taltech.iti0200.graphics;
 
-import org.joml.Matrix4f;
-
 public class Animateable extends Renderer {
 
     private transient Animation animation;
 
-    public Animateable(Animation animation, CoordinateConverter converter) {
-        super(converter);
+    public Animateable(Animation animation) {
         this.animation = animation;
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick, Matrix4f rotation) {
-        super.render(shader, camera, tick, rotation);
+    public void render(Shader shader, Camera camera, long tick) {
+        super.render(shader, camera, tick);
         animation.bind(tick);
         model.render();
     }

@@ -78,7 +78,7 @@ public class SinglePlayerGame extends Game {
         layout.populateWorld(world);
         world.initialize();
 
-        player.getBoundingBox().getCentre().set(world.nextPlayerSpawnPoint());
+        player.setPosition(world.nextPlayerSpawnPoint());
         player.setGun(new FastGun(player.getBoundingBox()));
 
         world.addEntity(player);

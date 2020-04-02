@@ -1,20 +1,15 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.physics.Vector;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public abstract class Renderer {
 
-    private Entity entity;
+    protected Entity entity;
     protected transient Model model;
-    private transient Transform transform;
-    private CoordinateConverter converter;
 
-    public Renderer(CoordinateConverter converter) {
-        this.converter = converter;
-    }
+    private transient Transform transform;
 
     public Renderer setEntity(Entity entity) {
         this.entity = entity;
@@ -48,23 +43,24 @@ public abstract class Renderer {
         return this;
     }
 
-    public void render(Shader shader, Camera camera, long tick, Matrix4f rotation) {
+    public void render(Shader shader, Camera camera, long tick) {
         Vector3f location = new Vector3f((float) entity.getBoundingBox().getCentre().x, (float) entity.getBoundingBox().getCentre().y, 0);
+
         transform.pos.set(location);
-
-        Vector cameraVector = converter.physicsToCamera(entity.getBoundingBox().getCentre());
-        cameraVector.setX(cameraVector.getX() * 2 / (camera.getZoom() * camera.getWidth()));
-        cameraVector.setY(- cameraVector.getY() * 2 / (camera.getZoom() * camera.getHeight()));
-
-        Matrix4f locationMatrix = new Matrix4f().setTranslation((float) cameraVector.getX(), (float) cameraVector.getY(), 0);
-        Matrix4f inverseLocationMatrix = new Matrix4f().setTranslation((float) - cameraVector.getX(), (float) - cameraVector.getY(), 0);
 
         shader.bind();
         shader.setUniform("sampler", 0);
         shader.setUniform("projection", transform.getProjection(camera.getProjection()));
-        shader.setUniform("rotation", rotation);
-        shader.setUniform("location", locationMatrix);
-        shader.setUniform("inverseLocation", inverseLocationMatrix);
+        setShaderRotation(shader);
+    }
+
+    /**
+     * Does not rotate by default
+     */
+    protected void setShaderRotation(Shader shader) {
+        shader.setUniform("rotation", new Matrix4f());
+        shader.setUniform("location", new Matrix4f());
+        shader.setUniform("inverseLocation", new Matrix4f());
     }
 
 }

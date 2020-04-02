@@ -5,7 +5,6 @@ import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
-import org.joml.Matrix4f;
 
 import static ee.taltech.iti0200.graphics.Graphics.DEFAULT;
 
@@ -23,7 +22,6 @@ public class Player extends Living {
     private static final int MAX_HEALTH = 200;
 
     private int jumpsLeft;
-    private Gun gun;
     private Vector lookingAt;
 
     public Player(Vector position, World world) {
@@ -34,21 +32,11 @@ public class Player extends Living {
         this.lookingAt = new Vector(1f, 0f);
     }
 
-    public Player setGun(Gun gun) {
-        this.gun = gun;
-        gun.setOwner(this);
-        return this;
-    }
-
-    public Gun getGun() {
-        return gun;
-    }
-
     public void setLookingAt(Vector targetPosition) {
         targetPosition.sub(boundingBox.getCentre());
         targetPosition.normalize();
         lookingAt = targetPosition;
-        gun.setPointedAt(lookingAt);
+        gun.setRotation(lookingAt);
     }
 
     public Vector getLookingAt() {
@@ -68,9 +56,9 @@ public class Player extends Living {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick, Matrix4f rotation) {
+    public void render(Shader shader, Camera camera, long tick) {
         String renderer = jumpsLeft < JUMP_AMOUNT_LIMIT ? "jump" : DEFAULT;
-        renderers.get(renderer).render(shader, camera, tick, rotation);
+        renderers.get(renderer).render(shader, camera, tick);
     }
 
 }
