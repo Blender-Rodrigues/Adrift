@@ -3,13 +3,13 @@ package ee.taltech.iti0200.graphics;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.FloatBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
@@ -105,13 +105,20 @@ public class Shader {
             throw new IllegalArgumentException("Unable to find resource " + PATH + filename);
         }
 
-        try {
-            Path path = Paths.get(resource.toURI());
-            return String.join("\n", Files.readAllLines(path));
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Unable to find resource " + PATH + filename, e);
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream()))) {
+            while (true) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                lines.add(line);
+            }
         }
 
+        return String.join("\n", lines);
     }
 
 }
