@@ -1,12 +1,14 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.domain.entity.Entity;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public abstract class Renderer {
 
-    private Entity entity;
+    protected Entity entity;
     protected transient Model model;
+
     private transient Transform transform;
 
     public Renderer setEntity(Entity entity) {
@@ -42,11 +44,23 @@ public abstract class Renderer {
     }
 
     public void render(Shader shader, Camera camera, long tick) {
-        transform.pos.set(new Vector3f((float) entity.getBoundingBox().getCentre().x, (float) entity.getBoundingBox().getCentre().y, 0));
+        Vector3f location = new Vector3f((float) entity.getBoundingBox().getCentre().x, (float) entity.getBoundingBox().getCentre().y, 0);
+
+        transform.pos.set(location);
 
         shader.bind();
         shader.setUniform("sampler", 0);
         shader.setUniform("projection", transform.getProjection(camera.getProjection()));
+        setShaderRotation(shader);
+    }
+
+    /**
+     * Does not rotate by default
+     */
+    protected void setShaderRotation(Shader shader) {
+        shader.setUniform("rotation", new Matrix4f());
+        shader.setUniform("location", new Matrix4f());
+        shader.setUniform("inverseLocation", new Matrix4f());
     }
 
 }

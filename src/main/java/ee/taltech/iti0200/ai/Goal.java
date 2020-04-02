@@ -43,6 +43,7 @@ public abstract class Goal {
 
         Vector speed = bot.getSpeed();
         speed.add(acceleration);
+        bot.setSpeed(speed);
     }
 
     /**

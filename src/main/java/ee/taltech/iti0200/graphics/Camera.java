@@ -22,6 +22,7 @@ public class Camera {
     private float zoom = INITIAL_ZOOM_VALUE;
     private int width;
     private int height;
+
     private Player player;
     private boolean followingPlayer = true;
 

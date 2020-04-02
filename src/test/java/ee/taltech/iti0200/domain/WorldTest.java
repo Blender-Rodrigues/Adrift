@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -28,7 +29,7 @@ class WorldTest {
     @Test
     void removeEntitySetsLivingToDead() {
         // given
-        Bot bot = mock(Bot.class);
+        Bot bot = mock(Bot.class, RETURNS_DEEP_STUBS);
         world.addEntity(bot);
 
         // when

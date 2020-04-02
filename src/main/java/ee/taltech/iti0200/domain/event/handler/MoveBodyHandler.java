@@ -41,9 +41,8 @@ public class MoveBodyHandler implements Subscriber<UpdateVector> {
             return;
         }
 
-        entity.getBoundingBox().getCentre().set(event.getPosition());
-        entity.setXSpeed(event.getSpeed().x);
-        entity.setYSpeed(event.getSpeed().y);
+        entity.setPosition(event.getPosition());
+        entity.setSpeed(event.getSpeed());
 
         if (entity instanceof Living) {
             logger.trace("Moved {}", entity);

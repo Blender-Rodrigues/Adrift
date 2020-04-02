@@ -122,17 +122,19 @@ public class World {
 
     public void addEntity(Entity entity) {
         entities.put(entity.getId(), entity);
-        if (!Graphics.renderers.isEmpty()) {
-            Graphics.setRenderer(entity);
-        }
+        Graphics.setRenderer(entity);
+
         if (entity.isMovable()) {
             movableBodies.add(entity);
         } else {
             imMovableBodies.add(entity);
         }
+
         if (entity instanceof Living) {
-            ((Living) entity).setWorld(this);
-            livingEntities.add((Living) entity);
+            Living living = (Living) entity;
+            living.setWorld(this);
+            livingEntities.add(living);
+            Graphics.setRenderer(living.getGun());
         }
     }
 

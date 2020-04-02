@@ -43,7 +43,7 @@ public class PlayerJoinHandler implements Subscriber<CreatePlayer> {
         Vector position = world.nextPlayerSpawnPoint();
 
         Player player = (Player) event.getEntity();
-        player.getBoundingBox().getCentre().set(position);
+        player.setPosition(position);
 
         world.addEntity(player);
 
