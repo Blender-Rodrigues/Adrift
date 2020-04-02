@@ -27,6 +27,7 @@ abstract public class GraphicsTest {
     @BeforeAll
     static void beforeAll() {
         System.setProperty("java.awt.headless", "true");
+        System.setProperty("DISPLAY", "0");
         Injector injector = Guice.createInjector(asList(new CommonModule(), new GuiModule()));
         window = injector.getInstance(Key.get(Long.class, WindowId.class));
 
