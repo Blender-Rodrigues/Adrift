@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.domain.entity.Bot;
+import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Living;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -23,7 +25,7 @@ class WorldTest {
     @Test
     void removeEntitySetsLivingToDead() {
         // given
-        Bot bot = mock(Bot.class);
+        Bot bot = mock(Bot.class, RETURNS_DEEP_STUBS);
         world.addEntity(bot);
 
         // when

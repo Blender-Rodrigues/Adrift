@@ -22,7 +22,6 @@ public class Player extends Living {
     private static final int MAX_HEALTH = 200;
 
     private int jumpsLeft;
-    private Gun gun;
     private Vector lookingAt;
 
     public Player(Vector position, World world) {
@@ -33,20 +32,11 @@ public class Player extends Living {
         this.lookingAt = new Vector(1f, 0f);
     }
 
-    public Player setGun(Gun gun) {
-        this.gun = gun;
-        gun.setOwner(this);
-        return this;
-    }
-
-    public Gun getGun() {
-        return gun;
-    }
-
     public void setLookingAt(Vector targetPosition) {
         targetPosition.sub(boundingBox.getCentre());
         targetPosition.normalize();
         lookingAt = targetPosition;
+        gun.setRotation(lookingAt);
     }
 
     public Vector getLookingAt() {

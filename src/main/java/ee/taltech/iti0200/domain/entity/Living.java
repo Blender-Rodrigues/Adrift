@@ -9,11 +9,21 @@ public class Living extends Damageable {
 
     protected transient World world;
     protected boolean alive = true;
+    protected Gun gun;
 
     public Living(double mass, BoundingBox boundingBox, World world, int health) {
         super(mass, boundingBox, health);
         this.world = world;
         this.movable = true;
+    }
+
+    public Gun getGun() {
+        return gun;
+    }
+
+    public void setGun(Gun gun) {
+        this.gun = gun;
+        gun.setOwner(this);
     }
 
     public void setWorld(World world) {

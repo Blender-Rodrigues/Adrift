@@ -22,7 +22,6 @@ public class Bot extends Living {
     private transient Brain brain;
 
     private Vector acceleration;
-    private Gun gun;
 
     public Bot(Vector position, World world, Brain brain) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
@@ -33,22 +32,22 @@ public class Bot extends Living {
         this.movable = true;
     }
 
-    public Gun getGun() {
-        return gun;
-    }
-
-    public Bot setGun(Gun gun) {
-        this.gun = gun;
-        gun.setOwner(this);
-        return this;
-    }
-
     public Brain getBrain() {
         return brain;
     }
 
     public boolean canShoot(long tick) {
         return gun != null && gun.canShoot(tick);
+    }
+
+    @Override
+    public void setSpeed(Vector speed) {
+        super.setSpeed(speed);
+        if (gun != null) {
+            Vector rotation = new Vector(speed);
+            rotation.normalize();
+            gun.setRotation(rotation);
+        }
     }
 
     public Vector getAcceleration() {

@@ -3,6 +3,7 @@ package ee.taltech.iti0200.domain.entity;
 import ee.taltech.iti0200.ai.HealthyBrain;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.physics.Vector;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 class BotTest {
@@ -23,12 +25,30 @@ class BotTest {
     @TempDir
     File directory;
 
+    private World world;
+    private Vector position;
+
+    @BeforeEach
+    void setUp() {
+        world = mock(World.class);
+        position = new Vector(1, 3);
+    }
+
+    @Test
+    void setSpeedRotatesGun() {
+        Gun gun = mock(Gun.class);
+
+        Bot bot = new Bot(position, world, null);
+        bot.setGun(gun);
+
+        bot.setSpeed(new Vector(5, 10));
+
+        verify(gun).setRotation(new Vector(0.4472135954999579, 0.8944271909999159));
+    }
+
     @Test
     void serializationPreservesMotionAndHealth() throws Exception {
         File file = new File(directory, "Bot.txt");
-
-        Vector position = new Vector(1, 3);
-        World world = mock(World.class);
 
         Bot given = new Bot(position, world, null);
         given.setHealth(5);
@@ -52,8 +72,6 @@ class BotTest {
     void deserializedGetsABabyBrain() throws Exception {
         File file = new File(directory, "Bot.txt");
 
-        Vector position = new Vector(1, 3);
-        World world = mock(World.class);
         HealthyBrain brain = mock(HealthyBrain.class);
 
         Bot given = new Bot(position, world, brain);

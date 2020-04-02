@@ -67,8 +67,8 @@ public class ClientGame extends Game {
 
     @Override
     protected void initialize() {
-        world.addEntity(player);
         player.setGun(new FastGun(player.getBoundingBox()));
+        world.addEntity(player);
 
         logger.info("Added {} to the world", player);
     }

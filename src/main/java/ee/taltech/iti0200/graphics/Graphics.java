@@ -3,9 +3,13 @@ package ee.taltech.iti0200.graphics;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.di.annotations.WindowId;
+import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.FastGun;
+import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
@@ -66,12 +70,14 @@ public class Graphics implements Component {
     private Camera camera;
     private int frameHeight;
     private int frameWidth;
+    private RendererFactory factory;
 
     @Inject
-    public Graphics(World world, @WindowId long window, Camera camera) {
+    public Graphics(World world, @WindowId long window, Camera camera, RendererFactory factory) {
         this.world = world;
         this.camera = camera;
         this.window = window;
+        this.factory = factory;
     }
 
     @Override
@@ -133,7 +139,12 @@ public class Graphics implements Component {
 
         createRenderers();
 
-        world.getEntities().forEach(Graphics::setRenderer);
+        world.getEntities().forEach(entity -> {
+            setRenderer(entity);
+            if (entity instanceof Living) {
+                setRenderer(((Living) entity).getGun());
+            }
+        });
 
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
     }
@@ -161,6 +172,7 @@ public class Graphics implements Component {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
         camera.update();
+
         renderInView(tick);
 
         glfwSwapBuffers(window); // swap the color buffers
@@ -188,30 +200,50 @@ public class Graphics implements Component {
                 continue;
             }
             entity.render(shader, camera, tick);
+            if (entity instanceof Living) {
+                Gun gun = ((Living) entity).getGun();
+                if (gun != null) {
+                    gun.render(shader, camera, tick);
+                }
+            }
         }
     }
 
     private void createRenderers() throws IOException {
         Texture defaultTexture = new Texture("", "default");
+        Texture gunTexture = new Texture("animations/gun/", "shotgun");
         Animation playerDefault = new Animation(2, "animations/player/", "player.default", 20);
         Animation playerJump = new Animation(2, "animations/player/", "player.jump", 20);
         Animation botDefault = new Animation(2, "animations/bot/", "bot.default", 20);
 
         HashMap<String, Supplier<Renderer>> defaultRenderer = new HashMap<>();
-        defaultRenderer.put(DEFAULT, () -> new Drawable(defaultTexture));
+        defaultRenderer.put(DEFAULT, () -> factory.create(defaultTexture));
         renderers.put(Entity.class, defaultRenderer);
 
+        HashMap<String, Supplier<Renderer>> gunRenderer = new HashMap<>();
+        gunRenderer.put(DEFAULT, () -> factory.create(gunTexture, RotatingDrawable.class));
+        renderers.put(Gun.class, gunRenderer);
+        renderers.put(FastGun.class, gunRenderer);
+
         HashMap<String, Supplier<Renderer>> playerRenderer = new HashMap<>();
-        playerRenderer.put(DEFAULT, () -> new Animateable(playerDefault));
-        playerRenderer.put("jump", () -> new Animateable(playerJump));
+        playerRenderer.put(DEFAULT, () -> factory.create(playerDefault));
+        playerRenderer.put("jump", () -> factory.create(playerJump));
         renderers.put(Player.class, playerRenderer);
 
         HashMap<String, Supplier<Renderer>> botRenderer = new HashMap<>();
-        botRenderer.put(DEFAULT, () -> new Animateable(botDefault));
+        botRenderer.put(DEFAULT, () -> factory.create(botDefault));
         renderers.put(Bot.class, botRenderer);
     }
 
     public static void setRenderer(Entity entity) {
+        if (renderers.isEmpty() || entity == null) {
+            return;
+        }
+
+        if (entity instanceof Gun) {
+            System.out.println("gun here");
+        }
+
         HashMap<String, Renderer> map = renderers.getOrDefault(entity.getClass(), renderers.get(Entity.class))
             .entrySet()
             .stream()
