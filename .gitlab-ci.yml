@@ -8,7 +8,8 @@ test:
   image: openjdk:8-jdk-alpine
   script:
     - chmod 700 gradlew
-    - ./gradlew clean test build --debug
+    - export NO_GUI=true
+    - ./gradlew clean test build
   artifacts:
     paths:
       - build/reports/
