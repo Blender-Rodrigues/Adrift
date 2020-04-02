@@ -7,9 +7,8 @@ test:
   stage: test
   image: openjdk:8-jdk-alpine
   script:
-    - pwd
-    - ls -la
     - chmod 700 gradlew
+    - export NO_GUI=true
     - ./gradlew clean test build
   artifacts:
     paths:
