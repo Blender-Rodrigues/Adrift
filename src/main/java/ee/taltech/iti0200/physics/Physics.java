@@ -27,6 +27,7 @@ public class Physics implements Component {
 
     private static final Vector GRAVITY = new Vector(0, -9.81);
     private static final double NO_BOUNCE_SPEED_LIMIT = 1;
+    private static final double AIR_RESISTANCE = 0.015;
 
     protected Set<Pair<Body, Body>> collisions = new HashSet<>();
     protected World world;
@@ -64,9 +65,14 @@ public class Physics implements Component {
     }
 
     private void applyDrag(List<Entity> movableBodies) {
-        movableBodies.stream()
-            .filter(Entity::isOnFloor)
-            .forEach(Entity::drag);
+        movableBodies
+            .forEach(entity -> {
+                if (entity.isOnFloor()) {
+                    entity.drag();
+                } else {
+                    entity.airDrag(AIR_RESISTANCE);
+                }
+            });
     }
 
     private void checkForFloor(List<Entity> movingBodies, Map<Vector, Terrain> terrainMap) {

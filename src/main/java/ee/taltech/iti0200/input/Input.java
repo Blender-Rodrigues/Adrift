@@ -9,7 +9,6 @@ import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.physics.Vector;
 
 import java.util.HashMap;
 import java.util.HashSet;
