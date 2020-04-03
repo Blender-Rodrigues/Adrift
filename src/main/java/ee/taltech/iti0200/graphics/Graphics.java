@@ -5,12 +5,7 @@ import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.FastGun;
-import ee.taltech.iti0200.domain.entity.Gun;
-import ee.taltech.iti0200.domain.entity.Living;
-import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.entity.*;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import org.joml.Vector3f;
@@ -210,11 +205,20 @@ public class Graphics implements Component {
     }
 
     private void createRenderers() throws IOException {
+        Texture terrainTexture = new Texture("world/", "concrete");
         Texture defaultTexture = new Texture("", "default");
-        Texture gunTexture = new Texture("animations/gun/", "shotgun");
-        Animation playerDefault = new Animation(2, "animations/player/", "player.default", 20);
-        Animation playerJump = new Animation(2, "animations/player/", "player.jump", 20);
-        Animation botDefault = new Animation(2, "animations/bot/", "bot.default", 20);
+        Texture gunTexture = new Texture("gun/", "shotgun");
+        Texture projectileTexture = new Texture("projectile/", "bullet");
+
+        // player
+        Animation playerRunningRight = new Animation(10, "player/animations/", "player.running.right", 3);
+        Animation playerRunningLeft = new Animation(10, "player/animations/", "player.running.left", 3);
+        Animation playerIdleRight = new Animation(4, "player/animations/", "player.idle.right", 5);
+        Animation playerIdleLeft = new Animation(4, "player/animations/", "player.idle.left", 5);
+        Texture playerJumpingRight = new Texture("player/stills/", "player.jumping.right");
+        Texture playerJumpingLeft = new Texture("player/stills/", "player.jumping.left");
+
+        Animation botDefault = new Animation(2, "bot/", "bot.default", 20);
 
         HashMap<String, Supplier<Renderer>> defaultRenderer = new HashMap<>();
         defaultRenderer.put(DEFAULT, () -> factory.create(defaultTexture));
@@ -226,13 +230,25 @@ public class Graphics implements Component {
         renderers.put(FastGun.class, gunRenderer);
 
         HashMap<String, Supplier<Renderer>> playerRenderer = new HashMap<>();
-        playerRenderer.put(DEFAULT, () -> factory.create(playerDefault));
-        playerRenderer.put("jump", () -> factory.create(playerJump));
+        playerRenderer.put("RUNNING.RIGHT", () -> factory.create(playerRunningRight));
+        playerRenderer.put("RUNNING.LEFT", () -> factory.create(playerRunningLeft));
+        playerRenderer.put("IDLE.RIGHT", () -> factory.create(playerIdleRight));
+        playerRenderer.put("IDLE.LEFT", () -> factory.create(playerIdleLeft));
+        playerRenderer.put("JUMPING.RIGHT", () -> factory.create(playerJumpingRight));
+        playerRenderer.put("JUMPING.LEFT", () -> factory.create(playerJumpingLeft));
         renderers.put(Player.class, playerRenderer);
 
         HashMap<String, Supplier<Renderer>> botRenderer = new HashMap<>();
         botRenderer.put(DEFAULT, () -> factory.create(botDefault));
         renderers.put(Bot.class, botRenderer);
+
+        HashMap<String, Supplier<Renderer>> terrainRenderer = new HashMap<>();
+        terrainRenderer.put(DEFAULT, () -> factory.create(terrainTexture));
+        renderers.put(Terrain.class, terrainRenderer);
+
+        HashMap<String, Supplier<Renderer>> projectileRenderer = new HashMap<>();
+        projectileRenderer.put(DEFAULT, () -> factory.create(projectileTexture));
+        renderers.put(Projectile.class, projectileRenderer);
     }
 
     public static void setRenderer(Entity entity) {

@@ -48,6 +48,7 @@ public class World {
 
     public void update(long tick) {
         time = tick;
+        livingEntities.forEach(Living::update);
     }
 
     public void mapTerrain() {
