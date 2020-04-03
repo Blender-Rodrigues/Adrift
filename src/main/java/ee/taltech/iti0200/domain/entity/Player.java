@@ -6,7 +6,6 @@ import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-import static ee.taltech.iti0200.graphics.Graphics.DEFAULT;
 
 public class Player extends Living {
 
@@ -30,6 +29,37 @@ public class Player extends Living {
         this.jumpsLeft = JUMP_AMOUNT_LIMIT;
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.lookingAt = new Vector(1f, 0f);
+    }
+
+    public void moveLeft() {
+        if (!isAlive()) {
+            return;
+        }
+        if (isOnFloor()) {
+            accelerate(new Vector(-0.5, 0.0));
+            action = Action.RUNNING;
+        } else {
+            accelerate(new Vector(-0.2, 0.0));
+        }
+    }
+
+    public void moveRight() {
+        if (!isAlive()) {
+            return;
+        }
+        if (isOnFloor()) {
+            accelerate(new Vector(0.5, 0.0));
+            action = Action.RUNNING;
+        } else {
+            accelerate(new Vector(0.2, 0.0));
+        }
+    }
+
+    public void jump() {
+        if (isAlive() && getJumpsLeft() > 0) {
+            setJumpsLeft(getJumpsLeft() - 1);
+            accelerate(new Vector(0.0, getJumpDeltaV()));
+        }
     }
 
     public void setLookingAt(Vector targetPosition) {
@@ -56,9 +86,17 @@ public class Player extends Living {
     }
 
     @Override
+    public void update() {
+        if (jumpsLeft < JUMP_AMOUNT_LIMIT) {
+            action = Action.JUMPING;
+        }
+    }
+
+    @Override
     public void render(Shader shader, Camera camera, long tick) {
-        String renderer = jumpsLeft < JUMP_AMOUNT_LIMIT ? "jump" : DEFAULT;
-        renderers.get(renderer).render(shader, camera, tick);
+        direction = getLookingAt().getX() > 0 ? Direction.RIGHT : Direction.LEFT;
+        renderers.get(action + "." + direction).render(shader, camera, tick);
+        action = Action.IDLE;
     }
 
 }
