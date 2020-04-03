@@ -18,7 +18,7 @@ public class Player extends Living {
     private static final double MASS = 70.0;
     private static final double ELASTICITY = 0.15;
     private static final double FRICTION_COEFFICIENT = 0.99;
-    private static final double JUMP_DELTA_V = 15.0;
+    private static final double JUMP_DELTA_V = 10.0;
     private static final int MAX_HEALTH = 200;
     private static final double PERMEABILITY = 1;
 

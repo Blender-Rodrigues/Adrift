@@ -5,10 +5,9 @@ import ee.taltech.iti0200.graphics.Renderer;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
-import org.joml.Matrix4f;
 
-import java.util.Objects;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 import static ee.taltech.iti0200.graphics.Graphics.DEFAULT;

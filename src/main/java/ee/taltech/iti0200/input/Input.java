@@ -102,9 +102,9 @@ public class Input implements Component {
             return;
         }
         if (player.isOnFloor()) {
-            player.accelerate(new Vector(-2, 0.0));
+            player.accelerate(new Vector(-2.5, 0.0));
         } else {
-            player.accelerate(new Vector(-0.25, 0.0));
+            player.accelerate(new Vector(-0.05, 0.0));
         }
     }
 
@@ -113,9 +113,9 @@ public class Input implements Component {
             return;
         }
         if (player.isOnFloor()) {
-            player.accelerate(new Vector(2, 0.0));
+            player.accelerate(new Vector(2.5, 0.0));
         } else {
-            player.accelerate(new Vector(0.25, 0.0));
+            player.accelerate(new Vector(0.05, 0.0));
         }
     }
 
