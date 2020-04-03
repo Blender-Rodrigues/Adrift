@@ -19,7 +19,7 @@ public class RotatingDrawable extends Drawable {
     }
 
     @Override
-    public Renderer setEntity(Entity entity) {
+    public EntityRenderer setEntity(Entity entity) {
         if (entity instanceof Rotatable) {
             return super.setEntity(entity);
         }

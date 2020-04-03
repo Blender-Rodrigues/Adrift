@@ -5,7 +5,7 @@ import ee.taltech.iti0200.graphics.Animation;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.CoordinateConverter;
 import ee.taltech.iti0200.graphics.Drawable;
-import ee.taltech.iti0200.graphics.Renderer;
+import ee.taltech.iti0200.graphics.EntityRenderer;
 import ee.taltech.iti0200.graphics.RotatingDrawable;
 import ee.taltech.iti0200.graphics.Texture;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-class RendererFactoryTest {
+class EntityRendererFactoryTest {
 
     private CoordinateConverter converter;
     private Camera camera;
@@ -31,7 +31,7 @@ class RendererFactoryTest {
     void createReturnsRotating() {
         Texture texture = mock(Texture.class);
 
-        Renderer renderer = factory.create(texture, RotatingDrawable.class);
+        EntityRenderer renderer = factory.create(texture, RotatingDrawable.class);
 
         assertThat(renderer).isInstanceOf(RotatingDrawable.class);
     }
@@ -42,7 +42,7 @@ class RendererFactoryTest {
 
         factory = new RendererFactory(converter, camera);
 
-        Renderer renderer = factory.create(texture);
+        EntityRenderer renderer = factory.create(texture);
 
         assertThat(renderer).isInstanceOf(Drawable.class);
     }
@@ -53,7 +53,7 @@ class RendererFactoryTest {
 
         factory = new RendererFactory(converter, camera);
 
-        Renderer renderer = factory.create(animation);
+        EntityRenderer renderer = factory.create(animation);
 
         assertThat(renderer).isInstanceOf(Animateable.class);
     }

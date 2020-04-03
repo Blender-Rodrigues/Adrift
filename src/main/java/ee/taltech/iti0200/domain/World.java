@@ -1,10 +1,11 @@
 package ee.taltech.iti0200.domain;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
-import ee.taltech.iti0200.graphics.Graphics;
+import ee.taltech.iti0200.graphics.EntityRenderFacade;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.AbstractMap.SimpleEntry;
@@ -25,6 +26,7 @@ public class World {
     private List<Entity> imMovableBodies = new ArrayList<>();
     private Map<Vector, Terrain> terrainMap;
     private ArrayDeque<Vector> spawnPoints = new ArrayDeque<>();
+    private EntityRenderFacade entityRenderer;
     private long entitiesRemoved = 0;
     private double xMin;
     private double xMax;
@@ -60,6 +62,12 @@ public class World {
                     .map(pos -> new SimpleEntry<>(new Vector(pos, maxY), (Terrain) entity));
             })
             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+    }
+
+    @Inject(optional = true)
+    public World setEntityRenderer(EntityRenderFacade entityRenderer) {
+        this.entityRenderer = entityRenderer;
+        return this;
     }
 
     public World setSpawnPoints(ArrayDeque<Vector> spawnPoints) {
@@ -123,7 +131,9 @@ public class World {
 
     public void addEntity(Entity entity) {
         entities.put(entity.getId(), entity);
-        Graphics.setRenderer(entity);
+        if (entityRenderer != null) {
+            entityRenderer.decorate(entity);
+        }
 
         if (entity.isMovable()) {
             movableBodies.add(entity);
@@ -135,7 +145,9 @@ public class World {
             Living living = (Living) entity;
             living.setWorld(this);
             livingEntities.add(living);
-            Graphics.setRenderer(living.getGun());
+            if (entityRenderer != null) {
+                entityRenderer.decorate(living.getGun());
+            }
         }
     }
 

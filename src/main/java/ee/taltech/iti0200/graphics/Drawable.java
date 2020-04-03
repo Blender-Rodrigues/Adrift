@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.graphics;
 
-public class Drawable extends Renderer {
+public class Drawable extends EntityRenderer {
 
     private transient Texture texture;
 
