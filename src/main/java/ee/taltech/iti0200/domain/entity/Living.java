@@ -11,6 +11,17 @@ public class Living extends Damageable {
     protected boolean alive = true;
     protected Gun gun;
 
+    protected enum Action {
+        RUNNING, JUMPING, FALLING, IDLE;
+    }
+
+    protected enum Direction {
+        LEFT, RIGHT;
+    }
+
+    protected Action action = Action.IDLE;
+    protected Direction direction = Direction.LEFT;
+
     public Living(double mass, BoundingBox boundingBox, World world, int health) {
         super(mass, boundingBox, health);
         this.world = world;
@@ -37,6 +48,10 @@ public class Living extends Damageable {
     public Living setAlive(boolean alive) {
         this.alive = alive;
         return this;
+    }
+
+    public void update() {
+
     }
 
 }
