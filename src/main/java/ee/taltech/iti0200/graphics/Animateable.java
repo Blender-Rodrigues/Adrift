@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.graphics;
 
-public class Animateable extends Renderer {
+public class Animateable extends EntityRenderer {
 
     private transient Animation animation;
 

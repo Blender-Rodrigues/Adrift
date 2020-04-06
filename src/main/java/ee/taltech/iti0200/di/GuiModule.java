@@ -5,6 +5,7 @@ import com.google.inject.Key;
 import com.google.inject.Singleton;
 import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.EntityRenderFacade;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Mouse;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -35,6 +36,7 @@ public class GuiModule extends AbstractModule {
         bind(Camera.class).in(Singleton.class);
         bind(Graphics.class).in(Singleton.class);
         bind(Mouse.class).in(Singleton.class);
+        bind(EntityRenderFacade.class).in(Singleton.class);
     }
 
     private void initialize() {
