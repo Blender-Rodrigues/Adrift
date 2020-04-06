@@ -83,7 +83,7 @@ public class Physics implements Component {
             double minY = moving.getBoundingBox().getMinY();
 
             boolean intersects = false;
-            double drag = 1.0;
+            double drag = Double.POSITIVE_INFINITY;
 
             for (double xCoord: Arrays.asList(minX, centreX, maxX)) {
                 Vector bottomVector = new Vector(xCoord, minY);
