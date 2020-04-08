@@ -3,6 +3,7 @@ package ee.taltech.iti0200.physics;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
@@ -45,11 +46,14 @@ public class Physics implements Component {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
         Map<Vector, Terrain> terrainMap = world.getTerrainMap();
+
         checkForFloor(movableBodies, terrainMap);
         applyDrag(movableBodies);
         movableBodies = moveBodies(movableBodies, world.getTimeStep());
+
         collisions = new HashSet<>();
         checkForCollisions(movableBodies, imMovableBodies);
+
         applyGravity(movableBodies);
         dispatchCollisions();
     }

@@ -9,11 +9,13 @@ import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
+import ee.taltech.iti0200.domain.event.entity.HealDamage;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import ee.taltech.iti0200.domain.event.handler.CollisionHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityCreateHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.handler.EntityHealingHandler;
 import ee.taltech.iti0200.domain.event.handler.EntityRemoveHandler;
 import ee.taltech.iti0200.domain.event.handler.MoveBodyHandler;
 import ee.taltech.iti0200.graphics.Graphics;
@@ -43,6 +45,7 @@ public class ClientGame extends Game {
         Input input,
         Physics physics,
         EntityDamageHandler damageHandler,
+        EntityHealingHandler healingHandler,
         EntityRemoveHandler entityRemoveHandler,
         EntityCreateHandler entityCreateHandler,
         MoveBodyHandler moveBodyHandler,
@@ -59,6 +62,7 @@ public class ClientGame extends Game {
         components.add(network);
 
         eventBus.subscribe(DealDamage.class, damageHandler);
+        eventBus.subscribe(HealDamage.class, healingHandler);
         eventBus.subscribe(RemoveEntity.class, entityRemoveHandler);
         eventBus.subscribe(CreateEntity.class, entityCreateHandler);
         eventBus.subscribe(UpdateVector.class, moveBodyHandler);

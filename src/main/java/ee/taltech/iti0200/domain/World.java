@@ -1,6 +1,8 @@
 package ee.taltech.iti0200.domain;
 
 import com.google.inject.Inject;
+import ee.taltech.iti0200.di.factory.ConsumableFactory;
+import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
@@ -24,6 +26,7 @@ public class World {
     private List<Living> livingEntities = new ArrayList<>();
     private List<Entity> movableBodies = new ArrayList<>();
     private List<Entity> imMovableBodies = new ArrayList<>();
+    private List<Consumable> consumables = new ArrayList<>();
     private Map<Vector, Terrain> terrainMap;
     private ArrayDeque<Vector> spawnPoints = new ArrayDeque<>();
     private EntityRenderFacade entityRenderer;
@@ -113,6 +116,10 @@ public class World {
         return livingEntities;
     }
 
+    public List<Consumable> getConsumables() {
+        return consumables;
+    }
+
     public List<Projectile> getProjectiles() {
         return movableBodies.stream()
             .filter(Projectile.class::isInstance)
@@ -133,6 +140,11 @@ public class World {
         entities.put(entity.getId(), entity);
         if (entityRenderer != null) {
             entityRenderer.decorate(entity);
+        }
+
+        if (entity instanceof Consumable) {
+            consumables.add((Consumable) entity);
+            return;
         }
 
         if (entity.isMovable()) {

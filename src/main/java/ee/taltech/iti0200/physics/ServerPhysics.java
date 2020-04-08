@@ -2,6 +2,7 @@ package ee.taltech.iti0200.physics;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
@@ -26,7 +27,17 @@ public class ServerPhysics extends Physics {
         super.update(tick);
         collisions = new HashSet<>();
         checkForProjectileHits(world.getLivingEntities(), world.getProjectiles());
+        checkForConsumableHits(world.getLivingEntities(), world.getConsumables());
         dispatchCollisions();
+    }
+
+    private void checkForConsumableHits(List<Living> living, List<Consumable> consumables) {
+        for (Consumable consumable: consumables) {
+            living.stream()
+                .filter(consumable::intersects)
+                .findAny()
+                .ifPresent(entity -> collisions.add(new ImmutablePair<>(consumable, entity)));
+        }
     }
 
     private void checkForProjectileHits(List<Living> living, List<Projectile> projectiles) {
