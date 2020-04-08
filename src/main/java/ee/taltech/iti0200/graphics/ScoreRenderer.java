@@ -23,11 +23,7 @@ public class ScoreRenderer {
 
     public void addPlayer(Player player) {
         TextBox textBox = new TextBox(0, DISPLAY_HEIGHT * scoreBoxes.size(), "", DISPLAY_HEIGHT);
-        textBox.setText(
-            String.valueOf(scoreBoxes.size()) + " "
-                + String.valueOf(score.getKills(player)) + " "
-                + String.valueOf(score.getDeaths(player))
-        );
+        textBox.setText(scoreBoxes.size() + " " + score.getKills(player) + " " + score.getDeaths(player));
         scoreBoxes.add(new MutablePair<>(player, textBox));
     }
 
