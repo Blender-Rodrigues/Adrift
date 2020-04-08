@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.ai.Intelligence;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.Layout;
+import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Player;
@@ -39,6 +40,7 @@ public class SinglePlayerGame extends Game {
     private Player player;
     private Layout layout;
     private Graphics graphics;
+    private Score score;
 
     @Inject
     public SinglePlayerGame(
@@ -58,13 +60,16 @@ public class SinglePlayerGame extends Game {
         EntityCreateHandler entityCreateHandler,
         DropLootHandler dropLootHandler,
         MoveBodyHandler moveBodyHandler,
-        CollisionHandler collisionHandler
+        CollisionHandler collisionHandler,
+        Score score
     ) {
         super(world, eventBus, timer);
 
         this.player = player;
         this.layout = layout;
         this.graphics = graphics;
+
+        this.score = score;
 
         components.add(graphics);
         components.add(input);
@@ -91,6 +96,8 @@ public class SinglePlayerGame extends Game {
 
         world.addEntity(player);
         logger.info("Added {} to the world", player);
+
+        score.addPlayer(player);
     }
 
     @Override

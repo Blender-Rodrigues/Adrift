@@ -52,12 +52,14 @@ public class Graphics implements Component {
     private int frameHeight;
     private int frameWidth;
     private EntityRenderFacade entityRenderer;
+    private GuiRenderFacade guiRenderer;
 
     @Inject
-    public Graphics(@WindowId long window, Camera camera, EntityRenderFacade entityRenderer) {
+    public Graphics(@WindowId long window, Camera camera, EntityRenderFacade entityRenderer, GuiRenderFacade guiRenderer) {
         this.camera = camera;
         this.window = window;
         this.entityRenderer = entityRenderer;
+        this.guiRenderer = guiRenderer;
     }
 
     @Override
@@ -118,6 +120,7 @@ public class Graphics implements Component {
         camera.setPosition(new Vector3f(0, 0, 0));
 
         entityRenderer.initialize();
+        guiRenderer.initialize();
 
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
     }
@@ -147,6 +150,7 @@ public class Graphics implements Component {
         camera.update();
 
         entityRenderer.render(shader, camera, tick);
+        guiRenderer.render(shader, camera, tick);
 
         glfwSwapBuffers(window); // swap the color buffers
     }

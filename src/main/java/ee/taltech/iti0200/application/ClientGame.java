@@ -2,6 +2,7 @@ package ee.taltech.iti0200.application;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
+import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Player;
@@ -33,6 +34,7 @@ public class ClientGame extends Game {
     private Player player;
     private Graphics graphics;
     private Network network;
+    private Score score;
 
     @Inject
     public ClientGame(
@@ -49,12 +51,15 @@ public class ClientGame extends Game {
         EntityRemoveHandler entityRemoveHandler,
         EntityCreateHandler entityCreateHandler,
         MoveBodyHandler moveBodyHandler,
-        CollisionHandler collisionHandler
+        CollisionHandler collisionHandler,
+        Score score
     ) {
         super(world, eventBus, timer);
         this.player = player;
         this.graphics = graphics;
         this.network = network;
+
+        this.score = score;
 
         components.add(physics);
         components.add(graphics);
@@ -75,6 +80,8 @@ public class ClientGame extends Game {
         world.addEntity(player);
 
         logger.info("Added {} to the world", player);
+
+        score.addPlayer(player);
     }
 
     @Override
