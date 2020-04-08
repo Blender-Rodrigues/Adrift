@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.network.server;
 
 import com.google.inject.Inject;
+import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Player;
@@ -24,11 +25,13 @@ public class PlayerJoinHandler implements Subscriber<CreatePlayer> {
 
     private World world;
     private Messenger messenger;
+    private Score score;
 
     @Inject
-    public PlayerJoinHandler(World world, Messenger messenger) {
+    public PlayerJoinHandler(World world, Messenger messenger, Score score) {
         this.world = world;
         this.messenger = messenger;
+        this.score = score;
     }
 
     @Override
@@ -46,6 +49,7 @@ public class PlayerJoinHandler implements Subscriber<CreatePlayer> {
         player.setPosition(position);
 
         world.addEntity(player);
+        score.addPlayer(player);
 
         logger.info("Added new {} to the world", player);
 
