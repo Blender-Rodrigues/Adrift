@@ -25,4 +25,5 @@ public class ScoreData {
     public int getDeaths() {
         return deaths;
     }
+
 }
