@@ -62,9 +62,9 @@ public class Alphabet {
 
         Matrix4f projection = new Matrix4f();
         projection.translate(-1, 1, 0);
-        projection.translate(size * texture.getWidth() / camera.getWidth(), - size * texture.getHeight() / camera.getHeight(), 0);
+        projection.translate(size / camera.getWidth(), - size / camera.getHeight(), 0);
         projection.translate(2f * x / camera.getWidth(), - 2f * y / camera.getHeight(), 0);
-        projection.scale(size * texture.getWidth() / camera.getWidth(), size * texture.getHeight() / camera.getHeight(), 1f);
+        projection.scale(size / camera.getWidth(), size / camera.getHeight(), 1f);
 
         shader.bind();
         shader.setUniform("sampler", 0);

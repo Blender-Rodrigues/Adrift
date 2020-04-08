@@ -8,6 +8,7 @@ import ee.taltech.iti0200.domain.Layout;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.graphics.ScoreRenderer;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.UUID;

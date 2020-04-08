@@ -14,9 +14,13 @@ public class TextBox {
         this.size = size;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public void render(Alphabet alphabet, Camera camera) {
         for (int i = 0; i < text.length(); i++) {
-            alphabet.render(text.charAt(i), camera, (int) (xDistance + 16 * i * size), yDistance, size);
+            alphabet.render(text.charAt(i), camera, (int) (xDistance + i * size), yDistance, size);
         }
     }
 }
