@@ -51,6 +51,22 @@ public class Image {
         return pixels;
     }
 
+    public ByteBuffer getPixels(int x, int y, int partWidth, int partHeight) {
+        pixels = BufferUtils.createByteBuffer(partWidth * partHeight * 4);
+        for (int i = x; i < x + partWidth; i++) {
+            for (int j = y; j < y + partHeight; j++) {
+                // System.out.println(i * width + j);
+                int pixel = rawPixels[i * width + j];
+                pixels.put((byte) ((pixel >> 16) & 0xFF));
+                pixels.put((byte) ((pixel >> 8) & 0xFF));
+                pixels.put((byte) (pixel & 0xFF));
+                pixels.put((byte) ((pixel >> 24) & 0xFF));
+            }
+        }
+        pixels.flip();
+        return pixels;
+    }
+
     private URL getFile(String path) {
         URL resource = Texture.class.getClassLoader().getResource(path);
         if (resource == null) {
