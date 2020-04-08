@@ -7,6 +7,7 @@ import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
@@ -110,6 +111,7 @@ public class EntityRenderFacade implements Renderer {
         Texture defaultTexture = visualFactory.create("", "default");
         Texture gunTexture = visualFactory.create("gun/", "shotgun");
         Texture projectileTexture = visualFactory.create("projectile/", "bullet");
+        Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
 
         // player
         Animation playerRunningRight = visualFactory.create(10, "player/animations/", "player.running.right", 3);
@@ -150,6 +152,10 @@ public class EntityRenderFacade implements Renderer {
         HashMap<String, Supplier<EntityRenderer>> projectileRenderer = new HashMap<>();
         projectileRenderer.put(DEFAULT, () -> rendererFactory.create(projectileTexture));
         renderers.put(Projectile.class, projectileRenderer);
+
+        HashMap<String, Supplier<EntityRenderer>> healthGlobeRenderer = new HashMap<>();
+        healthGlobeRenderer.put(DEFAULT, () -> rendererFactory.create(healthGlobeTexture));
+        renderers.put(HealthGlobe.class, healthGlobeRenderer);
     }
 
 }
