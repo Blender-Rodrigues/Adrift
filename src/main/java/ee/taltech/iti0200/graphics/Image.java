@@ -35,27 +35,13 @@ public class Image {
     }
 
     public ByteBuffer getPixels() {
-        if (pixels == null) {
-            pixels = BufferUtils.createByteBuffer(width * height * 4);
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    int pixel = rawPixels[i * width + j];
-                    pixels.put((byte) ((pixel >> 16) & 0xFF));
-                    pixels.put((byte) ((pixel >> 8) & 0xFF));
-                    pixels.put((byte) (pixel & 0xFF));
-                    pixels.put((byte) ((pixel >> 24) & 0xFF));
-                }
-            }
-            pixels.flip();
-        }
-        return pixels;
+        return getPixels(0, 0, width, height);
     }
 
     public ByteBuffer getPixels(int x, int y, int partWidth, int partHeight) {
         pixels = BufferUtils.createByteBuffer(partWidth * partHeight * 4);
         for (int i = x; i < x + partWidth; i++) {
             for (int j = y; j < y + partHeight; j++) {
-                // System.out.println(i * width + j);
                 int pixel = rawPixels[i * width + j];
                 pixels.put((byte) ((pixel >> 16) & 0xFF));
                 pixels.put((byte) ((pixel >> 8) & 0xFF));
