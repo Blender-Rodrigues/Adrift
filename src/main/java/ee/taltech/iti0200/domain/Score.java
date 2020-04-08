@@ -56,4 +56,5 @@ public class Score {
     public Map<Player, ScoreData> getPlayerScores() {
         return players;
     }
+
 }
