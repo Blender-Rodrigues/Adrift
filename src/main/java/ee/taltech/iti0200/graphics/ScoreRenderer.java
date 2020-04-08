@@ -1,7 +1,6 @@
 package ee.taltech.iti0200.graphics;
 
 import ee.taltech.iti0200.domain.Score;
-import ee.taltech.iti0200.domain.ScoreData;
 import ee.taltech.iti0200.domain.entity.Player;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
