@@ -29,5 +29,4 @@ public class GuiRenderFacade implements Renderer {
         scoreRenderer.render(alphabet, camera);
     }
 
-
 }
