@@ -15,8 +15,8 @@ public class ConsumableFactory {
         this.world = world;
     }
 
-    public Consumable create() {
-        return new HealthGlobe(world.nextPlayerSpawnPoint(), world);
+    public Consumable create(Vector position) {
+        return new HealthGlobe(position, world);
     }
 
 }
