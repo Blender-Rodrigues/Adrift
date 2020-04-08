@@ -33,8 +33,10 @@ public class DropLootHandler implements Subscriber<DropLoot> {
 
     @Override
     public void handle(DropLoot event) {
-        Consumable consumable = consumableFactory.create(event.getVictim().getBoundingBox().getCentre());
-        eventBus.dispatch(new CreateEntity(consumable, EVERYONE));
+        Consumable consumable = consumableFactory.create(event.getVictim());
+        if (consumable != null) {
+            eventBus.dispatch(new CreateEntity(consumable, EVERYONE));
+        }
     }
 
 }

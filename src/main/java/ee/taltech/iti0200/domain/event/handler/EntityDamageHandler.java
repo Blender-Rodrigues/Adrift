@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
+import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class EntityDamageHandler implements Subscriber<DealDamage> {
 
@@ -53,6 +54,9 @@ public class EntityDamageHandler implements Subscriber<DealDamage> {
 
         if (target.getHealth() <= 0) {
             eventBus.dispatch(new RemoveEntity(target, EVERYONE));
+            if (target instanceof Living) {
+                eventBus.dispatch(new DropLoot((Living) target, SERVER));
+            }
             action = "killed";
             if (target instanceof Player) {
                 score.addDeath((Player) target);

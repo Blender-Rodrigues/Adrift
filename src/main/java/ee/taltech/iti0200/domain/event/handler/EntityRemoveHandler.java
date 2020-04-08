@@ -40,12 +40,8 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
 
         world.removeEntity(entity);
 
-        if (entity instanceof Living) {
-            eventBus.dispatch(new DropLoot((Living) entity, SERVER));
-
-            if (entity instanceof Bot) {
-                ((Bot) entity).getBrain().kill();
-            }
+        if (entity instanceof Bot) {
+            ((Bot) entity).getBrain().kill();
         }
 
         if (entity instanceof Projectile) {
