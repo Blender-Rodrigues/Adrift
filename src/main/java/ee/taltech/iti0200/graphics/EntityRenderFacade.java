@@ -146,6 +146,7 @@ public class EntityRenderFacade implements Renderer {
 
         HashMap<String, Supplier<EntityRenderer>> botRenderer = new HashMap<>();
         botRenderer.put(DEFAULT, () -> rendererFactory.create(botDefault));
+        botRenderer.put("healthBar", () -> rendererFactory.create(healthBarShell, healthBarFilling));
         renderers.put(Bot.class, botRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> terrainRenderer = new HashMap<>();

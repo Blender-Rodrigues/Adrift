@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.graphics;
 
 
+import ee.taltech.iti0200.domain.entity.Damageable;
 import org.joml.Vector3f;
 
 public class HealthBar extends EntityRenderer {
@@ -55,6 +56,6 @@ public class HealthBar extends EntityRenderer {
     }
 
     private float getHealth() {
-        return 0.9f;
+        return ((Damageable) entity).getHealth() / (float) ((Damageable) entity).getMaxHealth();
     }
 }
