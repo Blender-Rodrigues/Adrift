@@ -1,6 +1,5 @@
 package ee.taltech.iti0200.graphics;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;

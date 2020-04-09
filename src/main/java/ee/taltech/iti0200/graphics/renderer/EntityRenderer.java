@@ -1,6 +1,11 @@
-package ee.taltech.iti0200.graphics;
+package ee.taltech.iti0200.graphics.renderer;
 
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Model;
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.Transform;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

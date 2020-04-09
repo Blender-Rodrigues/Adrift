@@ -5,6 +5,8 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Terrain;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.physics.BoundingBox;
 import org.joml.Vector3f;
 import org.junit.jupiter.api.BeforeEach;

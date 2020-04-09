@@ -1,7 +1,8 @@
-package ee.taltech.iti0200.graphics;
+package ee.taltech.iti0200.graphics.renderer;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.factory.RendererFactory;
+
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
@@ -12,6 +13,13 @@ import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
+
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.Texture;
+import ee.taltech.iti0200.graphics.Animation;
+import ee.taltech.iti0200.graphics.VisualFactory;
+
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import org.joml.Vector3f;

@@ -2,16 +2,13 @@ package ee.taltech.iti0200.di.factory;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.Score;
-import ee.taltech.iti0200.graphics.Animateable;
 import ee.taltech.iti0200.graphics.Animation;
+import ee.taltech.iti0200.graphics.renderer.*;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.CoordinateConverter;
-import ee.taltech.iti0200.graphics.Drawable;
-import ee.taltech.iti0200.graphics.EntityRenderer;
-import ee.taltech.iti0200.graphics.RotatingDrawable;
-import ee.taltech.iti0200.graphics.ScoreRenderer;
+import ee.taltech.iti0200.graphics.renderer.RotatingDrawable;
+import ee.taltech.iti0200.graphics.renderer.ScoreRenderer;
 import ee.taltech.iti0200.graphics.Texture;
-import ee.taltech.iti0200.graphics.*;
 
 public class RendererFactory {
 

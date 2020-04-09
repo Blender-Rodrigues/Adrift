@@ -1,4 +1,8 @@
-package ee.taltech.iti0200.graphics;
+package ee.taltech.iti0200.graphics.renderer;
+
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.Texture;
 
 public class Drawable extends EntityRenderer {
 

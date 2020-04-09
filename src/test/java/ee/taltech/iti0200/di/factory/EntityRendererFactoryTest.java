@@ -1,13 +1,13 @@
 package ee.taltech.iti0200.di.factory;
 
 import ee.taltech.iti0200.domain.Score;
-import ee.taltech.iti0200.graphics.Animateable;
+import ee.taltech.iti0200.graphics.renderer.Animateable;
 import ee.taltech.iti0200.graphics.Animation;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.CoordinateConverter;
-import ee.taltech.iti0200.graphics.Drawable;
-import ee.taltech.iti0200.graphics.EntityRenderer;
-import ee.taltech.iti0200.graphics.RotatingDrawable;
+import ee.taltech.iti0200.graphics.renderer.Drawable;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
+import ee.taltech.iti0200.graphics.renderer.RotatingDrawable;
 import ee.taltech.iti0200.graphics.Texture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

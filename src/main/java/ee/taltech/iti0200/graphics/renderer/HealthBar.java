@@ -1,7 +1,11 @@
-package ee.taltech.iti0200.graphics;
+package ee.taltech.iti0200.graphics.renderer;
 
 
 import ee.taltech.iti0200.domain.entity.Damageable;
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.Texture;
+import ee.taltech.iti0200.graphics.Transform;
 import org.joml.Vector3f;
 
 public class HealthBar extends EntityRenderer {
