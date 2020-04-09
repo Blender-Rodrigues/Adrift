@@ -32,9 +32,7 @@ public class EntityHealingHandler implements Subscriber<HealDamage> {
         HealingSource source = event.getSource();
 
         target.setHealth(target.getHealth() + source.getHealing());
-        String action = "healed";
-
-        logger.info("{} was {} with {}", target, action, source);
+        logger.info("{} was healed with {}", target, source);
     }
 
     private Damageable loadLocal(Entity entity) {
