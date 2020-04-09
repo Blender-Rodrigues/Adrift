@@ -26,7 +26,7 @@ public class DropLootHandler implements Subscriber<DropLoot> {
     private World world;
     private ConsumableFactory consumableFactory;
     private EventBus eventBus;
-    private Map<Living, Consumable> loots;
+    private Map<Living, Consumable> loots = new HashMap<>();
 
     @Inject
     public DropLootHandler(World world, ConsumableFactory consumableFactory, EventBus eventBus) {
