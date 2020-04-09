@@ -10,12 +10,12 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 import static java.lang.String.format;
 
-public class HealDamage extends Event implements Message {
+public class Heal extends Event implements Message {
 
     private HealingSource source;
     private Damageable target;
 
-    public HealDamage(HealingSource source, Damageable target, Receiver receiver) {
+    public Heal(HealingSource source, Damageable target, Receiver receiver) {
         super(receiver);
         this.source = source;
         this.target = target;

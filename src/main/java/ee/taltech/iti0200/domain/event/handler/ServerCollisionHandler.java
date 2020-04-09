@@ -13,7 +13,7 @@ import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
-import ee.taltech.iti0200.domain.event.entity.HealDamage;
+import ee.taltech.iti0200.domain.event.entity.Heal;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 
 import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
@@ -62,7 +62,7 @@ public class ServerCollisionHandler extends CollisionHandler {
 
     private void livingHitConsumable(Living living, Consumable consumable) {
         if (consumable instanceof HealthGlobe) {
-            eventBus.dispatch(new HealDamage((HealthGlobe) consumable, living, EVERYONE));
+            eventBus.dispatch(new Heal((HealthGlobe) consumable, living, EVERYONE));
         }
 
         eventBus.dispatch(new RemoveEntity(consumable, EVERYONE));

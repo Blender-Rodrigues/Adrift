@@ -12,15 +12,12 @@ import java.util.Map;
 
 public class ConsumableFactory {
 
-    private World world;
-
     @Inject
-    public ConsumableFactory(World world) {
-        this.world = world;
+    public ConsumableFactory() {
     }
 
     public Consumable create(Vector position) {
-        Consumable loot = new HealthGlobe(position, world);
+        Consumable loot = new HealthGlobe(position);
         return loot;
     }
 

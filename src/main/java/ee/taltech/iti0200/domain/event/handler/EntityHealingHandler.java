@@ -6,11 +6,11 @@ import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.HealingSource;
 import ee.taltech.iti0200.domain.event.Subscriber;
-import ee.taltech.iti0200.domain.event.entity.HealDamage;
+import ee.taltech.iti0200.domain.event.entity.Heal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EntityHealingHandler implements Subscriber<HealDamage> {
+public class EntityHealingHandler implements Subscriber<Heal> {
 
     private final Logger logger = LogManager.getLogger(EntityHealingHandler.class);
 
@@ -22,7 +22,7 @@ public class EntityHealingHandler implements Subscriber<HealDamage> {
     }
 
     @Override
-    public void handle(HealDamage event) {
+    public void handle(Heal event) {
         Damageable target = loadLocal(event.getTarget());
         if (target == null) {
             logger.debug("Target {} does not exist in world", event.getTarget());
@@ -31,7 +31,13 @@ public class EntityHealingHandler implements Subscriber<HealDamage> {
 
         HealingSource source = event.getSource();
 
-        target.setHealth(target.getHealth() + source.getHealing());
+        target.setHealth(
+            Math.min(
+                target.getHealth() + source.getHealing(),
+                target.getMaxHealth()
+            )
+        );
+
         logger.info("{} was healed with {}", target, source);
     }
 

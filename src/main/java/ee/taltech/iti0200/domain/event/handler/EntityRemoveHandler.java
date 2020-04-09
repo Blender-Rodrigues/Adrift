@@ -22,12 +22,10 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
     private final Logger logger = LogManager.getLogger(EntityRemoveHandler.class);
 
     private World world;
-    private EventBus eventBus;
 
     @Inject
-    public EntityRemoveHandler(World world, EventBus eventBus) {
+    public EntityRemoveHandler(World world) {
         this.world = world;
-        this.eventBus = eventBus;
     }
 
     @Override

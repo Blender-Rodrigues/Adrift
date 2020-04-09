@@ -10,7 +10,7 @@ import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
-import ee.taltech.iti0200.domain.event.entity.HealDamage;
+import ee.taltech.iti0200.domain.event.entity.Heal;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import ee.taltech.iti0200.domain.event.handler.CollisionHandler;
@@ -67,7 +67,7 @@ public class ClientGame extends Game {
         components.add(network);
 
         eventBus.subscribe(DealDamage.class, damageHandler);
-        eventBus.subscribe(HealDamage.class, healingHandler);
+        eventBus.subscribe(Heal.class, healingHandler);
         eventBus.subscribe(RemoveEntity.class, entityRemoveHandler);
         eventBus.subscribe(CreateEntity.class, entityCreateHandler);
         eventBus.subscribe(UpdateVector.class, moveBodyHandler);
