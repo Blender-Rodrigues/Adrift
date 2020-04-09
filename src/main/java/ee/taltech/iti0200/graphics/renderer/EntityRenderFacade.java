@@ -132,7 +132,10 @@ public class EntityRenderFacade implements Renderer {
         Texture playerJumpingRight = visualFactory.create("player/stills/", "player.jumping.right");
         Texture playerJumpingLeft = visualFactory.create("player/stills/", "player.jumping.left");
 
-        Animation botDefault = visualFactory.create(2, "bot/", "bot.default", 20);
+        // bot
+        Animation botMovingRight = visualFactory.create(4, "bot/animations/", "bot.right", 10);
+        Animation botMovingLeft = visualFactory.create(4, "bot/animations/", "bot.left", 10);
+        Animation botIdle = visualFactory.create(6, "bot/animations/", "bot.idle", 15);
 
         HashMap<String, Supplier<EntityRenderer>> defaultRenderer = new HashMap<>();
         defaultRenderer.put(DEFAULT, () -> rendererFactory.create(defaultTexture));
@@ -157,7 +160,9 @@ public class EntityRenderFacade implements Renderer {
         renderers.put(Player.class, playerRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> botRenderer = new HashMap<>();
-        botRenderer.put(DEFAULT, () -> rendererFactory.create(botDefault));
+        botRenderer.put("IDLE", () -> rendererFactory.create(botIdle));
+        botRenderer.put("RIGHT", () -> rendererFactory.create(botMovingRight));
+        botRenderer.put("LEFT", () -> rendererFactory.create(botMovingLeft));
         botRenderer.put("healthBar", () -> rendererFactory.create(healthBarShell, healthBarFilling));
         renderers.put(Bot.class, botRenderer);
 
