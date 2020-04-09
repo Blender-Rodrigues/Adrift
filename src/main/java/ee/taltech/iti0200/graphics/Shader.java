@@ -4,16 +4,38 @@ import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
+import static org.lwjgl.opengl.GL20.GL_VALIDATE_STATUS;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL20.glAttachShader;
+import static org.lwjgl.opengl.GL20.glBindAttribLocation;
+import static org.lwjgl.opengl.GL20.glCompileShader;
+import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL20.glGetProgrami;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glLinkProgram;
+import static org.lwjgl.opengl.GL20.glShaderSource;
+import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL20.glValidateProgram;
 
 public class Shader {
 
-    private static final String PATH = "./build/resources/main/shaders/";
+    private static final String PATH = "shaders/";
 
     private int program = glCreateProgram();
 
@@ -78,16 +100,25 @@ public class Shader {
     }
 
     private String readFile(String filename) throws IOException {
-        StringBuilder string = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(new File(PATH + filename)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                string.append(line);
-                string.append("\n");
+        InputStream resource = getClass().getClassLoader().getResourceAsStream(PATH + filename);
+        if (resource == null) {
+            throw new IllegalArgumentException("Unable to find resource " + PATH + filename);
+        }
+
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
+            while (true) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                lines.add(line);
             }
         }
 
-        return string.toString();
+        return String.join("\n", lines);
     }
 
 }

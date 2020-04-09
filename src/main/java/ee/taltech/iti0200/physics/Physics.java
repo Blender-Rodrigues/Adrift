@@ -1,31 +1,43 @@
 package ee.taltech.iti0200.physics;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.entity.EntityCollide;
+import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
+import ee.taltech.iti0200.network.message.Receiver;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.physics.BoundingBox.clamp;
 
 public class Physics implements Component {
 
-    protected World world;
-    private Logger logger = LogManager.getLogger(Physics.class);
-
     private static final Vector GRAVITY = new Vector(0, -9.81);
     private static final double NO_BOUNCE_SPEED_LIMIT = 1;
+    private static final double AIR_RESISTANCE = 0.015;
 
-    public Physics(World world) {
+    protected Set<Pair<Body, Body>> collisions = new HashSet<>();
+    protected World world;
+
+    protected EventBus eventBus;
+
+    @Inject
+    public Physics(World world, EventBus eventBus) {
         this.world = world;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -33,17 +45,37 @@ public class Physics implements Component {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
         Map<Vector, Terrain> terrainMap = world.getTerrainMap();
+
         checkForFloor(movableBodies, terrainMap);
         applyDrag(movableBodies);
-        moveBodies(movableBodies, world.getTimeStep());
+        movableBodies = moveBodies(movableBodies, world.getTimeStep());
+
+        collisions = new HashSet<>();
         checkForCollisions(movableBodies, imMovableBodies);
+
         applyGravity(movableBodies);
+        dispatchCollisions();
+    }
+
+    protected void dispatchCollisions() {
+        collisions.stream()
+            .filter(pair -> pair.getKey() instanceof Entity && pair.getValue() instanceof Entity)
+            .forEach(pair -> eventBus.dispatch(new EntityCollide(
+                (Entity) pair.getKey(),
+                (Entity) pair.getValue(),
+                Receiver.EVERYONE
+            )));
     }
 
     private void applyDrag(List<Entity> movableBodies) {
-        movableBodies.stream()
-            .filter(Entity::isOnFloor)
-            .forEach(Entity::drag);
+        movableBodies
+            .forEach(entity -> {
+                if (entity.isOnFloor()) {
+                    entity.drag();
+                } else {
+                    entity.airDrag(AIR_RESISTANCE);
+                }
+            });
     }
 
     private void checkForFloor(List<Entity> movingBodies, Map<Vector, Terrain> terrainMap) {
@@ -54,7 +86,7 @@ public class Physics implements Component {
             double minY = moving.getBoundingBox().getMinY();
 
             boolean intersects = false;
-            double drag = 1.0;
+            double drag = Double.POSITIVE_INFINITY;
 
             for (double xCoord: Arrays.asList(minX, centreX, maxX)) {
                 Vector bottomVector = new Vector(xCoord, minY);
@@ -143,8 +175,8 @@ public class Physics implements Component {
         // Move the body according to the chosen way and updated vectors that store how the body has been moved earlier during the same collision resolution.
         double collidingBodyElasticity = getCollidingBodyElasticity(bestResolveStrategyIndex, collidingBodies);
         movingBody.move(bestResolveStrategy);
-        movingBody.onCollide(collidingBody);
-        collidingBody.onCollide(movingBody);
+
+        collisions.add(new ImmutablePair<>(movingBody, collidingBody));
 
         elasticitySoFar = getNewElasticityOfCollision(elasticitySoFar, movedSoFar, bestResolveStrategy, collidingBodyElasticity);
         movedSoFar.add(bestResolveStrategy);
@@ -269,10 +301,10 @@ public class Physics implements Component {
         return resolveStrategies;
     }
 
-    private void moveBodies(List<Entity> bodiesToMove, double timeStep) {
-        for (Entity body: bodiesToMove) {
-            body.move(timeStep);
-        }
+    protected List<Entity> moveBodies(List<Entity> bodiesToMove, double timeStep) {
+        return bodiesToMove.stream()
+            .peek(body -> body.move(timeStep))
+            .collect(Collectors.toList());
     }
 
 }

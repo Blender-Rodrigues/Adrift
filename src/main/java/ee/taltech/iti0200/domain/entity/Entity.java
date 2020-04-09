@@ -1,16 +1,16 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.Renderer;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 
-import java.util.Objects;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
-import static ee.taltech.iti0200.graphics.Graphics.DEFAULT;
+import static ee.taltech.iti0200.graphics.renderer.EntityRenderFacade.DEFAULT;
 
 public class Entity extends Body {
 
@@ -18,7 +18,7 @@ public class Entity extends Body {
 
     private UUID id = UUID.randomUUID();
     private boolean onFloor;
-    public transient HashMap<String, Renderer> renderers = new HashMap<>();
+    public transient HashMap<String, EntityRenderer> renderers = new HashMap<>();
 
     protected boolean movable = false;
 
@@ -47,7 +47,7 @@ public class Entity extends Body {
         return this;
     }
 
-    public Entity setRenderers(HashMap<String, Renderer> renderers) {
+    public Entity setRenderers(HashMap<String, EntityRenderer> renderers) {
         this.renderers = renderers;
         return this;
     }

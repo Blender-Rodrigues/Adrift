@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.domain.event.handler;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.GameId;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
@@ -17,7 +19,8 @@ public class MoveBodyHandler implements Subscriber<UpdateVector> {
     private World world;
     private UUID local;
 
-    public MoveBodyHandler(World world, UUID local) {
+    @Inject
+    public MoveBodyHandler(World world, @GameId UUID local) {
         this.world = world;
         this.local = local;
     }
@@ -38,9 +41,8 @@ public class MoveBodyHandler implements Subscriber<UpdateVector> {
             return;
         }
 
-        entity.getBoundingBox().getCentre().set(event.getPosition());
-        entity.setXSpeed(event.getSpeed().x);
-        entity.setYSpeed(event.getSpeed().y);
+        entity.setPosition(event.getPosition());
+        entity.setSpeed(event.getSpeed());
 
         if (entity instanceof Living) {
             logger.trace("Moved {}", entity);

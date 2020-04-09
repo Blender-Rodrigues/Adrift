@@ -7,14 +7,13 @@ public class Timer {
 
     private static final long THREAD_SLEEP = 10;
 
-    private Logger logger;
+    private Logger logger = LogManager.getLogger(Timer.class);
     private long lastLoopTime;
     private float sleepTime;
     private long tick = 0;
 
     public Timer(float fps) {
         sleepTime = 1F / fps;
-        logger = LogManager.getLogger(Timer.class);
     }
 
     public void initialize() {

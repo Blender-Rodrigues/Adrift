@@ -1,5 +1,9 @@
 package ee.taltech.iti0200.network.server;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.ConcurrentInbox;
+import ee.taltech.iti0200.di.annotations.ConnectionAlive;
+import ee.taltech.iti0200.di.annotations.ServerClients;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.message.Message;
 import org.apache.logging.log4j.core.net.Protocol;
@@ -14,7 +18,12 @@ public class GroupMessenger extends Messenger {
 
     private final Set<ConnectionToClient> clients;
 
-    public GroupMessenger(Set<ConnectionToClient> clients, ConcurrentLinkedQueue<Message> inbox, AtomicBoolean alive) {
+    @Inject
+    public GroupMessenger(
+        @ServerClients Set<ConnectionToClient> clients,
+        @ConcurrentInbox ConcurrentLinkedQueue<Message> inbox,
+        @ConnectionAlive AtomicBoolean alive
+    ) {
         super(inbox, null, alive);
         this.clients = clients;
     }

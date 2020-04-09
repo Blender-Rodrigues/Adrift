@@ -1,10 +1,12 @@
 package ee.taltech.iti0200.domain;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
-import ee.taltech.iti0200.graphics.Graphics;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.AbstractMap.SimpleEntry;
@@ -23,8 +25,11 @@ public class World {
     private List<Living> livingEntities = new ArrayList<>();
     private List<Entity> movableBodies = new ArrayList<>();
     private List<Entity> imMovableBodies = new ArrayList<>();
+    private List<Consumable> consumables = new ArrayList<>();
     private Map<Vector, Terrain> terrainMap;
     private ArrayDeque<Vector> spawnPoints = new ArrayDeque<>();
+    private EntityRenderFacade entityRenderer;
+    private long entitiesRemoved = 0;
     private double xMin;
     private double xMax;
     private double yMin;
@@ -47,6 +52,7 @@ public class World {
 
     public void update(long tick) {
         time = tick;
+        livingEntities.forEach(Living::update);
     }
 
     public void mapTerrain() {
@@ -60,6 +66,12 @@ public class World {
             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
     }
 
+    @Inject(optional = true)
+    public World setEntityRenderer(EntityRenderFacade entityRenderer) {
+        this.entityRenderer = entityRenderer;
+        return this;
+    }
+
     public World setSpawnPoints(ArrayDeque<Vector> spawnPoints) {
         this.spawnPoints = spawnPoints;
         return this;
@@ -69,6 +81,10 @@ public class World {
         Vector position = spawnPoints.pop();
         spawnPoints.addLast(position);
         return position;
+    }
+
+    public long getEntitiesRemoved() {
+        return entitiesRemoved;
     }
 
     public long getTime() {
@@ -99,6 +115,10 @@ public class World {
         return livingEntities;
     }
 
+    public List<Consumable> getConsumables() {
+        return consumables;
+    }
+
     public List<Projectile> getProjectiles() {
         return movableBodies.stream()
             .filter(Projectile.class::isInstance)
@@ -110,24 +130,45 @@ public class World {
         return entities.get(id);
     }
 
+    public boolean entityOutOfBounds(Entity entity) {
+        Vector centre = entity.getBoundingBox().getCentre();
+        return centre.getX() < xMin || centre.getX() > xMax || centre.getY() < yMin || centre.getY() > yMax;
+    }
+
     public void addEntity(Entity entity) {
         entities.put(entity.getId(), entity);
-        if (!Graphics.renderers.isEmpty()) {
-            Graphics.setRenderer(entity);
+        if (entityRenderer != null) {
+            entityRenderer.decorate(entity);
         }
+
+        if (entity instanceof Consumable) {
+            consumables.add((Consumable) entity);
+            return;
+        }
+
         if (entity.isMovable()) {
             movableBodies.add(entity);
         } else {
             imMovableBodies.add(entity);
         }
+
         if (entity instanceof Living) {
-            ((Living) entity).setWorld(this);
-            livingEntities.add((Living) entity);
+            Living living = (Living) entity;
+            living.setWorld(this);
+            livingEntities.add(living);
+            if (entityRenderer != null) {
+                entityRenderer.decorate(living.getGun());
+            }
         }
     }
 
     public void removeEntity(Entity entity) {
         entities.remove(entity.getId());
+        entitiesRemoved++;
+
+        if (entity instanceof Consumable) {
+            consumables.remove(entity);
+        }
 
         if (entity instanceof Living) {
             livingEntities.remove(entity);

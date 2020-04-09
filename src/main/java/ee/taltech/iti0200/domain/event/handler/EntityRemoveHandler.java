@@ -1,5 +1,6 @@
 package ee.taltech.iti0200.domain.event.handler;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
@@ -9,12 +10,14 @@ import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
 
     private final Logger logger = LogManager.getLogger(EntityRemoveHandler.class);
 
     private World world;
 
+    @Inject
     public EntityRemoveHandler(World world) {
         this.world = world;
     }
@@ -28,6 +31,7 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
         }
 
         world.removeEntity(entity);
+
         if (entity instanceof Bot) {
             ((Bot) entity).getBrain().kill();
         }

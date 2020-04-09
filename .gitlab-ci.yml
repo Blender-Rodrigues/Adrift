@@ -1,0 +1,20 @@
+stages:
+  - test
+
+test:
+  tags:
+    - iti0200
+  stage: test
+  image: openjdk:8-jdk-alpine
+  script:
+    - chmod 700 gradlew
+    - export NO_GUI=true
+    - ./gradlew clean test
+    - ./gradlew build -x test -PlwjglNatives=natives-windows -PjarVersion=windows
+    - ./gradlew build -x test -PlwjglNatives=natives-macos -PjarVersion=mac
+    - ./gradlew build -x test -PlwjglNatives=natives-linux -PjarVersion=linux
+  artifacts:
+    paths:
+      - build/reports/
+      - build/test-results/
+      - build/libs/

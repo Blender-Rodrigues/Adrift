@@ -1,9 +1,14 @@
 package ee.taltech.iti0200.input;
 
+import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.di.annotations.LocalPlayer;
+import ee.taltech.iti0200.di.annotations.WindowId;
+import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.physics.Vector;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
@@ -40,19 +46,29 @@ public class Input implements Component {
     private Map<Integer, KeyEvent> bindings = new HashMap<>();
     private Camera camera;
     private Mouse mouse;
+    private EventBus eventBus;
+    private long currentTick;
 
-    public Input(long window, Player player, Camera camera) {
+    @Inject
+    public Input(
+        @WindowId long window,
+        @LocalPlayer Player player,
+        Camera camera,
+        Mouse mouse,
+        EventBus eventBus
+    ) {
         this.player = player;
         this.window = window;
         this.camera = camera;
-        this.mouse = new Mouse(this.camera, this.window);
+        this.mouse = mouse;
+        this.eventBus = eventBus;
     }
 
     public void initialize() {
-        bind(new KeyEvent(GLFW_KEY_A, this::playerMoveLeft, GLFW_PRESS, GLFW_REPEAT));
-        bind(new KeyEvent(GLFW_KEY_D, this::playerMoveRight, GLFW_PRESS, GLFW_REPEAT));
-        bind(new KeyEvent(GLFW_KEY_W, this::playerJump, GLFW_PRESS));
-        bind(new KeyEvent(GLFW_MOUSE_BUTTON_LEFT, this::playerShoot, GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_A, player::moveLeft, GLFW_PRESS, GLFW_REPEAT));
+        bind(new KeyEvent(GLFW_KEY_D, player::moveRight, GLFW_PRESS, GLFW_REPEAT));
+        bind(new KeyEvent(GLFW_KEY_W, player::jump, GLFW_PRESS));
+        bind(new KeyEvent(GLFW_MOUSE_BUTTON_LEFT, this::playerShoot, GLFW_PRESS, GLFW_REPEAT));
 
         bind(new KeyEvent(GLFW_KEY_RIGHT, camera::moveRight, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_LEFT, camera::moveLeft, GLFW_PRESS, GLFW_REPEAT));
@@ -68,6 +84,7 @@ public class Input implements Component {
     }
 
     public void update(long tick) {
+        currentTick = tick;
         Iterator<KeyEvent> iterator = events.iterator();
         updateMouse();
         while (iterator.hasNext()) {
@@ -79,38 +96,10 @@ public class Input implements Component {
         }
     }
 
-    private void playerMoveLeft() {
-        if (!player.isAlive()) {
-            return;
-        }
-        if (player.isOnFloor()) {
-            player.accelerate(new Vector(-0.5, 0.0));
-        } else {
-            player.accelerate(new Vector(-0.2, 0.0));
-        }
-    }
-
-    private void playerMoveRight() {
-        if (!player.isAlive()) {
-            return;
-        }
-        if (player.isOnFloor()) {
-            player.accelerate(new Vector(0.5, 0.0));
-        } else {
-            player.accelerate(new Vector(0.2, 0.0));
-        }
-    }
-
-    private void playerJump() {
-        if (player.isAlive() && player.getJumpsLeft() > 0) {
-            player.setJumpsLeft(player.getJumpsLeft() - 1);
-            player.accelerate(new Vector(0.0, player.getJumpDeltaV()));
-        }
-    }
-
     private void playerShoot() {
-        if (player.isAlive()) {
-            player.shoot();
+        Gun gun = player.getGun();
+        if (player.isAlive() && gun != null && gun.canShoot(currentTick)) {
+            eventBus.dispatch(new GunShot(gun, player.getLookingAt(), SERVER));
         }
     }
 
