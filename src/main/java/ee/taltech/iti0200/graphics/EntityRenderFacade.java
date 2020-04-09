@@ -109,7 +109,8 @@ public class EntityRenderFacade implements Renderer {
     private void createRenderers() throws IOException {
         Texture terrainTexture = visualFactory.create("world/", "concrete");
         Texture defaultTexture = visualFactory.create("", "default");
-        Texture gunTexture = visualFactory.create("gun/", "shotgun");
+        Texture pistolTexture = visualFactory.create("gun/", "scoped_pistol");
+        Texture smgTexture = visualFactory.create("gun/", "smg");
         Texture projectileTexture = visualFactory.create("projectile/", "bullet");
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
 
@@ -127,10 +128,13 @@ public class EntityRenderFacade implements Renderer {
         defaultRenderer.put(DEFAULT, () -> rendererFactory.create(defaultTexture));
         renderers.put(Entity.class, defaultRenderer);
 
-        HashMap<String, Supplier<EntityRenderer>> gunRenderer = new HashMap<>();
-        gunRenderer.put(DEFAULT, () -> rendererFactory.create(gunTexture, RotatingDrawable.class));
-        renderers.put(Gun.class, gunRenderer);
-        renderers.put(FastGun.class, gunRenderer);
+        HashMap<String, Supplier<EntityRenderer>> pistolRenderer = new HashMap<>();
+        pistolRenderer.put(DEFAULT, () -> rendererFactory.create(pistolTexture, RotatingDrawable.class));
+        renderers.put(Gun.class, pistolRenderer);
+
+        HashMap<String, Supplier<EntityRenderer>> smgRenderer = new HashMap<>();
+        smgRenderer.put(DEFAULT, () -> rendererFactory.create(smgTexture, RotatingDrawable.class));
+        renderers.put(FastGun.class, smgRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> playerRenderer = new HashMap<>();
         playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight));
