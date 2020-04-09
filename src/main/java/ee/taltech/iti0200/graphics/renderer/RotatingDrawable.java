@@ -1,8 +1,14 @@
-package ee.taltech.iti0200.graphics;
+package ee.taltech.iti0200.graphics.renderer;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Rotatable;
+
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.CoordinateConverter;
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.Texture;
+
 import ee.taltech.iti0200.physics.Vector;
 import org.joml.Matrix4f;
 

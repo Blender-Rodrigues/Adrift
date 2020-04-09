@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.graphics;
 
+import ee.taltech.iti0200.graphics.renderer.Alphabet;
+
 public class TextBox {
 
     private int xDistance;

@@ -1,13 +1,12 @@
 package ee.taltech.iti0200.domain;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.di.factory.ConsumableFactory;
 import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
-import ee.taltech.iti0200.graphics.EntityRenderFacade;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.AbstractMap.SimpleEntry;

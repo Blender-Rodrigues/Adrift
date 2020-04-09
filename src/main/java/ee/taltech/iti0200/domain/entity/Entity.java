@@ -1,7 +1,7 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.EntityRenderer;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
-import static ee.taltech.iti0200.graphics.EntityRenderFacade.DEFAULT;
+import static ee.taltech.iti0200.graphics.renderer.EntityRenderFacade.DEFAULT;
 
 public class Entity extends Body {
 

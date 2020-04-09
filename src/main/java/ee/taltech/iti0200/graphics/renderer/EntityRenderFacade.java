@@ -1,7 +1,8 @@
-package ee.taltech.iti0200.graphics;
+package ee.taltech.iti0200.graphics.renderer;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.factory.RendererFactory;
+
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
@@ -12,6 +13,13 @@ import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
+
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.Texture;
+import ee.taltech.iti0200.graphics.Animation;
+import ee.taltech.iti0200.graphics.VisualFactory;
+
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import org.joml.Vector3f;
@@ -113,6 +121,8 @@ public class EntityRenderFacade implements Renderer {
         Texture smgTexture = visualFactory.create("gun/", "smg");
         Texture projectileTexture = visualFactory.create("projectile/", "bullet");
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
+        Texture healthBarShell = visualFactory.create("overhead/", "healthBarShell");
+        Texture healthBarFilling = visualFactory.create("overhead/", "healthBarFilling");
 
         // player
         Animation playerRunningRight = visualFactory.create(10, "player/animations/", "player.running.right", 3);
@@ -143,10 +153,12 @@ public class EntityRenderFacade implements Renderer {
         playerRenderer.put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft));
         playerRenderer.put("JUMPING.RIGHT", () -> rendererFactory.create(playerJumpingRight));
         playerRenderer.put("JUMPING.LEFT", () -> rendererFactory.create(playerJumpingLeft));
+        playerRenderer.put("healthBar", () -> rendererFactory.create(healthBarShell, healthBarFilling));
         renderers.put(Player.class, playerRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> botRenderer = new HashMap<>();
         botRenderer.put(DEFAULT, () -> rendererFactory.create(botDefault));
+        botRenderer.put("healthBar", () -> rendererFactory.create(healthBarShell, healthBarFilling));
         renderers.put(Bot.class, botRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> terrainRenderer = new HashMap<>();

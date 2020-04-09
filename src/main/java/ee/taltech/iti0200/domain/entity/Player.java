@@ -98,6 +98,7 @@ public class Player extends Living {
     public void render(Shader shader, Camera camera, long tick) {
         direction = getLookingAt().getX() > 0 ? Direction.RIGHT : Direction.LEFT;
         renderers.get(action + "." + direction).render(shader, camera, tick);
+        renderers.get("healthBar").render(shader, camera, tick);
         action = Action.IDLE;
     }
 

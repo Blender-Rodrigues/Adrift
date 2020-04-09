@@ -3,6 +3,8 @@ package ee.taltech.iti0200.graphics;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.di.annotations.WindowId;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
+import ee.taltech.iti0200.graphics.renderer.GuiRenderFacade;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;

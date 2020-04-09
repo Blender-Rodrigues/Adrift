@@ -1,7 +1,10 @@
-package ee.taltech.iti0200.graphics;
+package ee.taltech.iti0200.graphics.renderer;
 
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.TextBox;
+
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -37,8 +40,6 @@ public class ScoreRenderer {
             score.setUpdated(false);
             update();
         }
-        for (Pair entry: scoreBoxes) {
-            ((TextBox) entry.getValue()).render(alphabet, camera);
-        }
+        scoreBoxes.forEach(entry -> entry.getValue().render(alphabet, camera));
     }
 }

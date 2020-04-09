@@ -1,7 +1,6 @@
 package ee.taltech.iti0200.domain;
 
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.graphics.ScoreRenderer;
 
 import java.util.HashMap;
 import java.util.Map;

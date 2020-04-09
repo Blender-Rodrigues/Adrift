@@ -5,7 +5,7 @@ import com.google.inject.Key;
 import com.google.inject.Singleton;
 import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.EntityRenderFacade;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Mouse;
 import org.lwjgl.glfw.GLFWErrorCallback;
