@@ -3,7 +3,6 @@ package ee.taltech.iti0200.physics;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
