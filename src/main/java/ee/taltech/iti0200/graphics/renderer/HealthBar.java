@@ -28,7 +28,7 @@ public class HealthBar extends EntityRenderer {
     public void initialize() {
         super.initialize();
         width = (float) entity.getBoundingBox().getSize().getX() * 2;
-        height = width / textureShell.getImage().getWidth() * textureShell.getImage().getHeight();
+        height = width / textureShell.getWidth() * textureShell.getHeight();
 
         transformShell = new Transform();
         transformShell.scale = new Vector3f(width, height, 1);

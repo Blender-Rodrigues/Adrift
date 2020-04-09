@@ -24,10 +24,8 @@ public class Texture {
     private int width;
     private int height;
 
-    private Image image;
-
     public Texture(String directory, String filename) throws IOException {
-        image = new Image(PATH + directory + filename + ".png");
+        Image image = new Image(PATH + directory + filename + ".png");
 
         width = image.getWidth();
         height = image.getHeight();
@@ -50,8 +48,12 @@ public class Texture {
         }
     }
 
-    public Image getImage() {
-        return image;
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
 }
