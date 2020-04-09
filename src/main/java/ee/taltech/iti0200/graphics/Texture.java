@@ -24,8 +24,10 @@ public class Texture {
     private int width;
     private int height;
 
+    private Image image;
+
     public Texture(String directory, String filename) throws IOException {
-        Image image = new Image(PATH + directory + filename + ".png");
+        image = new Image(PATH + directory + filename + ".png");
 
         width = image.getWidth();
         height = image.getHeight();
@@ -46,6 +48,10 @@ public class Texture {
             glActiveTexture(GL_TEXTURE0 + sampler);
             glBindTexture(GL_TEXTURE_2D, id);
         }
+    }
+
+    public Image getImage() {
+        return image;
     }
 
 }
