@@ -45,11 +45,14 @@ public class Physics implements Component {
         List<Entity> movableBodies = world.getMovableBodies();
         List<Entity> imMovableBodies = world.getImMovableBodies();
         Map<Vector, Terrain> terrainMap = world.getTerrainMap();
+
         checkForFloor(movableBodies, terrainMap);
         applyDrag(movableBodies);
         movableBodies = moveBodies(movableBodies, world.getTimeStep());
+
         collisions = new HashSet<>();
         checkForCollisions(movableBodies, imMovableBodies);
+
         applyGravity(movableBodies);
         dispatchCollisions();
     }

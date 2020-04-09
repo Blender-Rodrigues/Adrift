@@ -10,6 +10,7 @@ import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
 
     private final Logger logger = LogManager.getLogger(EntityRemoveHandler.class);
@@ -30,6 +31,7 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
         }
 
         world.removeEntity(entity);
+
         if (entity instanceof Bot) {
             ((Bot) entity).getBrain().kill();
         }

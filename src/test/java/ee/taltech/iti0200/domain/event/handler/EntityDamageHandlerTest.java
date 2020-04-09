@@ -6,6 +6,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.DamageSource;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import org.junit.jupiter.api.Test;
 
@@ -25,10 +26,11 @@ class EntityDamageHandlerTest {
         Player victim = mock(Player.class);
         Projectile bullet = mock(Projectile.class);
         World world = mock(World.class);
+        EventBus eventBus = mock(EventBus.class);
         DealDamage event = mock(DealDamage.class);
         UUID victimId = UUID.randomUUID();
         Score score = new Score();
-        EntityDamageHandler handler = new EntityDamageHandler(world, score);
+        EntityDamageHandler handler = new EntityDamageHandler(world, score, eventBus);
 
         when(world.getEntity(victimId)).thenReturn(victim);
         when(victim.getId()).thenReturn(victimId);

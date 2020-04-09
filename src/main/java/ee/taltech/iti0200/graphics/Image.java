@@ -40,8 +40,8 @@ public class Image {
 
     public ByteBuffer getPixels(int x, int y, int partWidth, int partHeight) {
         pixels = BufferUtils.createByteBuffer(partWidth * partHeight * 4);
-        for (int i = x; i < x + partWidth; i++) {
-            for (int j = y; j < y + partHeight; j++) {
+        for (int i = x; i < x + partHeight; i++) {
+            for (int j = y; j < y + partWidth; j++) {
                 int pixel = rawPixels[i * width + j];
                 pixels.put((byte) ((pixel >> 16) & 0xFF));
                 pixels.put((byte) ((pixel >> 8) & 0xFF));

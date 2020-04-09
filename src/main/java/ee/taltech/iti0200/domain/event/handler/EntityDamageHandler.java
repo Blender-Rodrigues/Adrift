@@ -8,10 +8,16 @@ import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.Subscriber;
+import ee.taltech.iti0200.domain.event.entity.DropLoot;
+import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
+import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class EntityDamageHandler implements Subscriber<DealDamage> {
 
@@ -19,11 +25,13 @@ public class EntityDamageHandler implements Subscriber<DealDamage> {
 
     private World world;
     private Score score;
+    private EventBus eventBus;
 
     @Inject
-    public EntityDamageHandler(World world, Score score) {
+    public EntityDamageHandler(World world, Score score, EventBus eventBus) {
         this.world = world;
         this.score = score;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -45,7 +53,10 @@ public class EntityDamageHandler implements Subscriber<DealDamage> {
         String action = "hit";
 
         if (target.getHealth() <= 0) {
-            world.removeEntity(target);
+            eventBus.dispatch(new RemoveEntity(target, EVERYONE));
+            if (target instanceof Living) {
+                eventBus.dispatch(new DropLoot((Living) target, SERVER));
+            }
             action = "killed";
             if (target instanceof Player) {
                 score.addDeath((Player) target);
