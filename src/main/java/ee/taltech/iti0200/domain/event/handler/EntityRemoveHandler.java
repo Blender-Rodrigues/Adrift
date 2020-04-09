@@ -10,8 +10,6 @@ import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
-import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
 
