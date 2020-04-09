@@ -34,7 +34,6 @@ public class ServerCollisionHandler extends CollisionHandler {
         if (event.isStopped()) {
             return;
         }
-
         if (event.getEntity() instanceof Projectile) {
             projectileHitAny((Projectile) event.getEntity(), event.getOther());
         }
