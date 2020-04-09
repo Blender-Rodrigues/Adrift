@@ -33,7 +33,6 @@ public class DropLootHandler implements Subscriber<DropLoot> {
         this.world = world;
         this.consumableFactory = consumableFactory;
         this.eventBus = eventBus;
-        loots = new HashMap<>();
     }
 
     @Override
