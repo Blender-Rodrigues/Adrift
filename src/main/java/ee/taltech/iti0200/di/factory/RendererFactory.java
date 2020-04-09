@@ -11,6 +11,7 @@ import ee.taltech.iti0200.graphics.EntityRenderer;
 import ee.taltech.iti0200.graphics.RotatingDrawable;
 import ee.taltech.iti0200.graphics.ScoreRenderer;
 import ee.taltech.iti0200.graphics.Texture;
+import ee.taltech.iti0200.graphics.*;
 
 public class RendererFactory {
 
@@ -42,6 +43,11 @@ public class RendererFactory {
             return new RotatingDrawable(texture, converter, camera);
         }
         return new Drawable(texture);
+    }
+
+    // for healthBar
+    public EntityRenderer create(Texture textureShell, Texture textureFilling) {
+        return new HealthBar(textureShell, textureFilling);
     }
 
 }
