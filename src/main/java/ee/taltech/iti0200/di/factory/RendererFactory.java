@@ -45,7 +45,6 @@ public class RendererFactory {
         return new Drawable(texture);
     }
 
-    // for healthBar
     public EntityRenderer create(Texture textureShell, Texture textureFilling) {
         return new HealthBar(textureShell, textureFilling);
     }
