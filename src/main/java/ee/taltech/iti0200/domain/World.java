@@ -167,6 +167,10 @@ public class World {
         entities.remove(entity.getId());
         entitiesRemoved++;
 
+        if (entity instanceof Consumable) {
+            consumables.remove(entity);
+        }
+
         if (entity instanceof Living) {
             livingEntities.remove(entity);
             ((Living) entity).setAlive(false);

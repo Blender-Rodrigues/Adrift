@@ -13,21 +13,15 @@ import java.util.Map;
 public class ConsumableFactory {
 
     private World world;
-    private Map<Living, Consumable> loots;
 
     @Inject
     public ConsumableFactory(World world) {
         this.world = world;
-        loots = new HashMap<>();
     }
 
-    public Consumable create(Living victim) {
-        if (!loots.containsKey(victim)) {
-            Consumable loot = new HealthGlobe(victim.getBoundingBox().getCentre(), world);
-            loots.put(victim, loot);
-            return loot;
-        }
-        return null;
+    public Consumable create(Vector position) {
+        Consumable loot = new HealthGlobe(position, world);
+        return loot;
     }
 
 }
