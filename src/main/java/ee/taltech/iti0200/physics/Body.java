@@ -32,7 +32,11 @@ public class Body implements Serializable {
     }
 
     public void move(Vector moveDelta) {
-        this.boundingBox.move(moveDelta);
+        move(moveDelta, false);
+    }
+
+    public void move(Vector moveDelta, boolean testOnly) {
+        this.boundingBox.move(moveDelta, testOnly);
     }
 
     public void accelerate(Vector accelerateDelta) {
