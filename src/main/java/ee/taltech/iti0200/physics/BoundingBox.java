@@ -35,8 +35,8 @@ public class BoundingBox implements Serializable {
         this.size.scale(0.5);
     }
 
-    public void move(Vector moveDelta, boolean isTest) {
-        if (!isTest) {
+    public void move(Vector moveDelta, boolean simulate) {
+        if (!simulate) {
             this.lastCentre = new Vector(this.centre);
         }
         this.centre.add(moveDelta);
