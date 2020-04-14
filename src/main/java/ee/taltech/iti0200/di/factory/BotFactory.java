@@ -14,8 +14,8 @@ import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
-import ee.taltech.iti0200.domain.event.handler.BotHurtHandler;
-import ee.taltech.iti0200.domain.event.handler.BotNoiseHandler;
+import ee.taltech.iti0200.domain.event.server.BotHurtHandler;
+import ee.taltech.iti0200.domain.event.server.BotNoiseHandler;
 
 import java.util.HashMap;
 import java.util.TreeMap;

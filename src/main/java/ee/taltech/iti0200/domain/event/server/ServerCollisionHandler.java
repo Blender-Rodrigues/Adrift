@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.server;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.ai.Sensor;
@@ -11,6 +11,7 @@ import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
 import ee.taltech.iti0200.domain.event.entity.Heal;
@@ -34,9 +35,11 @@ public class ServerCollisionHandler extends CollisionHandler {
         if (event.isStopped()) {
             return;
         }
+
         if (event.getEntity() instanceof Projectile) {
             projectileHitAny((Projectile) event.getEntity(), event.getOther());
         }
+
         if (event.getEntity() instanceof Bot) {
             botHitAny((Bot) event.getEntity(), event.getOther());
         }
@@ -44,7 +47,6 @@ public class ServerCollisionHandler extends CollisionHandler {
         if (event.getEntity() instanceof Consumable && event.getOther() instanceof Living) {
             livingHitConsumable((Living) event.getOther(), (Consumable) event.getEntity());
         }
-
     }
 
     private void projectileHitAny(Projectile projectile, Entity other) {
@@ -59,16 +61,16 @@ public class ServerCollisionHandler extends CollisionHandler {
         eventBus.dispatch(new RemoveEntity(projectile, EVERYONE));
     }
 
+    private void botHitAny(Bot bot, Entity other) {
+        bot.getBrain().updateSensor(Sensor.TACTILE, other.getBoundingBox().getCentre(), other);
+    }
+
     private void livingHitConsumable(Living living, Consumable consumable) {
         if (consumable instanceof HealthGlobe) {
             eventBus.dispatch(new Heal((HealthGlobe) consumable, living, EVERYONE));
         }
 
         eventBus.dispatch(new RemoveEntity(consumable, EVERYONE));
-    }
-
-    private void botHitAny(Bot bot, Entity other) {
-        bot.getBrain().updateSensor(Sensor.TACTILE, other.getBoundingBox().getCentre(), other);
     }
 
 }

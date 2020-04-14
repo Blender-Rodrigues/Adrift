@@ -1,24 +1,21 @@
 package ee.taltech.iti0200.domain.event.handler;
 
 import ee.taltech.iti0200.domain.Score;
-import ee.taltech.iti0200.domain.ScoreData;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.DamageSource;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
+import ee.taltech.iti0200.domain.event.server.ServerDamageHandler;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class EntityDamageHandlerTest {
+class ServerEntityDamageHandlerTest {
 
     @Test
     void shotFromPlayerThatKillsPlayerAddsToScore() {
@@ -30,7 +27,7 @@ class EntityDamageHandlerTest {
         DealDamage event = mock(DealDamage.class);
         UUID victimId = UUID.randomUUID();
         Score score = new Score();
-        EntityDamageHandler handler = new EntityDamageHandler(world, score, eventBus);
+        ServerDamageHandler handler = new ServerDamageHandler(world, score, eventBus);
 
         when(world.getEntity(victimId)).thenReturn(victim);
         when(victim.getId()).thenReturn(victimId);
@@ -47,4 +44,5 @@ class EntityDamageHandlerTest {
         assertThat(score.getDeaths(killer)).isEqualTo(0);
         assertThat(score.getDeaths(victim)).isEqualTo(1);
     }
+
 }

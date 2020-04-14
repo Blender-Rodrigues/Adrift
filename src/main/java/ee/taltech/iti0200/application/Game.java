@@ -98,15 +98,16 @@ abstract public class Game {
         } else if (args[0].equalsIgnoreCase("client")) {
             String host = args.length >= 2 ? args[1] : "localhost";
             int port = args.length >= 3 ? Integer.parseInt(args[2]) : 8880;
+            String playerName = args.length >= 4 ? args[3] : null;
 
-            modules.add(new ClientModule(host, port));
+            modules.add(new ClientModule(host, port, playerName));
             modules.add(new GuiModule());
         } else {
             throw new IllegalArgumentException(
                 "Invalid arguments provided, use one of the following: \n"
                     + "[no arguments] --> single player game\n"
                     + "server [port:8880] --> server game\n"
-                    + "client [host:localhost] [port:8880] --> client game\n"
+                    + "client [host:localhost] [port:8880] [playername: Unknown] --> client game\n"
             );
         }
 

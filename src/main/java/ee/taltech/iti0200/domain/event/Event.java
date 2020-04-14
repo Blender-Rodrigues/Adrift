@@ -6,6 +6,8 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 abstract public class Event implements Message {
 
+    private static final long serialVersionUID = 1L;
+
     private boolean isStopped = false;
     protected Receiver receiver;
 

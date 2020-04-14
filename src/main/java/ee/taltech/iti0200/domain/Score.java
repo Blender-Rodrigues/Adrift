@@ -7,15 +7,11 @@ import java.util.Map;
 
 public class Score {
 
-    private Map<Player, ScoreData> players;
-    private boolean updated;
+    private final Map<Player, ScoreData> players = new HashMap<>();
 
-    public Score() {
-        players = new HashMap<>();
-        updated = true;
-    }
+    private boolean updated = true;
 
-    public boolean getupdated() {
+    public boolean getUpdated() {
         return updated;
     }
 
@@ -24,8 +20,10 @@ public class Score {
     }
 
     public void addPlayer(Player player) {
-        players.put(player, new ScoreData());
-        updated = true;
+        if (!players.containsKey(player)) {
+            players.put(player, new ScoreData());
+            updated = true;
+        }
     }
 
     public void addKill(Player player) {

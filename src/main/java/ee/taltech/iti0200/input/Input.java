@@ -100,6 +100,7 @@ public class Input implements Component {
         Gun gun = player.getGun();
         if (player.isAlive() && gun != null && gun.canShoot(currentTick)) {
             eventBus.dispatch(new GunShot(gun, player.getLookingAt(), SERVER));
+            gun.resetCooldown(currentTick);
         }
     }
 

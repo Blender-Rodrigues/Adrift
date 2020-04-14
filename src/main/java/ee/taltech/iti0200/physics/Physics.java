@@ -2,13 +2,14 @@ package ee.taltech.iti0200.physics;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.di.annotations.GameId;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
-import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.network.message.Receiver;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.physics.BoundingBox.clamp;
@@ -31,13 +33,14 @@ public class Physics implements Component {
 
     protected Set<Pair<Body, Body>> collisions = new HashSet<>();
     protected World world;
-
     protected EventBus eventBus;
+    protected Receiver collisionReceiver;
 
     @Inject
-    public Physics(World world, EventBus eventBus) {
+    public Physics(World world, EventBus eventBus, @GameId UUID id) {
         this.world = world;
         this.eventBus = eventBus;
+        this.collisionReceiver = new Receiver(id);
     }
 
     @Override
@@ -52,6 +55,7 @@ public class Physics implements Component {
 
         collisions = new HashSet<>();
         checkForCollisions(movableBodies, imMovableBodies);
+        checkForProjectileHits(world.getLivingEntities(), world.getProjectiles());
 
         applyGravity(movableBodies);
         dispatchCollisions();
@@ -63,8 +67,17 @@ public class Physics implements Component {
             .forEach(pair -> eventBus.dispatch(new EntityCollide(
                 (Entity) pair.getKey(),
                 (Entity) pair.getValue(),
-                Receiver.EVERYONE
+                collisionReceiver
             )));
+    }
+
+    private void checkForProjectileHits(List<Living> living, List<Projectile> projectiles) {
+        for (Projectile projectile: projectiles) {
+            living.stream()
+                .filter(projectile::intersects)
+                .findAny()
+                .ifPresent(entity -> collisions.add(new ImmutablePair<>(projectile, entity)));
+        }
     }
 
     private void applyDrag(List<Entity> movableBodies) {

@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.client;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.Score;
@@ -6,26 +6,19 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.DamageSource;
 import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.Living;
-import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
-import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.Subscriber;
-import ee.taltech.iti0200.domain.event.entity.DropLoot;
-import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
+import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
-import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class EntityDamageHandler implements Subscriber<DealDamage> {
 
     private final Logger logger = LogManager.getLogger(EntityDamageHandler.class);
 
-    private World world;
-    private Score score;
-    private EventBus eventBus;
+    protected World world;
+    protected Score score;
+    protected EventBus eventBus;
 
     @Inject
     public EntityDamageHandler(World world, Score score, EventBus eventBus) {
@@ -38,12 +31,12 @@ public class EntityDamageHandler implements Subscriber<DealDamage> {
     public void handle(DealDamage event) {
         Damageable target = loadLocal(event.getTarget());
         if (target == null) {
-            logger.debug("Target {} does not exist in world", event.getTarget());
+            logger.trace("Target {} does not exist in world", event.getTarget());
+            event.stop();
             return;
         }
 
         DamageSource source = event.getSource();
-
         if (target.equals(source.getOwner())) {
             event.stop();
             return;
@@ -53,22 +46,18 @@ public class EntityDamageHandler implements Subscriber<DealDamage> {
         String action = "hit";
 
         if (target.getHealth() <= 0) {
-            eventBus.dispatch(new RemoveEntity(target, EVERYONE));
-            if (target instanceof Living) {
-                eventBus.dispatch(new DropLoot((Living) target, SERVER));
-            }
+            target.setHealth(0);
             action = "killed";
-            if (target instanceof Player) {
-                score.addDeath((Player) target);
-            }
-            if (source.getOwner() != null && source.getOwner() instanceof Player && target instanceof Living) {
-                score.addKill((Player) source.getOwner());
-            }
+            fatal(target, source);
         }
 
         String by = source.getOwner() == null ? "" : " by " + source.getOwner();
 
-        logger.info("{} was {}{} with {}", target, action, by, source);
+        logger.info("{} now at {} was {}{} with {}", target, target.getHealth(), action, by, source);
+    }
+
+    protected void fatal(Damageable target, DamageSource source) {
+
     }
 
     private Damageable loadLocal(Entity entity) {

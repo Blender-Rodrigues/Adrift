@@ -5,6 +5,8 @@ import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.UpdateScore;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.CreatePlayer;
 import ee.taltech.iti0200.domain.event.Subscriber;
@@ -17,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
+import static ee.taltech.iti0200.network.message.Receiver.ALL_CLIENTS;
 import static java.util.Arrays.asList;
 
 public class PlayerJoinHandler implements Subscriber<CreatePlayer> {
@@ -25,12 +28,14 @@ public class PlayerJoinHandler implements Subscriber<CreatePlayer> {
 
     private World world;
     private Messenger messenger;
+    private EventBus eventBus;
     private Score score;
 
     @Inject
-    public PlayerJoinHandler(World world, Messenger messenger, Score score) {
+    public PlayerJoinHandler(World world, Messenger messenger, EventBus eventBus, Score score) {
         this.world = world;
         this.messenger = messenger;
+        this.eventBus = eventBus;
         this.score = score;
     }
 
@@ -57,6 +62,7 @@ public class PlayerJoinHandler implements Subscriber<CreatePlayer> {
             new CreateEntity(player, new Receiver(event.getId()).exclude()),
             new LoadWorld(entities, position, new Receiver(event.getId()))
         ));
+        eventBus.dispatch(new UpdateScore(score.getPlayerScores(), ALL_CLIENTS));
     }
 
 }

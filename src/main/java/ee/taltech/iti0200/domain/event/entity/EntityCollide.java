@@ -24,4 +24,9 @@ public class EntityCollide extends Event implements Message {
         return other;
     }
 
+    @Override
+    public String toString() {
+        return String.format("EntityCollide{%s -> %s}", entity, other);
+    }
+
 }
