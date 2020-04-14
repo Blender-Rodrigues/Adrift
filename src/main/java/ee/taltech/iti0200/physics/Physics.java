@@ -174,7 +174,7 @@ public class Physics implements Component {
 
         // Move the body according to the chosen way and updated vectors that store how the body has been moved earlier during the same collision resolution.
         double collidingBodyElasticity = getCollidingBodyElasticity(bestResolveStrategyIndex, collidingBodies);
-        movingBody.move(bestResolveStrategy, true);
+        movingBody.simulate(bestResolveStrategy);
 
         collisions.add(new ImmutablePair<>(movingBody, collidingBody));
 
@@ -258,15 +258,15 @@ public class Physics implements Component {
         double initialOverLap = getTotalOverLap(movingBody, collidingBodies);
         for (Vector resolveStrategy: resolveStrategies) {
             // Try moving the body along the x axis and find the overlap after that move.
-            movingBody.move(new Vector(resolveStrategy.getX(), 0), true);
+            movingBody.simulate(new Vector(resolveStrategy.getX(), 0));
             double xMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
 
             // Move the body back along the x axis and try moving in the y axis.
-            movingBody.move(new Vector(- resolveStrategy.getX(), resolveStrategy.getY()), true);
+            movingBody.simulate(new Vector(- resolveStrategy.getX(), resolveStrategy.getY()));
 
             // Get the overlap and move body back along y axis.
             double yMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
-            movingBody.move(new Vector(0, - resolveStrategy.getY()), true);
+            movingBody.simulate(new Vector(0, - resolveStrategy.getY()));
 
             // Calculate efficiencies of each move by dividing the change in overlap by how much movement was necessary for that change.
             // Favour strategies that resolve in the direction that the body moved more in.
