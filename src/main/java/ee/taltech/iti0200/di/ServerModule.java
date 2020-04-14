@@ -11,8 +11,10 @@ import ee.taltech.iti0200.di.annotations.GameId;
 import ee.taltech.iti0200.di.annotations.ServerClients;
 import ee.taltech.iti0200.di.annotations.ServerTcpPort;
 import ee.taltech.iti0200.domain.event.EventBus;
-import ee.taltech.iti0200.domain.event.handler.CollisionHandler;
-import ee.taltech.iti0200.domain.event.handler.ServerCollisionHandler;
+import ee.taltech.iti0200.domain.event.common.CollisionHandler;
+import ee.taltech.iti0200.domain.event.client.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.server.ServerCollisionHandler;
+import ee.taltech.iti0200.domain.event.server.ServerDamageHandler;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.message.Message;
@@ -60,6 +62,7 @@ public class ServerModule extends CommonModule {
         bind(EventBus.class).in(Singleton.class);
         bind(Physics.class).to(ServerPhysics.class).in(Singleton.class);
         bind(CollisionHandler.class).to(ServerCollisionHandler.class).in(Singleton.class);
+        bind(EntityDamageHandler.class).to(ServerDamageHandler.class).in(Singleton.class);
         bind(Network.class).to(ServerNetwork.class).in(Singleton.class);
         bind(Messenger.class).to(GroupMessenger.class).in(Singleton.class);
     }

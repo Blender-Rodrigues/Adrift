@@ -29,6 +29,10 @@ public class Gun extends Entity implements Rotatable {
         return cooldown <= tick;
     }
 
+    public void resetCooldown(long tick) {
+        cooldown = tick + fireRate;
+    }
+
     public Projectile shoot(Vector direction, long tick) {
         if (owner == null) {
             throw new RuntimeException("Trying to shoot a gun without an owner");

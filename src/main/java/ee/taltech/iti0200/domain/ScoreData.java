@@ -1,14 +1,13 @@
 package ee.taltech.iti0200.domain;
 
-public class ScoreData {
+import java.io.Serializable;
 
-    private int kills;
-    private int deaths;
+public class ScoreData implements Serializable {
 
-    public ScoreData() {
-        kills = 0;
-        deaths = 0;
-    }
+    private static final long serialVersionUID = 1L;
+
+    private int kills = 0;
+    private int deaths = 0;
 
     public void addKill() {
         kills++;
@@ -24,6 +23,16 @@ public class ScoreData {
 
     public int getDeaths() {
         return deaths;
+    }
+
+    public ScoreData setKills(int kills) {
+        this.kills = kills;
+        return this;
+    }
+
+    public ScoreData setDeaths(int deaths) {
+        this.deaths = deaths;
+        return this;
     }
 
 }

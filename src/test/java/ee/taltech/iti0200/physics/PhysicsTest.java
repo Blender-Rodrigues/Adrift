@@ -7,11 +7,10 @@ import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.event.EventBus;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,10 +22,10 @@ class PhysicsTest {
         EventBus eventBus = mock(EventBus.class);
         Player player = new Player(new Vector(0, 5), world);
         Terrain terrain = new Terrain(new Vector(0, 0));
-        Physics physics = new Physics(world, eventBus);
+        Physics physics = new Physics(world, eventBus, null);
 
-        when(world.getMovableBodies()).thenReturn(Arrays.asList(player));
-        when(world.getImMovableBodies()).thenReturn(Arrays.asList(terrain));
+        when(world.getMovableBodies()).thenReturn(asList(player));
+        when(world.getImMovableBodies()).thenReturn(asList(terrain));
         when(world.getTimeStep()).thenReturn(0.05);
         player.setSpeed(new Vector(0, -110));
 
@@ -40,7 +39,7 @@ class PhysicsTest {
         World world = mock(World.class);
         EventBus eventBus = mock(EventBus.class);
         Player player = new Player(new Vector(0, 5), world);
-        List<Entity> terrainBlocks = Arrays.asList(
+        List<Entity> terrainBlocks = asList(
             new Terrain(new Vector(0, 0)),
             new Terrain(new Vector(1, 0)),
             new Terrain(new Vector(1, 1)),
@@ -50,9 +49,9 @@ class PhysicsTest {
             new Terrain(new Vector(1, 5)),
             new Terrain(new Vector(1, 6))
         );
-        Physics physics = new Physics(world, eventBus);
+        Physics physics = new Physics(world, eventBus, null);
 
-        when(world.getMovableBodies()).thenReturn(Arrays.asList(player));
+        when(world.getMovableBodies()).thenReturn(asList(player));
         when(world.getImMovableBodies()).thenReturn(terrainBlocks);
         when(world.getTimeStep()).thenReturn(0.05);
 

@@ -1,7 +1,6 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.common;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
@@ -16,9 +15,8 @@ import org.apache.logging.log4j.Logger;
 public class EntityCreateHandler implements Subscriber<CreateEntity> {
 
     private final Logger logger = LogManager.getLogger(EntityCreateHandler.class);
-
-    private World world;
-    private Score score;
+    private final World world;
+    private final Score score;
 
     @Inject
     public EntityCreateHandler(World world, Score score) {

@@ -1,8 +1,9 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.server;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.Subscriber;
@@ -29,7 +30,7 @@ public class GunShotHandler implements Subscriber<GunShot> {
     @Override
     public void handle(GunShot event) {
         Gun gun = event.getGun();
-        if (!gun.canShoot(world.getTime())) {
+        if (!canShoot(gun)) {
             event.stop();
             return;
         }
@@ -39,6 +40,28 @@ public class GunShotHandler implements Subscriber<GunShot> {
         logger.debug("{} shot by {}", projectile, projectile.getOwner());
 
         eventBus.dispatch(new CreateEntity(projectile, EVERYONE));
+    }
+
+    private boolean canShoot(Gun gun) {
+        Living owner = gun.getOwner();
+        if (owner == null) {
+            logger.warn("Owner of a gun {} is missing during a shot", gun);
+            return false;
+        }
+
+        Living local = (Living) world.getEntity(owner.getId());
+        if (local == null) {
+            logger.warn("Owner {} of a gun is not present in the world during a shot", local);
+            return false;
+        }
+
+        Gun serverGun = local.getGun();
+        if (!serverGun.getId().equals(gun.getId())) {
+            logger.debug("Gun has been switched on the server side");
+            return false;
+        }
+
+        return serverGun.canShoot(world.getTime());
     }
 
 }

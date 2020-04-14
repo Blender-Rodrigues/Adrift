@@ -10,6 +10,10 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
+/**
+ * When a client uses EVERYONE then it is replaced with just SERVER after client itself has processed the message.
+ * When a server uses EVERYONE then it is replaced with ALL_CLIENTS after server itself has processed the message.
+ */
 public class Receiver implements Serializable {
 
     public static final Receiver SERVER = new Receiver(SERVER_ID);
