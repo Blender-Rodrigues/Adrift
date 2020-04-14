@@ -287,48 +287,42 @@ public class Physics implements Component {
 
     private List<Vector> getResolveStrategies(Body movingBody, List<Body> collidingBodies) {
         List<Vector> resolveStrategies = new ArrayList<>();
-        Vector moved = movingBody.getBoundingBox().getMoved();
+        BoundingBox moving = movingBody.getBoundingBox();
+        Vector moved = moving.getMoved();
 
         boolean solveAlongPositiveX = moved.getX() > 0;
         boolean solveAlongPositiveY = moved.getY() > 0;
 
         for (Body collidingBody: collidingBodies) {
-            Vector overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
+            BoundingBox colliding = collidingBody.getBoundingBox();
 
-            double directionX = movingBody.getBoundingBox().getCentreXDirection(collidingBody.getBoundingBox());
-            double directionY = movingBody.getBoundingBox().getCentreYDirection(collidingBody.getBoundingBox());
+            Vector overLap = moving.getOverLap(colliding);
+
+            double directionX = moving.getCentreXDirection(colliding);
+            double directionY = moving.getCentreYDirection(colliding);
 
             double xResolve;
             double yResolve;
 
             if (solveAlongPositiveX && directionX < 0 || !solveAlongPositiveX && directionX > 0) {
-                xResolve = directionX
-                    * (
-                    movingBody.getBoundingBox().getSize().getX() * 2
-                        + collidingBody.getBoundingBox().getSize().getX() * 2
-                        + overLap.getX()
+                xResolve = directionX * (
+                    moving.getSize().getX() * 2 + colliding.getSize().getX() * 2 + overLap.getX()
                 );
             } else {
                 xResolve = overLap.getX() * directionX;
             }
 
             if (solveAlongPositiveY && directionY < 0 || !solveAlongPositiveY && directionY > 0) {
-                yResolve = directionY
-                    * (
-                    movingBody.getBoundingBox().getSize().getY() * 2
-                        + collidingBody.getBoundingBox().getSize().getY() * 2
-                        + overLap.getY()
+                yResolve = directionY * (
+                    moving.getSize().getY() * 2 + colliding.getSize().getY() * 2 + overLap.getY()
                 );
             } else {
                 yResolve = overLap.getY() * directionY;
             }
 
-            Vector resolveStrategy = new Vector(
-                xResolve,
-                yResolve
-            );
-            resolveStrategies.add(resolveStrategy);
+            resolveStrategies.add(new Vector(xResolve, yResolve));
         }
+
         return resolveStrategies;
     }
 
