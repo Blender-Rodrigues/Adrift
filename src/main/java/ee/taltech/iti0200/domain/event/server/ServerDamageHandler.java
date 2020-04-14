@@ -34,7 +34,7 @@ public class ServerDamageHandler extends EntityDamageHandler {
             score.addKill((Player) source.getOwner());
         }
 
-        if (target instanceof Player && ((Player) target).getLives() > 2) {
+        if (target instanceof Player && ((Player) target).getLives() > 1) {
             eventBus.dispatch(new RespawnPlayer(
                 target.getId(),
                 world.nextPlayerSpawnPoint(),

@@ -30,7 +30,6 @@ import ee.taltech.iti0200.physics.Physics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class ClientGame extends Game {
 
     private final Logger logger = LogManager.getLogger(ClientGame.class);

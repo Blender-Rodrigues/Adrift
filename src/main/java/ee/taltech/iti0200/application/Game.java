@@ -38,7 +38,7 @@ abstract public class Game {
         Thread.currentThread().setName(getClass().getSimpleName());
     }
 
-    void run() {
+    public void run() {
         try {
             initialize();
             timer.initialize();

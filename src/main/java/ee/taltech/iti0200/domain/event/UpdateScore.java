@@ -33,7 +33,7 @@ public class UpdateScore extends Event implements Message {
     public String toString() {
         String summary = scores.entrySet()
             .stream()
-            .map(entry -> entry.getKey() + ":" + entry.getValue()[0] + "/" + entry.getValue()[0])
+            .map(entry -> entry.getKey() + ":" + entry.getValue()[0] + "/" + entry.getValue()[1])
             .collect(Collectors.joining(", "));
         return format("UpdateScore{%s}", summary);
     }
