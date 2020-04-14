@@ -14,7 +14,10 @@ import ee.taltech.iti0200.di.annotations.ServerHost;
 import ee.taltech.iti0200.di.annotations.ServerTcpPort;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.client.ClientCollisionHandler;
+import ee.taltech.iti0200.domain.event.client.ClientGunShotHandler;
 import ee.taltech.iti0200.domain.event.client.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.common.CollisionHandler;
+import ee.taltech.iti0200.domain.event.server.GunShotHandler;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.client.ClientMessenger;
@@ -60,8 +63,8 @@ public class ClientModule extends CommonModule {
         }
 
         bind(Game.class).to(ClientGame.class);
+        bind(CollisionHandler.class).to(ClientCollisionHandler.class);
 
-        bind(ClientCollisionHandler.class).in(Singleton.class);
         bind(EventBus.class).in(Singleton.class);
         bind(ConnectionToServer.class).in(Singleton.class);
         bind(EntityDamageHandler.class).in(Singleton.class);

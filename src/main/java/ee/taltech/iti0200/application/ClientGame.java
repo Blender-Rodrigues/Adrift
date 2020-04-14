@@ -8,11 +8,13 @@ import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.UpdateScore;
+import ee.taltech.iti0200.domain.event.client.ClientGunShotHandler;
 import ee.taltech.iti0200.domain.event.client.UpdateScoreHandler;
 import ee.taltech.iti0200.domain.event.common.PlayerRespawnHandler;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
+import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.domain.event.entity.Heal;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.domain.event.entity.RespawnPlayer;
@@ -57,6 +59,7 @@ public class ClientGame extends Game {
         CollisionHandler collisionHandler,
         PlayerRespawnHandler respawnHandler,
         UpdateScoreHandler scoreHandler,
+        ClientGunShotHandler gunShotHandler,
         Score score
     ) {
         super(world, eventBus, timer);
@@ -78,6 +81,7 @@ public class ClientGame extends Game {
         eventBus.subscribe(EntityCollide.class, collisionHandler);
         eventBus.subscribe(RespawnPlayer.class, respawnHandler);
         eventBus.subscribe(UpdateScore.class, scoreHandler);
+        eventBus.subscribe(GunShot.class, gunShotHandler);
     }
 
     @Override

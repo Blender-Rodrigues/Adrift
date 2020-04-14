@@ -5,6 +5,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.client.ClientGunShotHandler;
 import ee.taltech.iti0200.domain.event.client.EntityDamageHandler;
 import ee.taltech.iti0200.domain.event.client.UpdateScoreHandler;
 import ee.taltech.iti0200.domain.event.common.CollisionHandler;
@@ -46,6 +47,7 @@ class ClientGameTest {
     CollisionHandler collisionHandler;
     PlayerRespawnHandler respawnHandler;
     UpdateScoreHandler scoreHandler;
+    ClientGunShotHandler gunShotHandler;
     Score score;
 
     private ClientGame game;
@@ -68,6 +70,7 @@ class ClientGameTest {
         collisionHandler = mock(CollisionHandler.class);
         respawnHandler = mock(PlayerRespawnHandler.class);
         scoreHandler = mock(UpdateScoreHandler.class);
+        gunShotHandler = mock(ClientGunShotHandler.class);
         score = mock(Score.class);
 
         game = new ClientGame(
@@ -87,13 +90,14 @@ class ClientGameTest {
             collisionHandler,
             respawnHandler,
             scoreHandler,
+            gunShotHandler,
             score
         );
     }
 
     @Test
     void constructorSubscribesHandlers() {
-        verify(eventBus, times(8)).subscribe(any(), any());
+        verify(eventBus, times(9)).subscribe(any(), any());
     }
 
     @Test

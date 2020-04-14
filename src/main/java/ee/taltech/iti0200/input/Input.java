@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import static ee.taltech.iti0200.network.message.Receiver.SERVER;
+import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
@@ -99,8 +99,7 @@ public class Input implements Component {
     private void playerShoot() {
         Gun gun = player.getGun();
         if (player.isAlive() && gun != null && gun.canShoot(currentTick)) {
-            eventBus.dispatch(new GunShot(gun, player.getLookingAt(), SERVER));
-            gun.resetCooldown(currentTick);
+            eventBus.dispatch(new GunShot(gun, player.getLookingAt(), EVERYONE));
         }
     }
 
