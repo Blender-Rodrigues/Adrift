@@ -3,6 +3,7 @@ package ee.taltech.iti0200.graphics;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.di.annotations.WindowId;
+import ee.taltech.iti0200.graphics.renderer.Background;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.graphics.renderer.GuiRenderFacade;
 import org.joml.Vector3f;
@@ -55,6 +56,7 @@ public class Graphics implements Component {
     private int frameWidth;
     private EntityRenderFacade entityRenderer;
     private GuiRenderFacade guiRenderer;
+    private Background backgroundRenderer;
 
     @Inject
     public Graphics(@WindowId long window, Camera camera, EntityRenderFacade entityRenderer, GuiRenderFacade guiRenderer) {
@@ -62,6 +64,7 @@ public class Graphics implements Component {
         this.window = window;
         this.entityRenderer = entityRenderer;
         this.guiRenderer = guiRenderer;
+        this.backgroundRenderer = new Background();
     }
 
     @Override
@@ -121,6 +124,7 @@ public class Graphics implements Component {
 
         camera.setPosition(new Vector3f(0, 0, 0));
 
+        backgroundRenderer.initialize();
         entityRenderer.initialize();
         guiRenderer.initialize();
 
@@ -151,6 +155,7 @@ public class Graphics implements Component {
 
         camera.update();
 
+        backgroundRenderer.render(shader, camera, tick);
         entityRenderer.render(shader, camera, tick);
         guiRenderer.render(shader, camera, tick);
 
