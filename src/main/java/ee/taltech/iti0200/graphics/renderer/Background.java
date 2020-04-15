@@ -15,6 +15,7 @@ public class Background implements Renderer {
     private Transform transform;
 
     private Texture backgroundImage;
+    private Texture belt;
 
     @Override
     public void initialize() throws IOException {
@@ -41,17 +42,24 @@ public class Background implements Renderer {
         transform = new Transform();
 
         backgroundImage = new Texture("world/", "background");
+        belt = new Texture("world/", "belt");
     }
 
     @Override
     public void render(Shader shader, Camera camera, long tick) {
         transform.scale = new Vector3f(camera.getWidth()*camera.getZoom()/2, camera.getHeight()*camera.getZoom()/2, 1);
-        transform.pos.set(new Vector3f(-camera.getPosition().x, -camera.getPosition().y, 0));
 
         shader.bind();
         shader.setUniform("sampler", 0);
+
+        transform.pos.set(new Vector3f(-camera.getPosition().x, -camera.getPosition().y, 0));
         shader.setUniform("projection", transform.getProjection(camera.getProjection()));
         backgroundImage.bind(0);
+        model.render();
+
+        transform.pos.set(new Vector3f(-camera.getPosition().x/1.05f + 20, -camera.getPosition().y, 0));
+        shader.setUniform("projection", transform.getProjection(camera.getProjection()));
+        belt.bind(0);
         model.render();
     }
 
