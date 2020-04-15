@@ -3,6 +3,8 @@ package ee.taltech.iti0200.domain.entity;
 import ee.taltech.iti0200.ai.Brain;
 import ee.taltech.iti0200.ai.InertBrain;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -64,6 +66,13 @@ public class Bot extends Living {
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
         brain = new InertBrain();
+    }
+
+    @Override
+    public void render(Shader shader, Camera camera, long tick) {
+        String action = getAcceleration().getX() > 0 ? "LEFT" : "IDLE";
+        renderers.get(action).render(shader, camera, tick);
+        renderers.get("healthBar").render(shader, camera, tick);
     }
 
 }
