@@ -68,8 +68,6 @@ public abstract class EntityRenderer implements Renderer {
      */
     protected void setShaderRotation(Shader shader) {
         shader.setUniform("rotation", new Matrix4f());
-        shader.setUniform("location", new Matrix4f());
-        shader.setUniform("inverseLocation", new Matrix4f());
     }
 
 }
