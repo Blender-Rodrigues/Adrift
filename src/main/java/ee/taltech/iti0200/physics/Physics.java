@@ -2,13 +2,14 @@ package ee.taltech.iti0200.physics;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.di.annotations.GameId;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
-import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.network.message.Receiver;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.physics.BoundingBox.clamp;
@@ -31,13 +33,14 @@ public class Physics implements Component {
 
     protected Set<Pair<Body, Body>> collisions = new HashSet<>();
     protected World world;
-
     protected EventBus eventBus;
+    protected Receiver collisionReceiver;
 
     @Inject
-    public Physics(World world, EventBus eventBus) {
+    public Physics(World world, EventBus eventBus, @GameId UUID id) {
         this.world = world;
         this.eventBus = eventBus;
+        this.collisionReceiver = new Receiver(id);
     }
 
     @Override
@@ -52,6 +55,7 @@ public class Physics implements Component {
 
         collisions = new HashSet<>();
         checkForCollisions(movableBodies, imMovableBodies);
+        checkForProjectileHits(world.getLivingEntities(), world.getProjectiles());
 
         applyGravity(movableBodies);
         dispatchCollisions();
@@ -63,8 +67,17 @@ public class Physics implements Component {
             .forEach(pair -> eventBus.dispatch(new EntityCollide(
                 (Entity) pair.getKey(),
                 (Entity) pair.getValue(),
-                Receiver.EVERYONE
+                collisionReceiver
             )));
+    }
+
+    private void checkForProjectileHits(List<Living> living, List<Projectile> projectiles) {
+        for (Projectile projectile: projectiles) {
+            living.stream()
+                .filter(projectile::intersects)
+                .findAny()
+                .ifPresent(entity -> collisions.add(new ImmutablePair<>(projectile, entity)));
+        }
     }
 
     private void applyDrag(List<Entity> movableBodies) {
@@ -174,7 +187,7 @@ public class Physics implements Component {
 
         // Move the body according to the chosen way and updated vectors that store how the body has been moved earlier during the same collision resolution.
         double collidingBodyElasticity = getCollidingBodyElasticity(bestResolveStrategyIndex, collidingBodies);
-        movingBody.move(bestResolveStrategy);
+        movingBody.simulate(bestResolveStrategy);
 
         collisions.add(new ImmutablePair<>(movingBody, collidingBody));
 
@@ -258,19 +271,20 @@ public class Physics implements Component {
         double initialOverLap = getTotalOverLap(movingBody, collidingBodies);
         for (Vector resolveStrategy: resolveStrategies) {
             // Try moving the body along the x axis and find the overlap after that move.
-            movingBody.move(new Vector(resolveStrategy.getX(), 0));
+            movingBody.simulate(new Vector(resolveStrategy.getX(), 0));
             double xMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
 
             // Move the body back along the x axis and try moving in the y axis.
-            movingBody.move(new Vector(- resolveStrategy.getX(), resolveStrategy.getY()));
+            movingBody.simulate(new Vector(- resolveStrategy.getX(), resolveStrategy.getY()));
 
             // Get the overlap and move body back along y axis.
             double yMoveOverLap = getTotalOverLap(movingBody, collidingBodies);
-            movingBody.move(new Vector(0, - resolveStrategy.getY()));
+            movingBody.simulate(new Vector(0, - resolveStrategy.getY()));
 
             // Calculate efficiencies of each move by dividing the change in overlap by how much movement was necessary for that change.
-            double xMoveEfficiency = (initialOverLap - xMoveOverLap) / Math.abs(resolveStrategy.getX());
-            double yMoveEfficiency = (initialOverLap - yMoveOverLap) / Math.abs(resolveStrategy.getY());
+            // Favour strategies that resolve in the direction that the body moved more in.
+            double xMoveEfficiency = Math.abs(movingBody.getBoundingBox().getMoved().getX()) * (initialOverLap - xMoveOverLap) / Math.abs(resolveStrategy.getX());
+            double yMoveEfficiency = Math.abs(movingBody.getBoundingBox().getMoved().getY()) * (initialOverLap - yMoveOverLap) / Math.abs(resolveStrategy.getY());
             resolveStrategyResults.add(new Vector(xMoveEfficiency, yMoveEfficiency));
         }
         return resolveStrategyResults;
@@ -286,18 +300,42 @@ public class Physics implements Component {
 
     private List<Vector> getResolveStrategies(Body movingBody, List<Body> collidingBodies) {
         List<Vector> resolveStrategies = new ArrayList<>();
+        BoundingBox moving = movingBody.getBoundingBox();
+        Vector moved = moving.getMoved();
+
+        boolean solveAlongPositiveX = moved.getX() > 0;
+        boolean solveAlongPositiveY = moved.getY() > 0;
+
         for (Body collidingBody: collidingBodies) {
-            Vector overLap = movingBody.getBoundingBox().getOverLap(collidingBody.getBoundingBox());
+            BoundingBox colliding = collidingBody.getBoundingBox();
 
-            double directionX = movingBody.getBoundingBox().getCentreXDirection(collidingBody.getBoundingBox());
-            double directionY = movingBody.getBoundingBox().getCentreYDirection(collidingBody.getBoundingBox());
+            Vector overLap = moving.getOverLap(colliding);
 
-            Vector resolveStrategy = new Vector(
-                overLap.getX() * directionX,
-                overLap.getY() * directionY
-            );
-            resolveStrategies.add(resolveStrategy);
+            double directionX = moving.getCentreXDirection(colliding);
+            double directionY = moving.getCentreYDirection(colliding);
+
+            double xResolve;
+            double yResolve;
+
+            if (solveAlongPositiveX && directionX < 0 || !solveAlongPositiveX && directionX > 0) {
+                xResolve = directionX * (
+                    moving.getSize().getX() * 2 + colliding.getSize().getX() * 2 + overLap.getX()
+                );
+            } else {
+                xResolve = overLap.getX() * directionX;
+            }
+
+            if (solveAlongPositiveY && directionY < 0 || !solveAlongPositiveY && directionY > 0) {
+                yResolve = directionY * (
+                    moving.getSize().getY() * 2 + colliding.getSize().getY() * 2 + overLap.getY()
+                );
+            } else {
+                yResolve = overLap.getY() * directionY;
+            }
+
+            resolveStrategies.add(new Vector(xResolve, yResolve));
         }
+
         return resolveStrategies;
     }
 

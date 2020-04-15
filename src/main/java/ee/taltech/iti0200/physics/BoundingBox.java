@@ -11,6 +11,7 @@ import static java.lang.Math.abs;
 public class BoundingBox implements Serializable {
 
     protected Vector centre;
+    protected Vector lastCentre;
     protected Vector size;
 
     public BoundingBox(double minX, double minY, double maxX, double maxY) {
@@ -23,22 +24,34 @@ public class BoundingBox implements Serializable {
         this.size.x += minX;
         this.size.y += minY;
         this.centre.scale(0.5);
+
+        this.lastCentre = new Vector(this.centre);
     }
 
     public BoundingBox(Vector position, Vector size) {
         this.centre = new Vector(position);
+        this.lastCentre = new Vector(this.centre);
         this.size = new Vector(size);
         this.size.scale(0.5);
     }
 
-    public void move(Vector moveDelta) {
+    public void move(Vector moveDelta, boolean simulate) {
+        if (!simulate) {
+            this.lastCentre = new Vector(this.centre);
+        }
         this.centre.add(moveDelta);
+    }
+
+    public Vector getMoved() {
+        Vector moved = new Vector(this.centre);
+        moved.sub(this.lastCentre);
+        return moved;
     }
 
     public boolean intersects(BoundingBox otherBoundingBox) {
         Vector distance = new Vector(
-                abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
-                abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
+            abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
+            abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
         );
         distance.sub(this.size);
         distance.sub(otherBoundingBox.getSize());
@@ -47,8 +60,8 @@ public class BoundingBox implements Serializable {
 
     public Vector getOverLap(BoundingBox otherBoundingBox) {
         Vector distance = new Vector(
-                abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
-                abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
+            abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
+            abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
         );
         distance.sub(this.size);
         distance.sub(otherBoundingBox.getSize());

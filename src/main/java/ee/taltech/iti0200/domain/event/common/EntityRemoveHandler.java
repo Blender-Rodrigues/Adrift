@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.common;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
@@ -9,7 +9,6 @@ import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
 
@@ -26,7 +25,7 @@ public class EntityRemoveHandler implements Subscriber<RemoveEntity> {
     public void handle(RemoveEntity event) {
         Entity entity = world.getEntity(event.getId());
         if (entity == null) {
-            logger.warn("Entity {} already removed", event.getId());
+            logger.trace("Entity {} already removed", event.getId());
             return;
         }
 

@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.common;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.GameId;

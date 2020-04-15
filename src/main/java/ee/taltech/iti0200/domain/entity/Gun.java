@@ -13,7 +13,7 @@ public class Gun extends Entity implements Rotatable {
     protected long cooldown = 0;
     protected int damage = 10;
     protected long fireRate = 90;
-    protected double projectileSpeed = 10;
+    protected double projectileSpeed = 3;
 
     public Gun(BoundingBox boundingBox) {
         super(0, boundingBox);
@@ -27,6 +27,10 @@ public class Gun extends Entity implements Rotatable {
 
     public boolean canShoot(long tick) {
         return cooldown <= tick;
+    }
+
+    public void resetCooldown(long tick) {
+        cooldown = tick + fireRate;
     }
 
     public Projectile shoot(Vector direction, long tick) {

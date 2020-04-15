@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.common;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
@@ -25,7 +25,7 @@ public class EntityHealingHandler implements Subscriber<Heal> {
     public void handle(Heal event) {
         Damageable target = loadLocal(event.getTarget());
         if (target == null) {
-            logger.debug("Target {} does not exist in world", event.getTarget());
+            logger.trace("Target {} does not exist in world", event.getTarget());
             return;
         }
 
@@ -44,4 +44,5 @@ public class EntityHealingHandler implements Subscriber<Heal> {
     private Damageable loadLocal(Entity entity) {
         return (Damageable) world.getEntity(entity.getId());
     }
+
 }

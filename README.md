@@ -19,7 +19,7 @@ ssh username@104.248.243.136 docker restart escape-from-eros
 
 The main Game class can be run in 3 different modes by providing one set of these arguments:
 * (no arguments, single player mode)
-* client [server ip, defaults to localhost] [server tcp port, defaults to 8880]
+* client [server ip, defaults to localhost] [server tcp port, defaults to 8880] [player name, defaults to Unknown]
 * server [server tcp port, defaults to 8880]
 
 ## Tests

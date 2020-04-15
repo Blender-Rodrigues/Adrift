@@ -19,10 +19,9 @@ public class CommonModule extends AbstractModule {
     protected World world = new World(0.0, 600, 0.0, 600.0, 0.05);
     protected UUID id = UUID.randomUUID();
     protected Score score = new Score();
+    protected Player player = (Player) new Player(new Vector(0, 0), world).setId(id);
 
     protected void configure() {
-        Player player = (Player) new Player(new Vector(0, 0), world).setId(id);
-
         bind(Layout.class).toInstance(new Layout(LAYOUT_NAME));
         bind(World.class).toInstance(world);
         bind(Timer.class).toInstance(new Timer(60F));
