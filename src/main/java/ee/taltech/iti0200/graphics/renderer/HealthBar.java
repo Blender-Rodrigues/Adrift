@@ -53,12 +53,12 @@ public class HealthBar extends EntityRenderer {
         float locationX = (float) entity.getBoundingBox().getCentre().getX();
         float locationY = (float) (entity.getBoundingBox().getCentre().getY() + entity.getBoundingBox().getSize().getY() * 1.5f);
 
-        transformGlobe.pos.set(new Vector3f(locationX-width, locationY, 1));
+        transformGlobe.pos.set(new Vector3f(locationX - width, locationY, 1));
 
         transformEmpty.pos.set(new Vector3f(locationX, locationY, 1));
 
-        transformFull.scale = new Vector3f(width*getHealth(), height, 1);
-        transformFull.pos.set(new Vector3f(locationX - (width - width*getHealth()), locationY, 0));
+        transformFull.scale = new Vector3f(width * getHealth(), height, 1);
+        transformFull.pos.set(new Vector3f(locationX - (width - width * getHealth()), locationY, 0));
 
         shader.bind();
         shader.setUniform("sampler", 0);
