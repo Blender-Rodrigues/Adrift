@@ -31,6 +31,7 @@ public class HealthyBrain implements Brain {
         this.bot = bot;
         this.goals = goals;
         this.onDeath = onDeath;
+        this.active = goals.floorEntry(adrenaline).getValue();
     }
 
     @Override

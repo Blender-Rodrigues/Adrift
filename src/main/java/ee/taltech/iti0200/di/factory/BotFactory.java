@@ -22,8 +22,8 @@ import java.util.TreeMap;
 
 public class BotFactory {
 
-    private World world;
-    private EventBus eventBus;
+    private final World world;
+    private final EventBus eventBus;
 
     @Inject
     public BotFactory(World world, EventBus eventBus) {
@@ -44,8 +44,8 @@ public class BotFactory {
         HashMap<Class<? extends Event>, Subscriber<? extends Event>> subscribers = new HashMap<>();
         subscribers.put(DealDamage.class, new BotHurtHandler(bot));
         subscribers.put(GunShot.class, new BotNoiseHandler(bot));
-        subscribers.forEach((key, value) -> eventBus.subscribe(key, value));
-        Runnable onDeath = () -> subscribers.forEach((key, value) -> eventBus.unsubscribe(key, value));
+
+        Runnable onDeath = () -> subscribers.forEach(eventBus::unsubscribe);
 
         TreeMap<Long, Goal> goals = new TreeMap<>();
         goals.put(0L, new Wander(bot, world, eventBus));
@@ -53,6 +53,8 @@ public class BotFactory {
         goals.put(1000L, new Panic(bot, world, eventBus));
 
         brain.bind(bot, goals, onDeath);
+
+        subscribers.forEach(eventBus::subscribe);
 
         return bot;
     }
