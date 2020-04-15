@@ -121,8 +121,9 @@ public class EntityRenderFacade implements Renderer {
         Texture smgTexture = visualFactory.create("gun/", "smg");
         Texture projectileTexture = visualFactory.create("projectile/", "bullet");
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
-        Texture healthBarShell = visualFactory.create("overhead/", "healthBarShell");
-        Texture healthBarFilling = visualFactory.create("overhead/", "healthBarFilling");
+        Texture healthBarEmpty = visualFactory.create("overhead/", "healthBarEmpty");
+        Texture healthBarFull = visualFactory.create("overhead/", "healthBarFull");
+        Texture healthBarGlobe = visualFactory.create("overhead/", "healthBarGlobe");
 
         // player
         Animation playerRunningRight = visualFactory.create(10, "player/animations/", "player.running.right", 3);
@@ -159,14 +160,14 @@ public class EntityRenderFacade implements Renderer {
 
         playerRenderer.put("JUMPING.RIGHT", () -> rendererFactory.create(playerJumpingRight));
         playerRenderer.put("JUMPING.LEFT", () -> rendererFactory.create(playerJumpingLeft));
-        playerRenderer.put("healthBar", () -> rendererFactory.create(healthBarShell, healthBarFilling));
+        playerRenderer.put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
         renderers.put(Player.class, playerRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> botRenderer = new HashMap<>();
         botRenderer.put("IDLE", () -> rendererFactory.create(botIdle));
         botRenderer.put("RIGHT", () -> rendererFactory.create(botMovingRight));
         botRenderer.put("LEFT", () -> rendererFactory.create(botMovingLeft));
-        botRenderer.put("healthBar", () -> rendererFactory.create(healthBarShell, healthBarFilling));
+        botRenderer.put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
         renderers.put(Bot.class, botRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> terrainRenderer = new HashMap<>();
