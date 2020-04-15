@@ -150,10 +150,15 @@ public class EntityRenderFacade implements Renderer {
         renderers.put(FastGun.class, smgRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> playerRenderer = new HashMap<>();
-        playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight));
-        playerRenderer.put("RUNNING.LEFT", () -> rendererFactory.create(playerRunningLeft));
-        playerRenderer.put("IDLE.RIGHT", () -> rendererFactory.create(playerIdleRight));
-        playerRenderer.put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft));
+//        playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight));
+//        playerRenderer.put("RUNNING.LEFT", () -> rendererFactory.create(playerRunningLeft));
+//        playerRenderer.put("IDLE.RIGHT", () -> rendererFactory.create(playerIdleRight));
+//        playerRenderer.put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft));
+        playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(botMovingRight));
+        playerRenderer.put("RUNNING.LEFT", () -> rendererFactory.create(botMovingLeft));
+        playerRenderer.put("IDLE.RIGHT", () -> rendererFactory.create(botIdle));
+        playerRenderer.put("IDLE.LEFT", () -> rendererFactory.create(botIdle));
+
         playerRenderer.put("JUMPING.RIGHT", () -> rendererFactory.create(playerJumpingRight));
         playerRenderer.put("JUMPING.LEFT", () -> rendererFactory.create(playerJumpingLeft));
         playerRenderer.put("healthBar", () -> rendererFactory.create(healthBarShell, healthBarFilling));
