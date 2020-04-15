@@ -4,8 +4,6 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Rotatable;
 
-import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.CoordinateConverter;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.Texture;
 
@@ -14,14 +12,9 @@ import org.joml.Matrix4f;
 
 public class RotatingDrawable extends Drawable {
 
-    private CoordinateConverter converter;
-    private Camera camera;
-
     @Inject
-    public RotatingDrawable(Texture texture, CoordinateConverter converter, Camera camera) {
+    public RotatingDrawable(Texture texture) {
         super(texture);
-        this.converter = converter;
-        this.camera = camera;
     }
 
     @Override

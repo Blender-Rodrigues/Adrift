@@ -27,7 +27,7 @@ class EntityRendererFactoryTest {
         converter = mock(CoordinateConverter.class);
         camera = mock(Camera.class);
         score = mock(Score.class);
-        factory = new RendererFactory(converter, camera, score);
+        factory = new RendererFactory(score);
     }
 
     @Test
@@ -43,7 +43,7 @@ class EntityRendererFactoryTest {
     void createReturnsDrawable() {
         Texture texture = mock(Texture.class);
 
-        factory = new RendererFactory(converter, camera, score);
+        factory = new RendererFactory(score);
 
         EntityRenderer renderer = factory.create(texture);
 
@@ -54,7 +54,7 @@ class EntityRendererFactoryTest {
     void createReturnsAnimatable() {
         Animation animation = mock(Animation.class);
 
-        factory = new RendererFactory(converter, camera, score);
+        factory = new RendererFactory(score);
 
         EntityRenderer renderer = factory.create(animation);
 
