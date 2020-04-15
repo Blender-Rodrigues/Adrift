@@ -50,8 +50,8 @@ public class BoundingBox implements Serializable {
 
     public boolean intersects(BoundingBox otherBoundingBox) {
         Vector distance = new Vector(
-                abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
-                abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
+            abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
+            abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
         );
         distance.sub(this.size);
         distance.sub(otherBoundingBox.getSize());
@@ -60,8 +60,8 @@ public class BoundingBox implements Serializable {
 
     public Vector getOverLap(BoundingBox otherBoundingBox) {
         Vector distance = new Vector(
-                abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
-                abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
+            abs(this.centre.getX() - otherBoundingBox.getCentre().getX()),
+            abs(this.centre.getY() - otherBoundingBox.getCentre().getY())
         );
         distance.sub(this.size);
         distance.sub(otherBoundingBox.getSize());

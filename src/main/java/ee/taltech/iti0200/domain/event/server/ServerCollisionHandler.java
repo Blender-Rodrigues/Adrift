@@ -18,6 +18,7 @@ import ee.taltech.iti0200.domain.event.entity.Heal;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 
 import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
+import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class ServerCollisionHandler extends CollisionHandler {
 
@@ -47,6 +48,7 @@ public class ServerCollisionHandler extends CollisionHandler {
         if (event.getEntity() instanceof Consumable && event.getOther() instanceof Living) {
             livingHitConsumable((Living) event.getOther(), (Consumable) event.getEntity());
         }
+        event.stop();
     }
 
     private void projectileHitAny(Projectile projectile, Entity other) {

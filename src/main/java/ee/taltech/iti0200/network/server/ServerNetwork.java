@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.application.RecreateException;
 import ee.taltech.iti0200.di.annotations.ServerClients;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
