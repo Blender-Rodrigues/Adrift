@@ -3,8 +3,6 @@ package ee.taltech.iti0200.di.factory;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.graphics.renderer.Animateable;
 import ee.taltech.iti0200.graphics.Animation;
-import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.CoordinateConverter;
 import ee.taltech.iti0200.graphics.renderer.Drawable;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.graphics.renderer.RotatingDrawable;
@@ -17,15 +15,11 @@ import static org.mockito.Mockito.mock;
 
 class EntityRendererFactoryTest {
 
-    private CoordinateConverter converter;
-    private Camera camera;
     private RendererFactory factory;
     private Score score;
 
     @BeforeEach
     void setUp() {
-        converter = mock(CoordinateConverter.class);
-        camera = mock(Camera.class);
         score = mock(Score.class);
         factory = new RendererFactory(score);
     }
