@@ -13,7 +13,7 @@ public class Gun extends Entity implements Rotatable {
     protected long cooldown = 0;
     protected int damage = 10;
     protected long fireRate = 90;
-    protected double projectileSpeed = 5;
+    protected double projectileSpeed = 3;
 
     public Gun(BoundingBox boundingBox) {
         super(0, boundingBox);

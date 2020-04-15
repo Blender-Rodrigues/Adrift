@@ -18,8 +18,8 @@ public class GunShotHandler implements Subscriber<GunShot> {
 
     private final Logger logger = LogManager.getLogger(GunShotHandler.class);
 
-    private World world;
-    private EventBus eventBus;
+    private final World world;
+    private final EventBus eventBus;
 
     @Inject
     public GunShotHandler(World world, EventBus eventBus) {
