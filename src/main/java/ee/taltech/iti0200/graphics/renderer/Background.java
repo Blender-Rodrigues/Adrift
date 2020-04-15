@@ -45,9 +45,8 @@ public class Background implements Renderer {
 
     @Override
     public void render(Shader shader, Camera camera, long tick) {
-        transform.scale = new Vector3f(30, 30, 1);
-        Vector3f location = new Vector3f(-camera.getPosition().x, -camera.getPosition().y, 0);
-        transform.pos.set(location);
+        transform.scale = new Vector3f(camera.getWidth()*camera.getZoom()/2, camera.getHeight()*camera.getZoom()/2, 1);
+        transform.pos.set(new Vector3f(-camera.getPosition().x, -camera.getPosition().y, 0));
 
         shader.bind();
         shader.setUniform("sampler", 0);
