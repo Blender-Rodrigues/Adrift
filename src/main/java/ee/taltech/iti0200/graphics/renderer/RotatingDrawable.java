@@ -36,16 +36,7 @@ public class RotatingDrawable extends Drawable {
     protected void setShaderRotation(Shader shader) {
         Matrix4f rotation = getRotation();
 
-        Vector cameraVector = converter.physicsToCamera(entity.getBoundingBox().getCentre());
-        cameraVector.setX(cameraVector.getX() * 2 / (camera.getZoom() * camera.getWidth()));
-        cameraVector.setY(- cameraVector.getY() * 2 / (camera.getZoom() * camera.getHeight()));
-
-        Matrix4f locationMatrix = new Matrix4f().setTranslation((float) cameraVector.getX(), (float) cameraVector.getY(), 0);
-        Matrix4f inverseLocationMatrix = new Matrix4f().setTranslation((float) - cameraVector.getX(), (float) - cameraVector.getY(), 0);
-
         shader.setUniform("rotation", rotation);
-        shader.setUniform("location", locationMatrix);
-        shader.setUniform("inverseLocation", inverseLocationMatrix);
     }
 
     private Matrix4f getRotation() {
