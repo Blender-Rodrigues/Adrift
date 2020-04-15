@@ -47,7 +47,7 @@ public class Background implements Renderer {
 
     @Override
     public void render(Shader shader, Camera camera, long tick) {
-        transform.scale = new Vector3f(camera.getWidth()*camera.getZoom()/2, camera.getHeight()*camera.getZoom()/2, 1);
+        transform.scale = new Vector3f(camera.getWidth() * camera.getZoom() / 2, camera.getHeight() * camera.getZoom() / 2, 1);
 
         shader.bind();
         shader.setUniform("sampler", 0);
@@ -57,7 +57,7 @@ public class Background implements Renderer {
         backgroundImage.bind(0);
         model.render();
 
-        transform.pos.set(new Vector3f(-camera.getPosition().x/1.05f + 20, -camera.getPosition().y, 0));
+        transform.pos.set(new Vector3f(-camera.getPosition().x / 1.05f + 20, -camera.getPosition().y, 0));
         shader.setUniform("projection", transform.getProjection(camera.getProjection()));
         belt.bind(0);
         model.render();
