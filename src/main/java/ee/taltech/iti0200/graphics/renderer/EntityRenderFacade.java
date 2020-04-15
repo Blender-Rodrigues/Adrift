@@ -136,6 +136,8 @@ public class EntityRenderFacade implements Renderer {
         Animation botMovingRight = visualFactory.create(4, "bot/animations/", "bot.right", 10);
         Animation botMovingLeft = visualFactory.create(4, "bot/animations/", "bot.left", 10);
         Animation botIdle = visualFactory.create(6, "bot/animations/", "bot.idle", 15);
+        Texture botJumpingRight = visualFactory.create("bot/stills/", "bot.jumping.right");
+        Texture botJumpingLeft = visualFactory.create("bot/stills/", "bot.jumping.left");
 
         HashMap<String, Supplier<EntityRenderer>> defaultRenderer = new HashMap<>();
         defaultRenderer.put(DEFAULT, () -> rendererFactory.create(defaultTexture));
@@ -150,14 +152,10 @@ public class EntityRenderFacade implements Renderer {
         renderers.put(FastGun.class, smgRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> playerRenderer = new HashMap<>();
-//        playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight));
-//        playerRenderer.put("RUNNING.LEFT", () -> rendererFactory.create(playerRunningLeft));
-//        playerRenderer.put("IDLE.RIGHT", () -> rendererFactory.create(playerIdleRight));
-//        playerRenderer.put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft));
-        playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(botMovingRight));
-        playerRenderer.put("RUNNING.LEFT", () -> rendererFactory.create(botMovingLeft));
-        playerRenderer.put("IDLE.RIGHT", () -> rendererFactory.create(botIdle));
-        playerRenderer.put("IDLE.LEFT", () -> rendererFactory.create(botIdle));
+        playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight));
+        playerRenderer.put("RUNNING.LEFT", () -> rendererFactory.create(playerRunningLeft));
+        playerRenderer.put("IDLE.RIGHT", () -> rendererFactory.create(playerIdleRight));
+        playerRenderer.put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft));
 
         playerRenderer.put("JUMPING.RIGHT", () -> rendererFactory.create(playerJumpingRight));
         playerRenderer.put("JUMPING.LEFT", () -> rendererFactory.create(playerJumpingLeft));
