@@ -10,9 +10,11 @@ import static java.lang.String.format;
 
 public class LoadWorld implements Message {
 
-    private List<Entity> entities;
-    private Receiver receiver;
-    private Vector spawn;
+    private static final long serialVersionUID = 1L;
+
+    private final List<Entity> entities;
+    private final Receiver receiver;
+    private final Vector spawn;
 
     public LoadWorld(List<Entity> entities, Vector spawn, Receiver receiver) {
         this.entities = entities;

@@ -12,7 +12,9 @@ import static java.lang.String.format;
 
 public class RemoveEntity extends Event implements Message {
 
-    private UUID id;
+    private static final long serialVersionUID = 1L;
+
+    private final UUID id;
 
     public RemoveEntity(Entity entity, Receiver receiver) {
         this(entity.getId(), receiver);

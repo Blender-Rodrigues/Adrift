@@ -10,8 +10,10 @@ import static java.lang.String.format;
 
 public class CreateEntity extends Event {
 
-    private Entity entity;
-    private UUID id;
+    private static final long serialVersionUID = 1L;
+
+    private final Entity entity;
+    private final UUID id;
 
     public CreateEntity(Entity entity, Receiver receiver) {
         super(receiver);

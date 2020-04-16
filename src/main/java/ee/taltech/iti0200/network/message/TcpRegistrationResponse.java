@@ -6,8 +6,10 @@ import static java.lang.String.format;
 
 public class TcpRegistrationResponse implements Message {
 
-    private int udpPort;
-    private Receiver receiver;
+    private static final long serialVersionUID = 1L;
+
+    private final int udpPort;
+    private final Receiver receiver;
 
     public TcpRegistrationResponse(int udpPort, Receiver receiver) {
         this.udpPort = udpPort;
