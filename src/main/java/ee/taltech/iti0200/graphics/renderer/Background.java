@@ -19,26 +19,7 @@ public class Background implements Renderer {
 
     @Override
     public void initialize() throws IOException {
-        float[] vertices = new float[]{
-            -1f, 1f, 0,
-            1f, 1f, 0,
-            1f, -1f, 0,
-            -1f, -1f, 0
-        };
-
-        float[] texture = new float[]{
-            0, 0,
-            1, 0,
-            1, 1,
-            0, 1
-        };
-
-        int[] indices = new int[]{
-            0, 1, 2,
-            2, 3, 0
-        };
-
-        model = new Model(vertices, texture, indices);
+        model = createSquare();
         transform = new Transform();
 
         backgroundImage = new Texture("world/", "background");
@@ -47,7 +28,8 @@ public class Background implements Renderer {
 
     @Override
     public void render(Shader shader, Camera camera, long tick) {
-        transform.scale = new Vector3f(camera.getWidth() * camera.getZoom() / 2, camera.getHeight() * camera.getZoom() / 2, 1);
+        float[] dimensions = getDimensions(camera);
+        transform.scale = new Vector3f(dimensions[0] * camera.getZoom() / 2, dimensions[1] * camera.getZoom() / 2, 1);
 
         shader.bind();
         shader.setUniform("sampler", 0);
@@ -61,6 +43,22 @@ public class Background implements Renderer {
         shader.setUniform("projection", transform.getProjection(camera.getProjection()));
         belt.bind(0);
         model.render();
+    }
+
+    private float[] getDimensions(Camera camera) {
+        float cameraWidth = camera.getWidth();
+        float cameraHeight = camera.getHeight();
+        float bgWidth = backgroundImage.getWidth();
+        float bgHeight = backgroundImage.getHeight();
+
+        float cameraRatio = cameraWidth / cameraHeight;
+        float backgroundRatio = bgWidth / bgHeight;
+
+        if (cameraRatio >= backgroundRatio) {
+            return new float[] {cameraWidth, cameraWidth / backgroundRatio};
+        } else {
+            return new float[] {cameraHeight * backgroundRatio, cameraHeight};
+        }
     }
 
 }
