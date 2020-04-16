@@ -41,7 +41,7 @@ public class Terrain extends Damageable {
         } else if (health > 10) {
             texture = "hurt_" + textureId;
         } else {
-            texture = "damaged_" + random.nextInt(2);
+            texture = "damaged_" + textureId;
         }
     }
 

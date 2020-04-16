@@ -131,6 +131,11 @@ public class EntityRenderFacade implements Renderer {
         Texture terrainHurt6 = visualFactory.create("world/", "hurt_6");
         Texture terrainDamaged0 = visualFactory.create("world/", "damaged_0");
         Texture terrainDamaged1 = visualFactory.create("world/", "damaged_1");
+        Texture terrainDamaged2 = visualFactory.create("world/", "damaged_2");
+        Texture terrainDamaged3 = visualFactory.create("world/", "damaged_3");
+        Texture terrainDamaged4 = visualFactory.create("world/", "damaged_4");
+        Texture terrainDamaged5 = visualFactory.create("world/", "damaged_5");
+        Texture terrainDamaged6 = visualFactory.create("world/", "damaged_6");
 
         Texture defaultTexture = visualFactory.create("", "default");
         Texture pistolTexture = visualFactory.create("gun/", "scoped_pistol");
@@ -203,6 +208,11 @@ public class EntityRenderFacade implements Renderer {
         terrainRenderer.put("hurt_6", () -> rendererFactory.create(terrainHurt6));
         terrainRenderer.put("damaged_0", () -> rendererFactory.create(terrainDamaged0));
         terrainRenderer.put("damaged_1", () -> rendererFactory.create(terrainDamaged1));
+        terrainRenderer.put("damaged_2", () -> rendererFactory.create(terrainDamaged2));
+        terrainRenderer.put("damaged_3", () -> rendererFactory.create(terrainDamaged3));
+        terrainRenderer.put("damaged_4", () -> rendererFactory.create(terrainDamaged4));
+        terrainRenderer.put("damaged_5", () -> rendererFactory.create(terrainDamaged5));
+        terrainRenderer.put("damaged_6", () -> rendererFactory.create(terrainDamaged6));
         renderers.put(Terrain.class, terrainRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> projectileRenderer = new HashMap<>();
