@@ -115,7 +115,23 @@ public class EntityRenderFacade implements Renderer {
     }
 
     private void createRenderers() throws IOException {
-        Texture terrainTexture = visualFactory.create("world/", "concrete");
+        Texture terrainHealthy0 = visualFactory.create("world/", "healthy_0");
+        Texture terrainHealthy1 = visualFactory.create("world/", "healthy_1");
+        Texture terrainHealthy2 = visualFactory.create("world/", "healthy_2");
+        Texture terrainHealthy3 = visualFactory.create("world/", "healthy_3");
+        Texture terrainHealthy4 = visualFactory.create("world/", "healthy_4");
+        Texture terrainHealthy5 = visualFactory.create("world/", "healthy_5");
+        Texture terrainHealthy6 = visualFactory.create("world/", "healthy_6");
+        Texture terrainHurt0 = visualFactory.create("world/", "hurt_0");
+        Texture terrainHurt1 = visualFactory.create("world/", "hurt_1");
+        Texture terrainHurt2 = visualFactory.create("world/", "hurt_2");
+        Texture terrainHurt3 = visualFactory.create("world/", "hurt_3");
+        Texture terrainHurt4 = visualFactory.create("world/", "hurt_4");
+        Texture terrainHurt5 = visualFactory.create("world/", "hurt_5");
+        Texture terrainHurt6 = visualFactory.create("world/", "hurt_6");
+        Texture terrainDamaged0 = visualFactory.create("world/", "damaged_0");
+        Texture terrainDamaged1 = visualFactory.create("world/", "damaged_1");
+
         Texture defaultTexture = visualFactory.create("", "default");
         Texture pistolTexture = visualFactory.create("gun/", "scoped_pistol");
         Texture smgTexture = visualFactory.create("gun/", "smg");
@@ -171,7 +187,22 @@ public class EntityRenderFacade implements Renderer {
         renderers.put(Bot.class, botRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> terrainRenderer = new HashMap<>();
-        terrainRenderer.put(DEFAULT, () -> rendererFactory.create(terrainTexture));
+        terrainRenderer.put("healthy_0", () -> rendererFactory.create(terrainHealthy0));
+        terrainRenderer.put("healthy_1", () -> rendererFactory.create(terrainHealthy1));
+        terrainRenderer.put("healthy_2", () -> rendererFactory.create(terrainHealthy2));
+        terrainRenderer.put("healthy_3", () -> rendererFactory.create(terrainHealthy3));
+        terrainRenderer.put("healthy_4", () -> rendererFactory.create(terrainHealthy4));
+        terrainRenderer.put("healthy_5", () -> rendererFactory.create(terrainHealthy5));
+        terrainRenderer.put("healthy_6", () -> rendererFactory.create(terrainHealthy6));
+        terrainRenderer.put("hurt_0", () -> rendererFactory.create(terrainHurt0));
+        terrainRenderer.put("hurt_1", () -> rendererFactory.create(terrainHurt1));
+        terrainRenderer.put("hurt_2", () -> rendererFactory.create(terrainHurt2));
+        terrainRenderer.put("hurt_3", () -> rendererFactory.create(terrainHurt3));
+        terrainRenderer.put("hurt_4", () -> rendererFactory.create(terrainHurt4));
+        terrainRenderer.put("hurt_5", () -> rendererFactory.create(terrainHurt5));
+        terrainRenderer.put("hurt_6", () -> rendererFactory.create(terrainHurt6));
+        terrainRenderer.put("damaged_0", () -> rendererFactory.create(terrainDamaged0));
+        terrainRenderer.put("damaged_1", () -> rendererFactory.create(terrainDamaged1));
         renderers.put(Terrain.class, terrainRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> projectileRenderer = new HashMap<>();
