@@ -7,7 +7,9 @@ import ee.taltech.iti0200.network.message.Receiver;
 
 public class DropLoot extends Event implements Message {
 
-    private Living victim;
+    private static final long serialVersionUID = 1L;
+
+    private final Living victim;
 
     public DropLoot(Living victim, Receiver receiver) {
         super(receiver);

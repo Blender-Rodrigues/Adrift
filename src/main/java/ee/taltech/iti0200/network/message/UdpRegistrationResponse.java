@@ -4,7 +4,9 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 public class UdpRegistrationResponse implements Message {
 
-    private Receiver receiver;
+    private static final long serialVersionUID = 1L;
+
+    private final Receiver receiver;
 
     public UdpRegistrationResponse(Receiver receiver) {
         this.receiver = receiver;

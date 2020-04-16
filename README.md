@@ -61,6 +61,7 @@ Setting up the container for the game:
 ```
 docker build -t jaakkytt/escape-from-eros:latest -f ci/Dockerfile .
 docker push jaakkytt/escape-from-eros:latest
+docker pull jaakkytt/escape-from-eros:latest
 docker run -d --network host --restart=always --name escape-from-eros jaakkytt/escape-from-eros:latest
 ```
 

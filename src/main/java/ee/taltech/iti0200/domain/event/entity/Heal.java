@@ -1,6 +1,5 @@
 package ee.taltech.iti0200.domain.event.entity;
 
-import ee.taltech.iti0200.domain.entity.DamageSource;
 import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.HealingSource;
 import ee.taltech.iti0200.domain.event.Event;
@@ -12,8 +11,10 @@ import static java.lang.String.format;
 
 public class Heal extends Event implements Message {
 
-    private HealingSource source;
-    private Damageable target;
+    private static final long serialVersionUID = 1L;
+
+    private final HealingSource source;
+    private final Damageable target;
 
     public Heal(HealingSource source, Damageable target, Receiver receiver) {
         super(receiver);

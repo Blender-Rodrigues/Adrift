@@ -12,9 +12,11 @@ import static java.lang.String.format;
 
 public class UpdateVector extends Event {
 
-    private UUID id;
-    private Vector position;
-    private Vector speed;
+    private static final long serialVersionUID = 1L;
+
+    private final UUID id;
+    private final Vector position;
+    private final Vector speed;
 
     public UpdateVector(Entity entity, Receiver receiver) {
         super(receiver);

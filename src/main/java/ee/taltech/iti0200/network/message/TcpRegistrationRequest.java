@@ -8,7 +8,9 @@ import static java.lang.String.format;
 
 public class TcpRegistrationRequest implements Message {
 
-    private UUID id;
+    private static final long serialVersionUID = 1L;
+
+    private final UUID id;
     private int udpPort;
 
     public TcpRegistrationRequest(UUID id, int udpPort) {
