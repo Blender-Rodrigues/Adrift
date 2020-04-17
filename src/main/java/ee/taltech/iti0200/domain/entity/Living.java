@@ -15,6 +15,7 @@ public class Living extends Damageable {
     protected transient World world;
     protected boolean alive = true;
     protected List<Gun> weapons;
+    protected List<Equipment> equipment;
     protected Gun activeGun;
 
     protected enum Action {
@@ -33,6 +34,7 @@ public class Living extends Damageable {
         this.world = world;
         this.movable = true;
         this.weapons = new ArrayList<>();
+        this.equipment = new ArrayList<>();
     }
 
     public Gun getActiveGun() {
@@ -47,11 +49,16 @@ public class Living extends Damageable {
 
     public void addWeapon(Gun weapon) {
         weapons.add(weapon);
+        equipment.add(weapon);
         weapon.setOwner(this);
     }
 
     public List<Gun> getWeapons() {
         return weapons;
+    }
+
+    public List<Equipment> getEquipment() {
+        return equipment;
     }
 
     public void setWorld(World world) {

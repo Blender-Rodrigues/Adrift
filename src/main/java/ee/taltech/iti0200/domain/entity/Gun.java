@@ -2,27 +2,23 @@ package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
-import ee.taltech.iti0200.graphics.renderer.Renderer;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-import static ee.taltech.iti0200.graphics.renderer.EntityRenderFacade.DEFAULT;
 
-public class Gun extends Entity implements Rotatable {
+public class Gun extends Equipment implements Rotatable {
 
     private static final long serialVersionUID = 1L;
 
-    private Living owner;
     private Vector pointedAt = new Vector(1, 0);
 
     protected long cooldown = 0;
     protected int damage = 10;
     protected long fireRate = 90;
     protected double projectileSpeed = 3;
-    protected boolean isActive;
 
     public Gun(BoundingBox boundingBox) {
-        super(0, boundingBox);
+        super(boundingBox);
     }
 
     public Gun setOwner(Living owner) {
@@ -57,21 +53,9 @@ public class Gun extends Entity implements Rotatable {
         return pointedAt;
     }
 
-    public Living getOwner() {
-        return owner;
-    }
-
     public void setRotation(Vector pointedAt) {
         this.pointedAt = new Vector(pointedAt);
         this.pointedAt.normalize();
-    }
-
-    public Renderer getRenderer() {
-        return renderers.get(DEFAULT);
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     @Override

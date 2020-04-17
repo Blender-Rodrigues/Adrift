@@ -1,14 +1,12 @@
 package ee.taltech.iti0200.graphics.renderer;
 
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.Equipment;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.Transform;
 import org.joml.Vector3f;
-
-import java.io.IOException;
 
 
 public class ToolbarRenderer implements Renderer {
@@ -22,7 +20,7 @@ public class ToolbarRenderer implements Renderer {
     }
 
     @Override
-    public void initialize() throws IOException {
+    public void initialize() {
         model = createSquare();
         transform = new Transform();
         transform.scale = new Vector3f(1f, 1f, 1);
@@ -38,9 +36,9 @@ public class ToolbarRenderer implements Renderer {
 
         float offset = (-1f * (player.getWeapons().size() - 1));
         transform.pos.add(offset, 0, 0);
-        for (Gun weapon : player.getWeapons()) {
+        for (Equipment equipment : player.getEquipment()) {
             shader.setUniform("projection", transform.getProjection(camera.getProjection()));
-            ((RotatingDrawable) weapon.getRenderer()).getTexture().bind(0);
+            ((Drawable) equipment.getRenderer()).getTexture().bind(0);
             model.render();
             transform.pos.add(2f, 0, 0);
         }
