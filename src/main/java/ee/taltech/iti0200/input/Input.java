@@ -17,6 +17,11 @@ import java.util.Map;
 import java.util.Set;
 
 import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_1;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_2;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_3;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_4;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_5;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
@@ -74,6 +79,12 @@ public class Input implements Component {
         bind(new KeyEvent(GLFW_KEY_LEFT, camera::moveLeft, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_UP, camera::moveUp, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_DOWN, camera::moveDown, GLFW_PRESS, GLFW_REPEAT));
+
+        bind(new KeyEvent(GLFW_KEY_1, () -> player.setActiveGun(0), GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_2, () -> player.setActiveGun(1), GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_3, () -> player.setActiveGun(2), GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_4, () -> player.setActiveGun(3), GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_5, () -> player.setActiveGun(4), GLFW_PRESS));
 
         bind(new KeyEvent(GLFW_KEY_I, camera::zoomIn, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_O, camera::zoomOut, GLFW_PRESS, GLFW_REPEAT));

@@ -30,13 +30,17 @@ public class ToolbarRenderer implements Renderer {
         shader.bind();
         shader.setUniform("sampler", 0);
 
-        float offset = -player.getWeapons().size();
-        projection.translate(0.75f * offset, 0, 0);
+        projection.translate(-0.75f * player.getEquipment().size(), 0, 0);
+
         for (Equipment equipment : player.getEquipment()) {
+            float offset = equipment.isActive() ? 0.5f : 0;
+
+            projection.translate(0, offset, 0);
             shader.setUniform("projection", projection);
+            projection.translate(1.5f, -offset, 0);
+
             ((Drawable) equipment.getRenderer()).getTexture().bind(0);
             model.render();
-            projection.translate(1.5f, 0, 0);
         }
     }
 

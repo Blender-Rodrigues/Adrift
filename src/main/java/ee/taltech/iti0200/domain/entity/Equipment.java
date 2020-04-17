@@ -32,4 +32,8 @@ public class Equipment extends Entity {
         isActive = active;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
 }

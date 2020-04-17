@@ -42,6 +42,7 @@ public class Living extends Damageable {
     }
 
     public void setActiveGun(int index) {
+        if (weapons.size() - 1 < index) return;
         if (activeGun != null) activeGun.setActive(false);
         activeGun = weapons.get(index);
         activeGun.setActive(true);
