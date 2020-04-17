@@ -39,7 +39,8 @@ public class BotFactory {
     public Bot create() {
         HealthyBrain brain = new HealthyBrain(world);
         Bot bot = new Bot(world.nextPlayerSpawnPoint(), world, brain);
-        bot.setGun(new Gun(bot.getBoundingBox()));
+        bot.addWeapon(new Gun(bot.getBoundingBox()));
+        bot.setActiveGun(0);
 
         HashMap<Class<? extends Event>, Subscriber<? extends Event>> subscribers = new HashMap<>();
         subscribers.put(DealDamage.class, new BotHurtHandler(bot));

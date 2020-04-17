@@ -1,7 +1,12 @@
 package ee.taltech.iti0200.domain.entity;
 
+import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.renderer.Renderer;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
+
+import static ee.taltech.iti0200.graphics.renderer.EntityRenderFacade.DEFAULT;
 
 public class Gun extends Entity implements Rotatable {
 
@@ -14,6 +19,7 @@ public class Gun extends Entity implements Rotatable {
     protected int damage = 10;
     protected long fireRate = 90;
     protected double projectileSpeed = 3;
+    protected boolean isActive;
 
     public Gun(BoundingBox boundingBox) {
         super(0, boundingBox);
@@ -60,4 +66,16 @@ public class Gun extends Entity implements Rotatable {
         this.pointedAt.normalize();
     }
 
+    public Renderer getRenderer() {
+        return renderers.get(DEFAULT);
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    @Override
+    public void render(Shader shader, Camera camera, long tick) {
+        if (isActive) super.render(shader, camera, tick);
+    }
 }

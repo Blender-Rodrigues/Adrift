@@ -5,13 +5,17 @@ import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.BoundingBox;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Living extends Damageable {
 
     private static final long serialVersionUID = 1L;
 
     protected transient World world;
     protected boolean alive = true;
-    protected Gun gun;
+    protected List<Gun> weapons;
+    protected Gun activeGun;
 
     protected enum Action {
         RUNNING, JUMPING, FALLING, IDLE;
@@ -28,15 +32,26 @@ public class Living extends Damageable {
         super(mass, boundingBox, health);
         this.world = world;
         this.movable = true;
+        this.weapons = new ArrayList<>();
     }
 
-    public Gun getGun() {
-        return gun;
+    public Gun getActiveGun() {
+        return activeGun;
     }
 
-    public void setGun(Gun gun) {
-        this.gun = gun;
-        gun.setOwner(this);
+    public void setActiveGun(int index) {
+        if (activeGun != null) activeGun.setActive(false);
+        activeGun = weapons.get(index);
+        activeGun.setActive(true);
+    }
+
+    public void addWeapon(Gun weapon) {
+        weapons.add(weapon);
+        weapon.setOwner(this);
+    }
+
+    public List<Gun> getWeapons() {
+        return weapons;
     }
 
     public void setWorld(World world) {
@@ -61,4 +76,5 @@ public class Living extends Damageable {
         super.render(shader, camera, tick);
         renderers.get("healthBar").render(shader, camera, tick);
     }
+
 }

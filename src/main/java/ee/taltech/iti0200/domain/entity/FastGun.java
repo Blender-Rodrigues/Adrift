@@ -8,7 +8,7 @@ public class FastGun extends Gun {
 
     public FastGun(BoundingBox boundingBox) {
         super(boundingBox);
-        fireRate = 20;
+        fireRate = 7;
     }
 
 }

@@ -39,7 +39,7 @@ class BotTest {
         Gun gun = mock(Gun.class);
 
         Bot bot = new Bot(position, world, null);
-        bot.setGun(gun);
+        bot.setActiveGun(gun);
 
         bot.setSpeed(new Vector(5, 10));
 

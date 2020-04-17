@@ -97,7 +97,7 @@ public class Input implements Component {
     }
 
     private void playerShoot() {
-        Gun gun = player.getGun();
+        Gun gun = player.getActiveGun();
         if (player.isAlive() && gun != null && gun.canShoot(currentTick)) {
             eventBus.dispatch(new GunShot(gun, player.getLookingAt(), EVERYONE));
         }

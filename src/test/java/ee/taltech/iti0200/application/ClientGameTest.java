@@ -104,7 +104,7 @@ class ClientGameTest {
     void initializePreparesPlayerForWorld() {
         game.run();
 
-        verify(player).setGun(any(FastGun.class));
+        verify(player).setActiveGun(any(FastGun.class));
         verify(world).addEntity(player);
         verify(score).addPlayer(player);
     }

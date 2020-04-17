@@ -66,7 +66,7 @@ class EntityRenderFacadeTest {
         Gun gun = mock(Gun.class);
 
         when(world.getEntities()).thenReturn(asList(bot, terrain));
-        when(bot.getGun()).thenReturn(gun);
+        when(bot.getActiveGun()).thenReturn(gun);
 
         when(camera.getPosition()).thenReturn(new Vector3f(5, 5, 0));
         when(camera.getZoom()).thenReturn(1f);

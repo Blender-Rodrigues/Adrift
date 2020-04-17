@@ -55,7 +55,7 @@ public class GunShotHandler implements Subscriber<GunShot> {
             return false;
         }
 
-        Gun serverGun = local.getGun();
+        Gun serverGun = local.getActiveGun();
         if (!serverGun.getId().equals(gun.getId())) {
             logger.debug("Gun has been switched on the server side");
             return false;

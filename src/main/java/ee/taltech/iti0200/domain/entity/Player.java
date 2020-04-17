@@ -72,7 +72,7 @@ public class Player extends Living {
         targetPosition.sub(boundingBox.getCentre());
         targetPosition.normalize();
         lookingAt = targetPosition;
-        gun.setRotation(lookingAt);
+        activeGun.setRotation(lookingAt);
     }
 
     public Vector getLookingAt() {

@@ -55,7 +55,9 @@ public class EntityRenderFacade implements Renderer {
         world.getEntities().forEach(entity -> {
             decorate(entity);
             if (entity instanceof Living) {
-                decorate(((Living) entity).getGun());
+                for (Gun weapon : ((Living) entity).getWeapons()) {
+                    decorate(weapon);
+                }
             }
         });
     }
@@ -84,7 +86,7 @@ public class EntityRenderFacade implements Renderer {
             }
             entity.render(shader, camera, tick);
             if (entity instanceof Living) {
-                Gun gun = ((Living) entity).getGun();
+                Gun gun = ((Living) entity).getActiveGun();
                 if (gun != null) {
                     gun.render(shader, camera, tick);
                 }
@@ -164,6 +166,11 @@ public class EntityRenderFacade implements Renderer {
         HashMap<String, Supplier<EntityRenderer>> defaultRenderer = new HashMap<>();
         defaultRenderer.put(DEFAULT, () -> rendererFactory.create(defaultTexture));
         renderers.put(Entity.class, defaultRenderer);
+
+//        HashMap<String, Supplier<EntityRenderer>> weaponRenderer = new HashMap<>();
+//        weaponRenderer.put("PISTOL", () -> rendererFactory.create(pistolTexture, RotatingDrawable.class));
+//        weaponRenderer.put("SMG", () -> rendererFactory.create(smgTexture, RotatingDrawable.class));
+//        renderers.put(Gun.class, weaponRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> pistolRenderer = new HashMap<>();
         pistolRenderer.put(DEFAULT, () -> rendererFactory.create(pistolTexture, RotatingDrawable.class));

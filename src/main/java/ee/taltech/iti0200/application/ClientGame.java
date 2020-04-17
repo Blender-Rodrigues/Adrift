@@ -5,6 +5,7 @@ import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.FastGun;
+import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.UpdateScore;
@@ -86,7 +87,11 @@ public class ClientGame extends Game {
 
     @Override
     protected void initialize() {
-        player.setGun(new FastGun(player.getBoundingBox()));
+        player.addWeapon(new FastGun(player.getBoundingBox()));
+        player.addWeapon(new Gun(player.getBoundingBox()));
+        player.addWeapon(new Gun(player.getBoundingBox()));
+        player.addWeapon(new Gun(player.getBoundingBox()));
+        player.setActiveGun(0);
         world.addEntity(player);
 
         logger.info("Added {} to the world", player);
