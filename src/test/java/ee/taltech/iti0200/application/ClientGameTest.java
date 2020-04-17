@@ -2,7 +2,7 @@ package ee.taltech.iti0200.application;
 
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.FastGun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.client.ClientGunShotHandler;
@@ -104,7 +104,7 @@ class ClientGameTest {
     void initializePreparesPlayerForWorld() {
         game.run();
 
-        verify(player).setActiveGun(any(FastGun.class));
+        verify(player).setActiveGun(0);
         verify(world).addEntity(player);
         verify(score).addPlayer(player);
     }

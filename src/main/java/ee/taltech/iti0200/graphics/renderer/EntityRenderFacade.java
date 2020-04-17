@@ -6,13 +6,13 @@ import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.FastGun;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
-import ee.taltech.iti0200.domain.entity.SpecialGun;
+import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.domain.entity.Terrain;
 
 import ee.taltech.iti0200.graphics.Camera;

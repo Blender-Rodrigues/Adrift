@@ -2,7 +2,7 @@ package ee.taltech.iti0200.domain.event.server;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;

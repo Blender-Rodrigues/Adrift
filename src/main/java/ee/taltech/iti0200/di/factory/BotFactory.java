@@ -8,7 +8,7 @@ import ee.taltech.iti0200.ai.Panic;
 import ee.taltech.iti0200.ai.Wander;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.event.Event;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.Subscriber;

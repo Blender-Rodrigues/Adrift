@@ -1,5 +1,6 @@
-package ee.taltech.iti0200.domain.entity;
+package ee.taltech.iti0200.domain.entity.equipment;
 
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.physics.BoundingBox;
 
 public class SpecialGun extends Gun {

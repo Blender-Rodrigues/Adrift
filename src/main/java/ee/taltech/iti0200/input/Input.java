@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.di.annotations.WindowId;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.GunShot;

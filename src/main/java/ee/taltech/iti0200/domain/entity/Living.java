@@ -1,6 +1,8 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.equipment.Equipment;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.BoundingBox;
@@ -19,11 +21,11 @@ public class Living extends Damageable {
     protected Gun activeGun;
 
     protected enum Action {
-        RUNNING, JUMPING, FALLING, IDLE;
+        RUNNING, JUMPING, FALLING, IDLE
     }
 
     protected enum Direction {
-        LEFT, RIGHT;
+        LEFT, RIGHT
     }
 
     protected Action action = Action.IDLE;

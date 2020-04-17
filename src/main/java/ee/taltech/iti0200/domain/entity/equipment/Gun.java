@@ -1,5 +1,8 @@
-package ee.taltech.iti0200.domain.entity;
+package ee.taltech.iti0200.domain.entity.equipment;
 
+import ee.taltech.iti0200.domain.entity.Living;
+import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.entity.Rotatable;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.BoundingBox;

@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.graphics.renderer;
 
-import ee.taltech.iti0200.domain.entity.Equipment;
+import ee.taltech.iti0200.domain.entity.equipment.Equipment;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Model;

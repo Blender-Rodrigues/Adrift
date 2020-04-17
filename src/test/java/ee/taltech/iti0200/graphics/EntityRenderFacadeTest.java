@@ -3,7 +3,7 @@ package ee.taltech.iti0200.graphics;
 import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
