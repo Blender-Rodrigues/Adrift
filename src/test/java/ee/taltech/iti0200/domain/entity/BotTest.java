@@ -40,6 +40,7 @@ class BotTest {
         Gun gun = mock(Gun.class);
 
         Bot bot = new Bot(position, world, null);
+        bot.addWeapon(gun);
         bot.setActiveGun(0);
 
         bot.setSpeed(new Vector(5, 10));
