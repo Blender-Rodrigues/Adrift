@@ -62,15 +62,9 @@ public class Alphabet {
     public void render(char letter, Camera camera, int x, int y, float size) {
         CharacterTexture texture = textures.get(letter);
 
-        Matrix4f projection = new Matrix4f();
-        projection.translate(-1, 1, 0);
-        projection.translate(size / camera.getWidth(), - size / camera.getHeight(), 0);
-        projection.translate(2f * x / camera.getWidth(), - 2f * y / camera.getHeight(), 0);
-        projection.scale(size / camera.getWidth(), size / camera.getHeight(), 1f);
-
         shader.bind();
         shader.setUniform("sampler", 0);
-        shader.setUniform("projection", projection);
+        shader.setUniform("projection", camera.getStaticProjection(x, y, size, size));
 
         texture.bind(0);
         model.render();
