@@ -7,6 +7,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.FastGun;
 import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.entity.SpecialGun;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.UpdateScore;
 import ee.taltech.iti0200.domain.event.client.ClientGunShotHandler;
@@ -87,10 +88,9 @@ public class ClientGame extends Game {
 
     @Override
     protected void initialize() {
+        player.addWeapon(new Gun(player.getBoundingBox()));
         player.addWeapon(new FastGun(player.getBoundingBox()));
-        player.addWeapon(new Gun(player.getBoundingBox()));
-        player.addWeapon(new Gun(player.getBoundingBox()));
-        player.addWeapon(new Gun(player.getBoundingBox()));
+        player.addWeapon(new SpecialGun(player.getBoundingBox()));
         player.setActiveGun(0);
         world.addEntity(player);
 

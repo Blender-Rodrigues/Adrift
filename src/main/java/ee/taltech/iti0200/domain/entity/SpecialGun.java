@@ -2,13 +2,14 @@ package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.physics.BoundingBox;
 
-public class FastGun extends Gun {
+public class SpecialGun extends Gun {
 
     private static final long serialVersionUID = 1L;
 
-    public FastGun(BoundingBox boundingBox) {
+    public SpecialGun(BoundingBox boundingBox) {
         super(boundingBox);
-        fireRate = 20;
+        projectileSpeed = 8;
+        damage = 30;
     }
 
 }

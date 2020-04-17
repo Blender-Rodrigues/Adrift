@@ -12,6 +12,7 @@ import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.entity.SpecialGun;
 import ee.taltech.iti0200.domain.entity.Terrain;
 
 import ee.taltech.iti0200.graphics.Camera;
@@ -142,6 +143,7 @@ public class EntityRenderFacade implements Renderer {
         Texture defaultTexture = visualFactory.create("", "default");
         Texture pistolTexture = visualFactory.create("gun/", "scoped_pistol");
         Texture smgTexture = visualFactory.create("gun/", "smg");
+        Texture greenPistolTexture = visualFactory.create("gun/", "green_pistol");
         Texture projectileTexture = visualFactory.create("projectile/", "bullet");
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
         Texture healthBarEmpty = visualFactory.create("overhead/", "healthBarEmpty");
@@ -179,6 +181,10 @@ public class EntityRenderFacade implements Renderer {
         HashMap<String, Supplier<EntityRenderer>> smgRenderer = new HashMap<>();
         smgRenderer.put(DEFAULT, () -> rendererFactory.create(smgTexture, RotatingDrawable.class));
         renderers.put(FastGun.class, smgRenderer);
+
+        HashMap<String, Supplier<EntityRenderer>> specialGunRenderer = new HashMap<>();
+        specialGunRenderer.put(DEFAULT, () -> rendererFactory.create(greenPistolTexture, RotatingDrawable.class));
+        renderers.put(SpecialGun.class, specialGunRenderer);
 
         HashMap<String, Supplier<EntityRenderer>> playerRenderer = new HashMap<>();
         playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight));
