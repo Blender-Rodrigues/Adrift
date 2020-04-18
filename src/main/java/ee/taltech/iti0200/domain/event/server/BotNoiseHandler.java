@@ -15,7 +15,7 @@ public class BotNoiseHandler implements Subscriber<GunShot> {
 
     @Override
     public void handle(GunShot event) {
-        if (bot.getGun().getId().equals(event.getGun().getId())) {
+        if (bot.getActiveGun().getId().equals(event.getGun().getId())) {
             return;
         }
 

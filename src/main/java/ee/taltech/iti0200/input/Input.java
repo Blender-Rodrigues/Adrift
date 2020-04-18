@@ -4,9 +4,10 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.di.annotations.WindowId;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.graphics.Camera;
 
@@ -17,6 +18,11 @@ import java.util.Map;
 import java.util.Set;
 
 import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_1;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_2;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_3;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_4;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_5;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
@@ -40,13 +46,14 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class Input implements Component {
 
-    private Player player;
-    private long window;
-    private Set<KeyEvent> events = new HashSet<>();
-    private Map<Integer, KeyEvent> bindings = new HashMap<>();
-    private Camera camera;
-    private Mouse mouse;
-    private EventBus eventBus;
+    private final Player player;
+    private final long window;
+    private final Set<KeyEvent> events = new HashSet<>();
+    private final Map<Integer, KeyEvent> bindings = new HashMap<>();
+    private final Camera camera;
+    private final Mouse mouse;
+    private final EventBus eventBus;
+
     private long currentTick;
 
     @Inject
@@ -75,6 +82,12 @@ public class Input implements Component {
         bind(new KeyEvent(GLFW_KEY_UP, camera::moveUp, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_DOWN, camera::moveDown, GLFW_PRESS, GLFW_REPEAT));
 
+        bind(new KeyEvent(GLFW_KEY_1, () -> changeSlot(0), GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_2, () -> changeSlot(1), GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_3, () -> changeSlot(2), GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_4, () -> changeSlot(3), GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_5, () -> changeSlot(4), GLFW_PRESS));
+
         bind(new KeyEvent(GLFW_KEY_I, camera::zoomIn, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_O, camera::zoomOut, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_F, camera::togglePlayerCam, GLFW_PRESS));
@@ -96,8 +109,12 @@ public class Input implements Component {
         }
     }
 
+    private void changeSlot(int slot) {
+        eventBus.dispatch(new ChangeEquipment(player, slot, EVERYONE));
+    }
+
     private void playerShoot() {
-        Gun gun = player.getGun();
+        Gun gun = player.getActiveGun();
         if (player.isAlive() && gun != null && gun.canShoot(currentTick)) {
             eventBus.dispatch(new GunShot(gun, player.getLookingAt(), EVERYONE));
         }

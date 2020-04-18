@@ -2,7 +2,7 @@ package ee.taltech.iti0200.domain.event.server;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
@@ -55,7 +55,7 @@ public class GunShotHandler implements Subscriber<GunShot> {
             return false;
         }
 
-        Gun serverGun = local.getGun();
+        Gun serverGun = local.getActiveGun();
         if (!serverGun.getId().equals(gun.getId())) {
             logger.debug("Gun has been switched on the server side");
             return false;

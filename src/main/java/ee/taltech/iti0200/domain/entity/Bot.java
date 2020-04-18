@@ -39,16 +39,16 @@ public class Bot extends Living {
     }
 
     public boolean canShoot(long tick) {
-        return gun != null && gun.canShoot(tick);
+        return activeGun != null && activeGun.canShoot(tick);
     }
 
     @Override
     public void setSpeed(Vector speed) {
         super.setSpeed(speed);
-        if (gun != null) {
+        if (activeGun != null) {
             Vector rotation = new Vector(speed);
             rotation.normalize();
-            gun.setRotation(rotation);
+            activeGun.setRotation(rotation);
         }
     }
 

@@ -6,12 +6,16 @@ import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.Layout;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.UpdateScore;
 import ee.taltech.iti0200.domain.event.client.UpdateScoreHandler;
+import ee.taltech.iti0200.domain.event.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.common.PlayerRespawnHandler;
+import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.DropLoot;
@@ -67,6 +71,7 @@ public class SinglePlayerGame extends Game {
         CollisionHandler collisionHandler,
         PlayerRespawnHandler respawnHandler,
         UpdateScoreHandler scoreHandler,
+        ChangeEquipmentHandler equipmentHandler,
         Score score
     ) {
         super(world, eventBus, timer);
@@ -90,6 +95,7 @@ public class SinglePlayerGame extends Game {
         eventBus.subscribe(EntityCollide.class, collisionHandler);
         eventBus.subscribe(RespawnPlayer.class, respawnHandler);
         eventBus.subscribe(UpdateScore.class, scoreHandler);
+        eventBus.subscribe(ChangeEquipment.class, equipmentHandler);
     }
 
     @Override
@@ -98,7 +104,10 @@ public class SinglePlayerGame extends Game {
         world.initialize();
 
         player.setPosition(world.nextPlayerSpawnPoint());
-        player.setGun(new FastGun(player.getBoundingBox()));
+        player.addWeapon(new Gun(player.getBoundingBox()));
+        player.addWeapon(new FastGun(player.getBoundingBox()));
+        player.addWeapon(new SpecialGun(player.getBoundingBox()));
+        player.setActiveGun(0);
 
         world.addEntity(player);
         logger.info("Added {} to the world", player);

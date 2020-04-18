@@ -19,4 +19,8 @@ public class Drawable extends EntityRenderer {
         model.render();
     }
 
+    public Texture getTexture() {
+        return texture;
+    }
+
 }

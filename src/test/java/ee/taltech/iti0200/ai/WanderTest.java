@@ -1,7 +1,7 @@
 package ee.taltech.iti0200.ai;
 
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.Test;
 

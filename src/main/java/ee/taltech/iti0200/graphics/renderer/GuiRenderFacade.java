@@ -5,31 +5,32 @@ import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
 
-
-import java.io.IOException;
-
 public class GuiRenderFacade implements Renderer {
 
-    private Alphabet alphabet;
+    private final RendererFactory rendererFactory;
+    private final ToolbarRenderer toolbar;
+
     private ScoreRenderer scoreRenderer;
-    private RendererFactory rendererFactory;
+    private Alphabet alphabet;
 
     @Inject
-    public GuiRenderFacade(RendererFactory rendererFactory) {
+    public GuiRenderFacade(RendererFactory rendererFactory, ToolbarRenderer toolbar, Alphabet alphabet) {
         this.rendererFactory = rendererFactory;
+        this.toolbar = toolbar;
+        this.alphabet = alphabet;
     }
 
     @Override
-    public void initialize() throws IOException {
-        alphabet = new Alphabet("fonts/", "basicFont");
+    public void initialize() {
         alphabet.initialize();
-
         scoreRenderer = rendererFactory.createScoreRenderer();
+        toolbar.initialize();
     }
 
     @Override
     public void render(Shader shader, Camera camera, long tick) {
         scoreRenderer.render(alphabet, camera);
+        toolbar.render(shader, camera, tick);
     }
 
 }

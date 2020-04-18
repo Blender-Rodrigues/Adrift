@@ -1,15 +1,13 @@
 package ee.taltech.iti0200.graphics.renderer;
 
 import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.CharacterTexture;
+import ee.taltech.iti0200.graphics.Image;
 import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
-import ee.taltech.iti0200.graphics.Image;
-import ee.taltech.iti0200.graphics.CharacterTexture;
 
 import java.io.IOException;
 import java.util.HashMap;
-
-import org.joml.Matrix4f;
 
 public class Alphabet {
 
@@ -62,15 +60,9 @@ public class Alphabet {
     public void render(char letter, Camera camera, int x, int y, float size) {
         CharacterTexture texture = textures.get(letter);
 
-        Matrix4f projection = new Matrix4f();
-        projection.translate(-1, 1, 0);
-        projection.translate(size / camera.getWidth(), - size / camera.getHeight(), 0);
-        projection.translate(2f * x / camera.getWidth(), - 2f * y / camera.getHeight(), 0);
-        projection.scale(size / camera.getWidth(), size / camera.getHeight(), 1f);
-
         shader.bind();
         shader.setUniform("sampler", 0);
-        shader.setUniform("projection", projection);
+        shader.setUniform("projection", camera.getStaticProjection(x, y, size, size));
 
         texture.bind(0);
         model.render();

@@ -2,12 +2,13 @@ package ee.taltech.iti0200.application;
 
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.FastGun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.client.ClientGunShotHandler;
 import ee.taltech.iti0200.domain.event.client.EntityDamageHandler;
 import ee.taltech.iti0200.domain.event.client.UpdateScoreHandler;
+import ee.taltech.iti0200.domain.event.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.common.EntityCreateHandler;
 import ee.taltech.iti0200.domain.event.common.EntityHealingHandler;
@@ -48,6 +49,7 @@ class ClientGameTest {
     PlayerRespawnHandler respawnHandler;
     UpdateScoreHandler scoreHandler;
     ClientGunShotHandler gunShotHandler;
+    ChangeEquipmentHandler equipmentHandler;
     Score score;
 
     private ClientGame game;
@@ -71,6 +73,7 @@ class ClientGameTest {
         respawnHandler = mock(PlayerRespawnHandler.class);
         scoreHandler = mock(UpdateScoreHandler.class);
         gunShotHandler = mock(ClientGunShotHandler.class);
+        equipmentHandler = mock(ChangeEquipmentHandler.class);
         score = mock(Score.class);
 
         game = new ClientGame(
@@ -91,20 +94,22 @@ class ClientGameTest {
             respawnHandler,
             scoreHandler,
             gunShotHandler,
+            equipmentHandler,
             score
         );
     }
 
     @Test
     void constructorSubscribesHandlers() {
-        verify(eventBus, times(9)).subscribe(any(), any());
+        verify(eventBus, times(10)).subscribe(any(), any());
     }
 
     @Test
     void initializePreparesPlayerForWorld() {
         game.run();
 
-        verify(player).setGun(any(FastGun.class));
+        verify(player).addWeapon(any(FastGun.class));
+        verify(player).setActiveGun(0);
         verify(world).addEntity(player);
         verify(score).addPlayer(player);
     }

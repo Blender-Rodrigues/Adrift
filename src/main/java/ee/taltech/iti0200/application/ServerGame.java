@@ -5,7 +5,9 @@ import ee.taltech.iti0200.ai.Intelligence;
 import ee.taltech.iti0200.domain.Layout;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.common.PlayerRespawnHandler;
+import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.CreatePlayer;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
@@ -52,7 +54,8 @@ public class ServerGame extends Game {
         MoveBodyHandler moveBodyHandler,
         PlayerJoinHandler playerJoinHandler,
         CollisionHandler collisionHandler,
-        PlayerRespawnHandler respawnHandler
+        PlayerRespawnHandler respawnHandler,
+        ChangeEquipmentHandler equipmentHandler
     ) {
         super(world, eventBus, timer);
         this.layout = layout;
@@ -72,6 +75,7 @@ public class ServerGame extends Game {
         eventBus.subscribe(CreatePlayer.class, playerJoinHandler);
         eventBus.subscribe(EntityCollide.class, collisionHandler);
         eventBus.subscribe(RespawnPlayer.class, respawnHandler);
+        eventBus.subscribe(ChangeEquipment.class, equipmentHandler);
     }
 
     @Override

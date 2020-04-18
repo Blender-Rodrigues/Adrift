@@ -1,22 +1,25 @@
-package ee.taltech.iti0200.domain.entity;
+package ee.taltech.iti0200.domain.entity.equipment;
 
+import ee.taltech.iti0200.domain.entity.Living;
+import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.entity.Rotatable;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
-public class Gun extends Entity implements Rotatable {
+
+public class Gun extends Equipment implements Rotatable {
 
     private static final long serialVersionUID = 1L;
 
-    private Living owner;
     private Vector pointedAt = new Vector(1, 0);
 
     protected long cooldown = 0;
     protected int damage = 10;
-    protected long fireRate = 90;
+    protected long fireRate = 60;
     protected double projectileSpeed = 3;
 
     public Gun(BoundingBox boundingBox) {
-        super(0, boundingBox);
+        super(boundingBox);
     }
 
     public Gun setOwner(Living owner) {
@@ -44,20 +47,20 @@ public class Gun extends Entity implements Rotatable {
         speed.normalize();
         speed.scale(projectileSpeed);
 
-        return new Projectile(new Vector(owner.getBoundingBox().getCentre()), speed, damage, owner);
+        return createProjectile(new Vector(owner.getBoundingBox().getCentre()), speed);
     }
 
     public Vector getRotation() {
         return pointedAt;
     }
 
-    public Living getOwner() {
-        return owner;
-    }
-
     public void setRotation(Vector pointedAt) {
         this.pointedAt = new Vector(pointedAt);
         this.pointedAt.normalize();
+    }
+
+    protected Projectile createProjectile(Vector position, Vector speed) {
+        return new Projectile(position, speed, damage, owner);
     }
 
 }

@@ -3,7 +3,7 @@ package ee.taltech.iti0200.graphics;
 import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
@@ -66,7 +66,7 @@ class EntityRenderFacadeTest {
         Gun gun = mock(Gun.class);
 
         when(world.getEntities()).thenReturn(asList(bot, terrain));
-        when(bot.getGun()).thenReturn(gun);
+        when(bot.getActiveGun()).thenReturn(gun);
 
         when(camera.getPosition()).thenReturn(new Vector3f(5, 5, 0));
         when(camera.getZoom()).thenReturn(1f);
