@@ -11,7 +11,7 @@ public class SpecialGun extends Gun {
 
     public SpecialGun(BoundingBox boundingBox) {
         super(boundingBox);
-        fireRate = 90;
+        fireRate = 80;
         damage = 50;
     }
 

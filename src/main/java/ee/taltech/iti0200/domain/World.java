@@ -78,7 +78,7 @@ public class World {
         return this;
     }
 
-    public Vector nextPlayerSpawnPoint() {
+    public Vector nextSpawnPoint() {
         Vector position = spawnPoints.pop();
         spawnPoints.addLast(position);
         return position;

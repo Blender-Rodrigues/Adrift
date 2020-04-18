@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.handler.server;
 
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
@@ -11,7 +11,6 @@ import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.DropLoot;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.domain.event.entity.RespawnPlayer;
-import ee.taltech.iti0200.domain.event.server.ServerDamageHandler;
 import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,7 +48,7 @@ class ServerEntityDamageHandlerTest {
         bullet = mock(Projectile.class);
         eventBus = mock(EventBus.class);
         killer = mock(Player.class);
-        victim = mock(Player.class);
+        victim = mock(Player.class, RETURNS_DEEP_STUBS);
 
         event = new DealDamage(bullet, victim, null);
         score = new Score();
@@ -75,8 +75,8 @@ class ServerEntityDamageHandlerTest {
         verify(eventBus, times(3)).dispatch(captor.capture());
         List<Event> events = captor.getAllValues();
 
-        assertThat(events.get(0)).isInstanceOf(RemoveEntity.class);
-        assertThat(events.get(1)).isInstanceOf(DropLoot.class);
+        assertThat(events.get(0)).isInstanceOf(DropLoot.class);
+        assertThat(events.get(1)).isInstanceOf(RemoveEntity.class);
         assertThat(events.get(2)).isInstanceOf(UpdateScore.class);
     }
 
@@ -86,7 +86,7 @@ class ServerEntityDamageHandlerTest {
         UUID victimId = UUID.randomUUID();
 
         when(world.getEntity(victimId)).thenReturn(victim);
-        when(world.nextPlayerSpawnPoint()).thenReturn(spawn);
+        when(world.nextSpawnPoint()).thenReturn(spawn);
         when(victim.getId()).thenReturn(victimId);
         when(bullet.getOwner()).thenReturn(killer);
         when(victim.getHealth()).thenReturn(0);
@@ -100,14 +100,15 @@ class ServerEntityDamageHandlerTest {
         assertThat(score.getDeaths(killer)).isEqualTo(0);
         assertThat(score.getDeaths(victim)).isEqualTo(1);
 
+        verify(victim).setPosition(spawn);
         verify(eventBus, times(3)).dispatch(captor.capture());
         List<Event> events = captor.getAllValues();
 
-        assertThat(events.get(0)).isInstanceOf(RespawnPlayer.class);
-        assertThat(events.get(1)).isInstanceOf(DropLoot.class);
+        assertThat(events.get(0)).isInstanceOf(DropLoot.class);
+        assertThat(events.get(1)).isInstanceOf(RespawnPlayer.class);
         assertThat(events.get(2)).isInstanceOf(UpdateScore.class);
 
-        RespawnPlayer respawn = (RespawnPlayer) events.get(0);
+        RespawnPlayer respawn = (RespawnPlayer) events.get(1);
         assertThat(respawn.getId()).isEqualTo(victimId);
         assertThat(respawn.getPosition()).isEqualTo(spawn);
         assertThat(respawn.getLives()).isEqualTo(1);

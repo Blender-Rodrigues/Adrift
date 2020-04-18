@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.common;
+package ee.taltech.iti0200.domain.event.handler.common;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.Score;

@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.server;
+package ee.taltech.iti0200.domain.event.handler.server;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.factory.ConsumableFactory;
@@ -35,7 +35,7 @@ public class DropLootHandler implements Subscriber<DropLoot> {
             return;
         }
 
-        Consumable consumable = consumableFactory.create(event.getVictim().getBoundingBox().getCentre());
+        Consumable consumable = consumableFactory.create(event.getLocation());
         eventBus.dispatch(new CreateEntity(consumable, EVERYONE));
     }
 

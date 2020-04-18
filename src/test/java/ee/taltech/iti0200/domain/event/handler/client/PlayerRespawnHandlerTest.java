@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.common;
+package ee.taltech.iti0200.domain.event.handler.client;
 
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Player;

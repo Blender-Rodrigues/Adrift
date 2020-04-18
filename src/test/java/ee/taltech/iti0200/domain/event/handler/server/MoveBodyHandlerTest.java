@@ -1,8 +1,8 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.handler.server;
 
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.event.common.MoveBodyHandler;
+import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.BeforeEach;
