@@ -76,13 +76,15 @@ public class Camera {
         return target;
     }
 
+    /**
+     * By some magical mathemagics by Kristjan, the dimensions are in pixels.
+     */
     public Matrix4f getStaticProjection(int x, int y, float width, float height) {
-        // By some magical mathemagics by Kristjan, the dimensions are in pixels.
         Matrix4f projection = new Matrix4f();
         projection.translate(-1, 1, 0);
-        projection.translate(width / this.getWidth(), - height / this.getHeight(), 0);
-        projection.translate(2f * x / this.getWidth(), - 2f * y / this.getHeight(), 0);
-        projection.scale(width / this.getWidth(), height / this.getHeight(), 1f);
+        projection.translate(width / this.width, - height / this.height, 0);
+        projection.translate(2f * x / this.width, - 2f * y / this.height, 0);
+        projection.scale(width / this.width, height / this.height, 1f);
 
         return projection;
     }

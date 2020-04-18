@@ -1,7 +1,9 @@
 package ee.taltech.iti0200.domain.entity.equipment;
 
-import ee.taltech.iti0200.domain.entity.equipment.Gun;
+import ee.taltech.iti0200.domain.entity.BlastProjectile;
+import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.physics.BoundingBox;
+import ee.taltech.iti0200.physics.Vector;
 
 public class SpecialGun extends Gun {
 
@@ -9,8 +11,12 @@ public class SpecialGun extends Gun {
 
     public SpecialGun(BoundingBox boundingBox) {
         super(boundingBox);
-        projectileSpeed = 8;
-        damage = 30;
+        fireRate = 90;
+        damage = 50;
+    }
+
+    protected Projectile createProjectile(Vector position, Vector speed) {
+        return new BlastProjectile(position, speed, damage, owner);
     }
 
 }

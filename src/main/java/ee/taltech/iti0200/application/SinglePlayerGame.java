@@ -13,7 +13,9 @@ import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.UpdateScore;
 import ee.taltech.iti0200.domain.event.client.UpdateScoreHandler;
+import ee.taltech.iti0200.domain.event.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.common.PlayerRespawnHandler;
+import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.DropLoot;
@@ -69,6 +71,7 @@ public class SinglePlayerGame extends Game {
         CollisionHandler collisionHandler,
         PlayerRespawnHandler respawnHandler,
         UpdateScoreHandler scoreHandler,
+        ChangeEquipmentHandler equipmentHandler,
         Score score
     ) {
         super(world, eventBus, timer);
@@ -92,6 +95,7 @@ public class SinglePlayerGame extends Game {
         eventBus.subscribe(EntityCollide.class, collisionHandler);
         eventBus.subscribe(RespawnPlayer.class, respawnHandler);
         eventBus.subscribe(UpdateScore.class, scoreHandler);
+        eventBus.subscribe(ChangeEquipment.class, equipmentHandler);
     }
 
     @Override

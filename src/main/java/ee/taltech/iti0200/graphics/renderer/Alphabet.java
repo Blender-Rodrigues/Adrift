@@ -1,15 +1,13 @@
 package ee.taltech.iti0200.graphics.renderer;
 
 import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.graphics.CharacterTexture;
+import ee.taltech.iti0200.graphics.Image;
 import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
-import ee.taltech.iti0200.graphics.Image;
-import ee.taltech.iti0200.graphics.CharacterTexture;
 
 import java.io.IOException;
 import java.util.HashMap;
-
-import org.joml.Matrix4f;
 
 public class Alphabet {
 

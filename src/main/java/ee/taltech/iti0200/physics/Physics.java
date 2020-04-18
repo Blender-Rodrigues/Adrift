@@ -27,6 +27,7 @@ import static ee.taltech.iti0200.physics.BoundingBox.clamp;
 
 public class Physics implements Component {
 
+    private static final int MAX_STRATEGY_DEPTH = 10;
     private static final Vector GRAVITY = new Vector(0, -9.81);
     private static final double NO_BOUNCE_SPEED_LIMIT = 1;
     private static final double AIR_RESISTANCE = 0.015;
@@ -144,7 +145,8 @@ public class Physics implements Component {
             movingBody,
             collidingBodies,
             new Vector(0, 0),
-            new Vector(0, 0)
+            new Vector(0, 0),
+            MAX_STRATEGY_DEPTH
         );
         double verticalSpeedAfterCollision = updateBodySpeedAfterCollision(movingBody, collisionElasticity);
         if (verticalSpeedAfterCollision >= 0d && verticalSpeedAfterCollision < NO_BOUNCE_SPEED_LIMIT) {
@@ -170,7 +172,8 @@ public class Physics implements Component {
         Body movingBody,
         List<Body> collidingBodies,
         Vector movedSoFar,
-        Vector elasticitySoFar
+        Vector elasticitySoFar,
+        int depth
     ) {
         // Get all possible ways of resolving the collision and how good those ways are.
         List<Vector> resolveStrategies = getResolveStrategies(movingBody, collidingBodies);
@@ -192,13 +195,17 @@ public class Physics implements Component {
         collisions.add(new ImmutablePair<>(movingBody, collidingBody));
 
         elasticitySoFar = getNewElasticityOfCollision(elasticitySoFar, movedSoFar, bestResolveStrategy, collidingBodyElasticity);
+        if (depth < 0) {
+            return elasticitySoFar;
+        }
+
         movedSoFar.add(bestResolveStrategy);
 
         // Check if the body is still colliding with something.
         collidingBodies = getBodiesThatAreStillColliding(movingBody, collidingBodies);
         double totalOverLap = getTotalOverLap(movingBody, collidingBodies);
         if (totalOverLap != 0) {
-            return getStrategyForResolvingCollision(movingBody, collidingBodies, movedSoFar, elasticitySoFar);
+            return getStrategyForResolvingCollision(movingBody, collidingBodies, movedSoFar, elasticitySoFar, depth - 1);
         }
         return elasticitySoFar;
     }

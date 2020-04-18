@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.graphics.renderer;
 
+import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.entity.equipment.Equipment;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.graphics.Camera;
@@ -10,11 +12,13 @@ import org.joml.Matrix4f;
 
 public class ToolbarRenderer implements Renderer {
 
-    public static final int SIZE = 100;
-    private Model model;
-    private Player player;
+    private static final int SIZE = 100;
 
-    public ToolbarRenderer(Player player) {
+    private final Player player;
+    private Model model;
+
+    @Inject
+    public ToolbarRenderer(@LocalPlayer Player player) {
         this.player = player;
     }
 

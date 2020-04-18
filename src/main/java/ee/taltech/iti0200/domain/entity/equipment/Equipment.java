@@ -16,12 +16,6 @@ public class Equipment extends Entity {
         super(0, boundingBox);
     }
 
-//    public Equipment setOwner(Living owner) {
-//        this.owner = owner;
-//        this.boundingBox = owner.getBoundingBox();
-//        return this;
-//    }
-
     public Living getOwner() {
         return owner;
     }

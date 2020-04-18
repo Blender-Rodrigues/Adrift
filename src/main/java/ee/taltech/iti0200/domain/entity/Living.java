@@ -16,8 +16,8 @@ public class Living extends Damageable {
 
     protected transient World world;
     protected boolean alive = true;
-    protected List<Gun> weapons;
-    protected List<Equipment> equipment;
+    protected List<Gun> weapons = new ArrayList<>();
+    protected List<Equipment> equipment = new ArrayList<>();
     protected Gun activeGun;
 
     protected enum Action {
@@ -35,8 +35,6 @@ public class Living extends Damageable {
         super(mass, boundingBox, health);
         this.world = world;
         this.movable = true;
-        this.weapons = new ArrayList<>();
-        this.equipment = new ArrayList<>();
     }
 
     public Gun getActiveGun() {
@@ -44,8 +42,12 @@ public class Living extends Damageable {
     }
 
     public void setActiveGun(int index) {
-        if (weapons.size() - 1 < index) return;
-        if (activeGun != null) activeGun.setActive(false);
+        if (weapons.size() - 1 < index) {
+            return;
+        }
+        if (activeGun != null) {
+            activeGun.setActive(false);
+        }
         activeGun = weapons.get(index);
         activeGun.setActive(true);
     }
