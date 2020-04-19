@@ -64,10 +64,12 @@ abstract public class Game {
 
         try {
             while (isGameRunning()) {
+                long start = System.currentTimeMillis();
                 components.forEach(component -> component.update(tick));
                 world.update(tick);
                 loop(tick);
                 tick = timer.sleep();
+                System.out.println(System.currentTimeMillis() - start);
             }
         } finally {
             logger.warn("Terminating, game time: " + tick);
