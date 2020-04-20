@@ -14,12 +14,15 @@ public class Gun extends Equipment implements Rotatable {
     private Vector pointedAt = new Vector(1, 0);
 
     protected long cooldown = 0;
-    protected int damage = 10;
-    protected long fireRate = 60;
-    protected double projectileSpeed = 3;
+    protected int damage;
+    protected long rechargeRate;
+    protected double projectileSpeed;
 
     public Gun(BoundingBox boundingBox) {
         super(boundingBox);
+        damage = 10;
+        rechargeRate = 20;
+        projectileSpeed = 8;
     }
 
     public Gun setOwner(Living owner) {
@@ -33,7 +36,7 @@ public class Gun extends Equipment implements Rotatable {
     }
 
     public void resetCooldown(long tick) {
-        cooldown = tick + fireRate;
+        cooldown = tick + rechargeRate;
     }
 
     public Projectile shoot(Vector direction, long tick) {
@@ -41,7 +44,7 @@ public class Gun extends Equipment implements Rotatable {
             throw new RuntimeException("Trying to shoot a gun without an owner");
         }
 
-        cooldown = tick + fireRate;
+        cooldown = tick + rechargeRate;
 
         Vector speed = new Vector(direction);
         speed.normalize();

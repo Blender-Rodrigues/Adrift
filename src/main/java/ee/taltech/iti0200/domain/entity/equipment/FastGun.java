@@ -11,8 +11,9 @@ public class FastGun extends Gun {
 
     public FastGun(BoundingBox boundingBox) {
         super(boundingBox);
-        fireRate = 20;
-        damage = 6;
+        damage = 5;
+        rechargeRate = 15;
+        projectileSpeed = 9;
     }
 
     protected Projectile createProjectile(Vector position, Vector speed) {

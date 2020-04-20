@@ -24,7 +24,7 @@ public class CommonModule extends AbstractModule {
     protected void configure() {
         bind(Layout.class).toInstance(new Layout(LAYOUT_NAME));
         bind(World.class).toInstance(world);
-        bind(Timer.class).toInstance(new Timer(60F));
+        bind(Timer.class).toInstance(new Timer(60));
         bind(Score.class).toInstance(score);
         bind(Key.get(Player.class, LocalPlayer.class)).toInstance(player);
     }
