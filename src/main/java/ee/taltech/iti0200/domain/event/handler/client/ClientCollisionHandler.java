@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.client;
+package ee.taltech.iti0200.domain.event.handler.client;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.GameId;
@@ -6,7 +6,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
-import ee.taltech.iti0200.domain.event.common.CollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.network.message.Receiver;

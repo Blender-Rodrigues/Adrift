@@ -14,8 +14,8 @@ import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
-import ee.taltech.iti0200.domain.event.server.BotHurtHandler;
-import ee.taltech.iti0200.domain.event.server.BotNoiseHandler;
+import ee.taltech.iti0200.domain.event.handler.server.BotHurtHandler;
+import ee.taltech.iti0200.domain.event.handler.server.BotNoiseHandler;
 
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -38,7 +38,7 @@ public class BotFactory {
      */
     public Bot create() {
         HealthyBrain brain = new HealthyBrain(world);
-        Bot bot = new Bot(world.nextPlayerSpawnPoint(), world, brain);
+        Bot bot = new Bot(world.nextSpawnPoint(), world, brain);
         bot.addWeapon(new Gun(bot.getBoundingBox()));
         bot.setActiveGun(0);
 

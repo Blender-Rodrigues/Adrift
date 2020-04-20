@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.server;
+package ee.taltech.iti0200.domain.event.handler.server;
 
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Living;

@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.client;
+package ee.taltech.iti0200.domain.event.handler.client;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.Score;

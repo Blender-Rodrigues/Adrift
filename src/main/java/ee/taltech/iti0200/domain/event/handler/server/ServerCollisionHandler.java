@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.server;
+package ee.taltech.iti0200.domain.event.handler.server;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.ai.Sensor;
@@ -11,14 +11,13 @@ import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.EventBus;
-import ee.taltech.iti0200.domain.event.common.CollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
 import ee.taltech.iti0200.domain.event.entity.Heal;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 
 import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
-import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class ServerCollisionHandler extends CollisionHandler {
 
