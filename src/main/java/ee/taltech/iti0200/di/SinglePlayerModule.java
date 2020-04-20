@@ -7,10 +7,10 @@ import ee.taltech.iti0200.application.SinglePlayerGame;
 import ee.taltech.iti0200.di.annotations.GameId;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.SinglePlayerEventBus;
-import ee.taltech.iti0200.domain.event.common.CollisionHandler;
-import ee.taltech.iti0200.domain.event.client.EntityDamageHandler;
-import ee.taltech.iti0200.domain.event.server.ServerCollisionHandler;
-import ee.taltech.iti0200.domain.event.server.ServerDamageHandler;
+import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.handler.server.ServerCollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.server.ServerDamageHandler;
 import ee.taltech.iti0200.physics.Physics;
 import ee.taltech.iti0200.physics.ServerPhysics;
 

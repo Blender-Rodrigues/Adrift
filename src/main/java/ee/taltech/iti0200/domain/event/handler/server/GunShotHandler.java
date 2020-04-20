@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.server;
+package ee.taltech.iti0200.domain.event.handler.server;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.World;

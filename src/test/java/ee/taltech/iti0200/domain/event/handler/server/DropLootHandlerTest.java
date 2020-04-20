@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.domain.event.handler;
+package ee.taltech.iti0200.domain.event.handler.server;
 
 import ee.taltech.iti0200.di.factory.ConsumableFactory;
 import ee.taltech.iti0200.domain.World;
@@ -7,7 +7,6 @@ import ee.taltech.iti0200.domain.event.Event;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DropLoot;
-import ee.taltech.iti0200.domain.event.server.DropLootHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
