@@ -26,7 +26,6 @@ import ee.taltech.iti0200.graphics.VisualFactory;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 import org.joml.Vector3f;
-import org.lwjgl.system.CallbackI;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -151,7 +150,7 @@ public class EntityRenderFacade implements Renderer {
         Texture greenPistolTexture = visualFactory.create("gun/", "green_pistol");
         Texture bulletTexture = visualFactory.create("projectile/", "bullet");
         Texture plasmaTexture = visualFactory.create("projectile/", "plasma");
-        Texture blastTexture = visualFactory.create("projectile/", "blast");
+        Texture blastTexture = visualFactory.create("projectile/", "green");
 
         // health
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
