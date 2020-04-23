@@ -119,7 +119,7 @@ public class ServerNetwork extends Network {
             }
             if (clients.size() == 0 && world.getEntitiesRemoved() > 0) {
                 logger.warn("Last player left, recreating the game");
-                throw new RecreateException();
+                throw new RecreateException(0);
             }
         }
     }
