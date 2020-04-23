@@ -90,8 +90,6 @@ public abstract class Goal {
 
         Map<Vector, Terrain> terrain = world.getTerrainMap();
 
-
-
         while (shouldContinue(direction, centre, target)) {
             centre.add(direction);
 
