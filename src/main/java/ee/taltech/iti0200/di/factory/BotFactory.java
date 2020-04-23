@@ -26,13 +26,13 @@ public class BotFactory {
 
     private final World world;
     private final EventBus eventBus;
-    private final Random RANDOM;
+    private final Random random;
 
     @Inject
-    public BotFactory(World world, EventBus eventBus, Random RANDOM) {
+    public BotFactory(World world, EventBus eventBus, Random random) {
         this.world = world;
         this.eventBus = eventBus;
-        this.RANDOM = RANDOM;
+        this.random = random;
     }
 
     /**
@@ -54,9 +54,9 @@ public class BotFactory {
         Runnable onDeath = () -> subscribers.forEach(eventBus::unsubscribe);
 
         TreeMap<Long, Goal> goals = new TreeMap<>();
-        goals.put(0L, new Wander(bot, world, eventBus, RANDOM));
-        goals.put(100L, new LookForPlayer(bot, world, eventBus, memory, RANDOM));
-        goals.put(1000L, new Panic(bot, world, eventBus, RANDOM));
+        goals.put(0L, new Wander(bot, world, eventBus, random));
+        goals.put(100L, new LookForPlayer(bot, world, eventBus, memory, random));
+        goals.put(1000L, new Panic(bot, world, eventBus, random));
 
         brain.bind(bot, goals, onDeath);
 

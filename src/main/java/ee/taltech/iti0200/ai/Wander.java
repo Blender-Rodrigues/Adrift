@@ -44,7 +44,7 @@ public class Wander extends Goal {
     public void execute(long tick) {
         move(new Vector(towards, 0));
 
-        Vector newLookingDirection = new Vector(RANDOM.nextDouble() - 0.5, RANDOM.nextDouble() - 0.5);
+        Vector newLookingDirection = new Vector(random.nextDouble() - 0.5, random.nextDouble() - 0.5);
         Vector movingDirection = new Vector(bot.getSpeed());
 
         newLookingDirection.normalize();

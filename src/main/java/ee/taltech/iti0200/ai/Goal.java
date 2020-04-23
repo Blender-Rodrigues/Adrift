@@ -22,13 +22,13 @@ public abstract class Goal {
     protected Bot bot;
     protected World world;
     protected EventBus eventBus;
-    protected Random RANDOM;
+    protected Random random;
 
     public Goal(Bot bot, World world, EventBus eventBus, Random random) {
         this.bot = bot;
         this.world = world;
         this.eventBus = eventBus;
-        this.RANDOM = random;
+        this.random = random;
     }
 
     abstract public void execute(long tick);

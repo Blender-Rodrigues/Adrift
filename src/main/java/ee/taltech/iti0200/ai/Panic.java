@@ -72,7 +72,7 @@ public class Panic extends Goal {
             double distance = bot.getBoundingBox().getCentre().distance(location);
 
             if (distance < GUNSHOT_TRIGGER_HAPPY_DISTANCE) {
-                if (RANDOM.nextBoolean() && bot.canShoot(tick)) {
+                if (random.nextBoolean() && bot.canShoot(tick)) {
                     eventBus.dispatch(new GunShot(bot.getActiveGun(), direction, SERVER));
                 }
             } else if (distance < GUNSHOT_LOOK_DISTANCE) {

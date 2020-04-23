@@ -40,8 +40,8 @@ public class LookForPlayer extends Goal {
     private boolean targetChanged;
     private double lastDistanceSquared;
 
-    public LookForPlayer(Bot bot, World world, EventBus eventBus, Memory memory, Random RANDOM) {
-        super(bot, world, eventBus, RANDOM);
+    public LookForPlayer(Bot bot, World world, EventBus eventBus, Memory memory, Random random) {
+        super(bot, world, eventBus, random);
         this.memory = memory;
         this.targetChanged = false;
         this.lastDistanceSquared = Double.POSITIVE_INFINITY;
@@ -54,7 +54,7 @@ public class LookForPlayer extends Goal {
         jumpIfNecessary(tick, targetDirection);
 
         if (targetDirection.equals(new Vector(0, 0))) {
-            targetDirection = new Vector(RANDOM.nextDouble() - 0.5, (RANDOM.nextDouble() - 0.45) / 5);
+            targetDirection = new Vector(random.nextDouble() - 0.5, (random.nextDouble() - 0.45) / 5);
         }
         targetDirection.normalize();
 
