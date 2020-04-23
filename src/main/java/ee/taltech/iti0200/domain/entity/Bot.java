@@ -48,7 +48,7 @@ public class Bot extends Living {
         newDirection.scale(intensity);
         lookingAt.add(newDirection);
         lookingAt.normalize();
-        gun.setRotation(lookingAt);
+        activeGun.setRotation(lookingAt);
     }
 
     public Vector getLookingAt() {

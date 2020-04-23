@@ -48,7 +48,7 @@ public class Panic extends Goal {
 
         dangerDirection.normalize();
         if (bot.canShoot(tick)) {
-            eventBus.dispatch(new GunShot(bot.getGun(), dangerDirection, SERVER));
+            eventBus.dispatch(new GunShot(bot.getActiveGun(), dangerDirection, SERVER));
         }
         Vector moveDirection = new Vector(dangerDirection);
         moveDirection.scale(-1);

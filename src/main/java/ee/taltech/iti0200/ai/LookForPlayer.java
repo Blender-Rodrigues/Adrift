@@ -115,7 +115,7 @@ public class LookForPlayer extends Goal {
             confirmNoTargets(bot.getLookingAt(), LOOK_ANGLE);
             lookFor(bot.getLookingAt(), LOOK_ANGLE, Player.class);
             if (bot.canShoot(tick) && memory.getTargets().size() != 0) {
-                eventBus.dispatch(new GunShot(bot.getGun(), bot.getLookingAt(), SERVER));
+                eventBus.dispatch(new GunShot(bot.getActiveGun(), bot.getLookingAt(), SERVER));
             }
         }
     }
