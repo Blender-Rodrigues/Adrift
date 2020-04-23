@@ -31,12 +31,16 @@ public class Panic extends Goal {
     private static final int ADRENALINE_DAMAGE = 100;
     private static final int ADRENALINE_SPOT_LIVING = 40;
     public static final int Y_LIMIT_FOR_JUMP = 3;
+    private static final int SHOOT_AT_DANGER_TIMES = 3;
+    private static final double SHOOT_DEVIATION_PER_SHOT = 0.25;
 
     private Vector danger;
+    private int shootAtDangerLeft;
 
     public Panic(Bot bot, World world, EventBus eventBus, Random RANDOM) {
         super(bot, world, eventBus, RANDOM);
         danger = new Vector();
+        shootAtDangerLeft = 0;
     }
 
     @Override
@@ -44,18 +48,23 @@ public class Panic extends Goal {
         Vector dangerDirection = new Vector(danger);
         dangerDirection.sub(bot.getBoundingBox().getCentre());
 
-        if (dangerDirection.getY() < -Y_LIMIT_FOR_JUMP && tick % JUMP_DELAY == 0) {
+        if (tick % JUMP_DELAY == 0 && (dangerDirection.getY() < - Y_LIMIT_FOR_JUMP || random.nextBoolean())) {
             bot.accelerate(new Vector(0, JUMP_SPEED));
         }
 
         dangerDirection.normalize();
-        if (bot.canShoot(tick)) {
-            eventBus.dispatch(new GunShot(bot.getActiveGun(), dangerDirection, SERVER));
+        if (bot.canShoot(tick) && shootAtDangerLeft > 0) {
+            Vector shootDirection = new Vector(dangerDirection);
+            Vector shootDeviation = new Vector(random.nextDouble() - 0.5, random.nextDouble() - 0.5);
+            shootDeviation.scale(SHOOT_DEVIATION_PER_SHOT * (SHOOT_AT_DANGER_TIMES - shootAtDangerLeft));
+            shootDirection.add(shootDeviation);
+            shootDirection.normalize();
+            eventBus.dispatch(new GunShot(bot.getActiveGun(), shootDirection, SERVER));
+            shootAtDangerLeft--;
         }
-        Vector moveDirection = new Vector(dangerDirection);
-        moveDirection.scale(-1);
-        moveDirection.elementWiseMultiple(SPEED);
-        move(moveDirection);
+        dangerDirection.scale(-1);
+        dangerDirection.elementWiseMultiple(SPEED);
+        move(dangerDirection);
     }
 
     @Override
@@ -65,6 +74,7 @@ public class Panic extends Goal {
                 eventBus.dispatch(new GunShot(bot.getActiveGun(), direction, SERVER));
             }
             danger = location;
+            shootAtDangerLeft = SHOOT_AT_DANGER_TIMES;
             return ADRENALINE_SPOT_LIVING;
         }
 
@@ -80,6 +90,7 @@ public class Panic extends Goal {
             }
 
             danger = location;
+            shootAtDangerLeft = SHOOT_AT_DANGER_TIMES;
 
             return (long) Math.max(ADRENALINE_GUN_SHOT - distance, 0);
         }
