@@ -56,6 +56,10 @@ public class Entity extends Body {
         renderers.get(DEFAULT).render(shader, camera, tick);
     }
 
+    public boolean hasMoved() {
+        return boundingBox.hasMoved();
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + boundingBox.getCentre().rounded() + "[" + id + "]";
