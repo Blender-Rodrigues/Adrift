@@ -34,7 +34,7 @@ public class LookForPlayer extends Goal {
     private static final int ADRENALINE_GUN_SHOT = 20;
     private static final int ADRENALINE_DAMAGE = 50;
     private static final int ADRENALINE_SPOT_PLAYER = 20;
-    public static final int Y_LIMIT_FOR_JUMP = 3;
+    private static final int Y_LIMIT_FOR_JUMP = 3;
 
     private Memory memory;
     private boolean targetChanged;
