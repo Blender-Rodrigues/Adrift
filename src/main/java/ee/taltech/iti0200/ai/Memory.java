@@ -7,11 +7,7 @@ import java.util.ArrayList;
 
 public class Memory {
 
-    private ArrayList<ImmutablePair<Vector, TargetType>> targets;
-
-    public Memory() {
-        targets = new ArrayList<>();
-    }
+    private ArrayList<ImmutablePair<Vector, TargetType>> targets = new ArrayList<>();
 
     public ArrayList<ImmutablePair<Vector, TargetType>> getTargets() {
         return targets;
