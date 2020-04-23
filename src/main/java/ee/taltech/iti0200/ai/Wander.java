@@ -9,6 +9,8 @@ import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.physics.Vector;
 
+import java.util.Random;
+
 import static ee.taltech.iti0200.ai.Sensor.AUDIO;
 import static ee.taltech.iti0200.ai.Sensor.DAMAGE;
 import static ee.taltech.iti0200.ai.Sensor.TACTILE;
@@ -34,8 +36,8 @@ public class Wander extends Goal {
 
     private double towards = SPEED;
 
-    public Wander(Bot bot, World world, EventBus eventBus) {
-        super(bot, world, eventBus);
+    public Wander(Bot bot, World world, EventBus eventBus, Random RANDOM) {
+        super(bot, world, eventBus, RANDOM);
     }
 
     @Override

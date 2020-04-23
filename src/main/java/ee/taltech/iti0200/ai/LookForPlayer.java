@@ -10,6 +10,7 @@ import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.physics.Vector;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.ai.Sensor.AUDIO;
@@ -39,8 +40,8 @@ public class LookForPlayer extends Goal {
     private boolean targetChanged;
     private double lastDistanceSquared;
 
-    public LookForPlayer(Bot bot, World world, EventBus eventBus, Memory memory) {
-        super(bot, world, eventBus);
+    public LookForPlayer(Bot bot, World world, EventBus eventBus, Memory memory, Random RANDOM) {
+        super(bot, world, eventBus, RANDOM);
         this.memory = memory;
         this.targetChanged = false;
         this.lastDistanceSquared = Double.POSITIVE_INFINITY;

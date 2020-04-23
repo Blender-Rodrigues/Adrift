@@ -19,16 +19,16 @@ public abstract class Goal {
 
     private static final double TERRAIN_Y_OFFSET = TERRAIN_BLOCK_SIZE / 2;
 
-    protected static final Random RANDOM = new Random();
-
     protected Bot bot;
     protected World world;
     protected EventBus eventBus;
+    protected Random RANDOM;
 
-    public Goal(Bot bot, World world, EventBus eventBus) {
+    public Goal(Bot bot, World world, EventBus eventBus, Random random) {
         this.bot = bot;
         this.world = world;
         this.eventBus = eventBus;
+        this.RANDOM = random;
     }
 
     abstract public void execute(long tick);

@@ -9,6 +9,8 @@ import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.physics.Vector;
 
+import java.util.Random;
+
 import static ee.taltech.iti0200.ai.Sensor.AUDIO;
 import static ee.taltech.iti0200.ai.Sensor.DAMAGE;
 import static ee.taltech.iti0200.ai.Sensor.VISUAL;
@@ -32,8 +34,8 @@ public class Panic extends Goal {
 
     private Vector danger;
 
-    public Panic(Bot bot, World world, EventBus eventBus) {
-        super(bot, world, eventBus);
+    public Panic(Bot bot, World world, EventBus eventBus, Random RANDOM) {
+        super(bot, world, eventBus, RANDOM);
         danger = new Vector();
     }
 

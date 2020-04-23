@@ -1,6 +1,5 @@
 package ee.taltech.iti0200.ai;
 
-import ee.taltech.iti0200.di.factory.BotFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Terrain;
@@ -11,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -54,7 +55,7 @@ class GoalTest {
         when(bot.getBoundingBox()).thenReturn(botBox);
         when(botBox.getCentre()).thenReturn(botLocation);
 
-        Goal goal = new LookForPlayer(bot, world, eventBus, memory);
+        Goal goal = new LookForPlayer(bot, world, eventBus, memory, mock(Random.class));
 
         assertFalse(goal.visible(new Vector(targetX, targetY)));
     }
@@ -70,7 +71,7 @@ class GoalTest {
         when(bot.getBoundingBox()).thenReturn(botBox);
         when(botBox.getCentre()).thenReturn(botLocation);
 
-        Goal goal = new LookForPlayer(bot, world, eventBus, memory);
+        Goal goal = new LookForPlayer(bot, world, eventBus, memory, mock(Random.class));
 
         assertTrue(goal.visible(new Vector(0, -5)));
     }

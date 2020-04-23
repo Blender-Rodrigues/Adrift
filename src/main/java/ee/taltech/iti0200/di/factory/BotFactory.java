@@ -19,17 +19,20 @@ import ee.taltech.iti0200.domain.event.handler.server.BotHurtHandler;
 import ee.taltech.iti0200.domain.event.handler.server.BotNoiseHandler;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.TreeMap;
 
 public class BotFactory {
 
     private final World world;
     private final EventBus eventBus;
+    private final Random RANDOM;
 
     @Inject
-    public BotFactory(World world, EventBus eventBus) {
+    public BotFactory(World world, EventBus eventBus, Random RANDOM) {
         this.world = world;
         this.eventBus = eventBus;
+        this.RANDOM = RANDOM;
     }
 
     /**
@@ -51,9 +54,9 @@ public class BotFactory {
         Runnable onDeath = () -> subscribers.forEach(eventBus::unsubscribe);
 
         TreeMap<Long, Goal> goals = new TreeMap<>();
-        goals.put(0L, new Wander(bot, world, eventBus));
-        goals.put(100L, new LookForPlayer(bot, world, eventBus, memory));
-        goals.put(1000L, new Panic(bot, world, eventBus));
+        goals.put(0L, new Wander(bot, world, eventBus, RANDOM));
+        goals.put(100L, new LookForPlayer(bot, world, eventBus, memory, RANDOM));
+        goals.put(1000L, new Panic(bot, world, eventBus, RANDOM));
 
         brain.bind(bot, goals, onDeath);
 
