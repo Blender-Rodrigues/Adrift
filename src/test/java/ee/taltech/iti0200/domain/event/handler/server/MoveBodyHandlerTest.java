@@ -2,6 +2,7 @@ package ee.taltech.iti0200.domain.event.handler.server;
 
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import ee.taltech.iti0200.physics.Vector;
@@ -38,7 +39,7 @@ class MoveBodyHandlerTest {
     void handleIgnoresLocalEvents() {
         when(entity.getId()).thenReturn(localId);
 
-        handler.handle(new UpdateVector(entity, EVERYONE));
+        handler.handle(new UpdateVector(entity, 1L, EVERYONE));
 
         verifyZeroInteractions(world);
     }
@@ -47,7 +48,7 @@ class MoveBodyHandlerTest {
     void handleIgnoresUpdateIfEntityNotInWorld() {
         when(entity.getId()).thenReturn(UUID.randomUUID());
 
-        handler.handle(new UpdateVector(entity, EVERYONE));
+        handler.handle(new UpdateVector(entity, 1L, EVERYONE));
 
         verify(entity, never()).setPosition(any());
         verify(entity, never()).setSpeed(any());
@@ -63,10 +64,33 @@ class MoveBodyHandlerTest {
         when(entity.getId()).thenReturn(entityId);
         when(world.getEntity(entityId)).thenReturn(localEntity);
 
-        handler.handle(new UpdateVector(entity, EVERYONE));
+        handler.handle(new UpdateVector(entity, 1L, EVERYONE));
 
         verify(localEntity).setPosition(new Vector(5, 7));
         verify(localEntity).setSpeed(new Vector(1, 3));
+    }
+
+    @Test
+    void handleIgnoresOutOfOrderUpdatesForLiving() {
+        UUID entityId = UUID.randomUUID();
+        Living localEntity = mock(Living.class);
+
+        when(entity.getSpeed()).thenReturn(new Vector(1, 3));
+        when(entity.getBoundingBox().getCentre()).thenReturn(new Vector(5, 7));
+        when(entity.getId()).thenReturn(entityId);
+        when(world.getEntity(entityId)).thenReturn(localEntity);
+
+        handler.handle(new UpdateVector(entity, 5L, EVERYONE));
+
+        when(entity.getSpeed()).thenReturn(new Vector(7, 11));
+        when(entity.getBoundingBox().getCentre()).thenReturn(new Vector(13, 17));
+
+        handler.handle(new UpdateVector(entity, 4L, EVERYONE));
+
+        verify(localEntity).setPosition(new Vector(5, 7));
+        verify(localEntity).setSpeed(new Vector(1, 3));
+        verify(localEntity, never()).setPosition(new Vector(13, 17));
+        verify(localEntity, never()).setSpeed(new Vector(7, 11));
     }
 
 }
