@@ -19,7 +19,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 class BotTest {
 
@@ -83,7 +83,7 @@ class BotTest {
 
         actual.update(1);
 
-        verifyZeroInteractions(brain);
+        verifyNoInteractions(brain);
     }
 
     private void serialize(Bot bot, File file) throws IOException {

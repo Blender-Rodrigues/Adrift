@@ -30,6 +30,7 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "unchecked"})
@@ -89,7 +90,7 @@ class ClientNetworkTest {
 
         List<Message> actual = messageCaptor.getValue();
 
-        assertThat(actual).hasSize(3);
+        assertThat(actual).hasSize(2);
         assertThat(actual).doesNotContain(clientOnly);
         assertThat(actual).contains(everyone, server);
         assertThat(everyone.getReceiver()).isEqualTo(SERVER);
@@ -102,6 +103,7 @@ class ClientNetworkTest {
         Vector speed = new Vector(5, 7);
 
         when(eventBus.propagateAll()).thenReturn(new ArrayList<>());
+        when(player.hasMoved()).thenReturn(true);
         when(player.getId()).thenReturn(id);
         when(player.getBoundingBox().getCentre()).thenReturn(position);
         when(player.getSpeed()).thenReturn(speed);
@@ -119,6 +121,16 @@ class ClientNetworkTest {
         assertThat(message.getSpeed()).isEqualTo(speed);
         assertThat(message.getTick()).isEqualTo(5L);
         assertThat(message.getReceiver()).isEqualTo(SERVER);
+    }
+
+    @Test
+    void propagateSkipsPlayerLocationUpdateIfPlayerHasNotMoved() {
+        when(eventBus.propagateAll()).thenReturn(new ArrayList<>());
+        when(player.hasMoved()).thenReturn(false);
+
+        network.propagate(5L);
+
+        verifyNoInteractions(messenger);
     }
 
     @Test

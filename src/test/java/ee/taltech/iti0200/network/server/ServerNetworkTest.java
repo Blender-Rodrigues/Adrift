@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("unchecked")
@@ -81,7 +81,7 @@ class ServerNetworkTest {
     }
 
     @Test
-    void propagateSendsVelocityUpdatesToOutbox() {
+    void propagateSendsVelocityUpdatesToOutboxIfBodyHasMoved() {
         UUID id1 = UUID.fromString("216db3c6-4880-485c-aac9-6229e1295400");
         Vector position1 = new Vector(1, 3);
         Vector speed1 = new Vector(5, 7);
@@ -89,14 +89,10 @@ class ServerNetworkTest {
         when(entity1.getId()).thenReturn(id1);
         when(entity1.getBoundingBox().getCentre()).thenReturn(position1);
         when(entity1.getSpeed()).thenReturn(speed1);
+        when(entity1.hasMoved()).thenReturn(true);
 
-        UUID id2 = UUID.fromString("83ec4145-e451-4a65-91bf-e0fcdaa135b5");
-        Vector position2 = new Vector(1, 3);
-        Vector speed2 = new Vector(5, 7);
-        Entity entity2 = mock(Entity.class, RETURNS_DEEP_STUBS);
-        when(entity2.getId()).thenReturn(id2);
-        when(entity2.getBoundingBox().getCentre()).thenReturn(position2);
-        when(entity2.getSpeed()).thenReturn(speed2);
+        Entity entity2 = mock(Entity.class);
+        when(entity2.hasMoved()).thenReturn(false);
 
         when(world.getMovableBodies()).thenReturn(asList(entity1, entity2));
         when(eventBus.propagateAll()).thenReturn(new ArrayList<>());
@@ -106,22 +102,15 @@ class ServerNetworkTest {
         verify(messenger).writeOutbox(messageCaptor.capture());
 
         List<Message> actual = messageCaptor.getValue();
-        UpdateVector message1 = (UpdateVector) actual.get(0);
-        UpdateVector message2 = (UpdateVector) actual.get(1);
+        UpdateVector message = (UpdateVector) actual.get(0);
 
-        assertThat(actual).hasSize(2);
+        assertThat(actual).hasSize(1);
 
-        assertThat(message1.getId()).isEqualTo(id1);
-        assertThat(message1.getPosition()).isEqualTo(position1);
-        assertThat(message1.getSpeed()).isEqualTo(speed1);
-        assertThat(message1.getTick()).isEqualTo(5L);
-        assertThat(message1.getReceiver()).isEqualTo(ALL_CLIENTS);
-
-        assertThat(message2.getId()).isEqualTo(id2);
-        assertThat(message2.getPosition()).isEqualTo(position2);
-        assertThat(message2.getSpeed()).isEqualTo(speed2);
-        assertThat(message2.getTick()).isEqualTo(5L);
-        assertThat(message2.getReceiver()).isEqualTo(ALL_CLIENTS);
+        assertThat(message.getId()).isEqualTo(id1);
+        assertThat(message.getPosition()).isEqualTo(position1);
+        assertThat(message.getSpeed()).isEqualTo(speed1);
+        assertThat(message.getTick()).isEqualTo(5L);
+        assertThat(message.getReceiver()).isEqualTo(ALL_CLIENTS);
     }
 
     @Test
@@ -134,7 +123,7 @@ class ServerNetworkTest {
             .isInstanceOf(RecreateException.class)
             .hasNoCause();
 
-        verifyZeroInteractions(eventBus);
+        verifyNoInteractions(eventBus);
     }
 
     @Test
