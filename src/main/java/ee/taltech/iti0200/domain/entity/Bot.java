@@ -24,6 +24,7 @@ public class Bot extends Living {
     private transient Brain brain;
 
     private Vector acceleration;
+    private Vector lookingAt;
 
     public Bot(Vector position, World world, Brain brain) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
@@ -31,6 +32,7 @@ public class Bot extends Living {
         this.elasticity = ELASTICITY;
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.acceleration = new Vector(0.0, 0.0);
+        this.lookingAt = new Vector(1.0, 0.0);
         this.movable = true;
     }
 
@@ -40,6 +42,17 @@ public class Bot extends Living {
 
     public boolean canShoot(long tick) {
         return gun != null && gun.canShoot(tick);
+    }
+
+    public void lookTowards(Vector newDirection, double intensity) {
+        newDirection.scale(intensity);
+        lookingAt.add(newDirection);
+        lookingAt.normalize();
+        gun.setRotation(lookingAt);
+    }
+
+    public Vector getLookingAt() {
+        return lookingAt;
     }
 
     @Override

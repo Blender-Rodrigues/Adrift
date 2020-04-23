@@ -59,7 +59,7 @@ class LookForPlayerTest {
         world.initialize();
 
         // when
-        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class));
+        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class), mock(Memory.class));
         long reaction = goal.react(0, AUDIO, playerLocation, direction, gun);
 
         // then
@@ -79,7 +79,7 @@ class LookForPlayerTest {
         world.initialize();
 
         // when
-        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class));
+        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class), mock(Memory.class));
         long reaction = goal.react(0, AUDIO, playerLocation, direction, gun);
 
         // then

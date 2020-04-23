@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.ai.Goal;
 import ee.taltech.iti0200.ai.HealthyBrain;
 import ee.taltech.iti0200.ai.LookForPlayer;
+import ee.taltech.iti0200.ai.Memory;
 import ee.taltech.iti0200.ai.Panic;
 import ee.taltech.iti0200.ai.Wander;
 import ee.taltech.iti0200.domain.World;
@@ -38,6 +39,7 @@ public class BotFactory {
      */
     public Bot create() {
         HealthyBrain brain = new HealthyBrain(world);
+        Memory memory = new Memory();
         Bot bot = new Bot(world.nextPlayerSpawnPoint(), world, brain);
         bot.setGun(new Gun(bot.getBoundingBox()));
 
@@ -49,8 +51,8 @@ public class BotFactory {
 
         TreeMap<Long, Goal> goals = new TreeMap<>();
         goals.put(0L, new Wander(bot, world, eventBus));
-        goals.put(100L, new LookForPlayer(bot, world, eventBus));
-        goals.put(1000L, new Panic(bot, world, eventBus));
+        goals.put(100L, new LookForPlayer(bot, world, eventBus, memory));
+        goals.put(200L, new Panic(bot, world, eventBus));
 
         brain.bind(bot, goals, onDeath);
 

@@ -23,6 +23,8 @@ public class Wander extends Goal {
     private static final double SIDE_WAYS_MAX = 1 / Math.sqrt(2);
     private static final double SPEED = 0.1;
     private static final double LOOK_ANGLE = 0.2;
+    private static final double WANDER_LOOK_INTENSITY = 0.4;
+    private static final double MOVING_DIRECTION_LOOK_INTENSITY = 0.2;
     private static final int LOOK_DELAY = 20;
     private static final int GUNSHOT_LOOK_DISTANCE = 30;
     private static final int ADRENALINE_WALL_BUMP = 20;
@@ -39,8 +41,18 @@ public class Wander extends Goal {
     @Override
     public void execute(long tick) {
         move(new Vector(towards, 0));
+
+        Vector newLookingDirection = new Vector(RANDOM.nextDouble() - 0.5, RANDOM.nextDouble() - 0.5);
+        Vector movingDirection = new Vector(bot.getSpeed());
+
+        newLookingDirection.normalize();
+        movingDirection.normalize();
+
+        bot.lookTowards(newLookingDirection, WANDER_LOOK_INTENSITY);
+        bot.lookTowards(movingDirection, MOVING_DIRECTION_LOOK_INTENSITY);
+
         if (tick % LOOK_DELAY == 0) {
-            lookFor(bot.getSpeed(), LOOK_ANGLE, Player.class);
+            lookFor(bot.getLookingAt(), LOOK_ANGLE, Player.class);
         }
     }
 

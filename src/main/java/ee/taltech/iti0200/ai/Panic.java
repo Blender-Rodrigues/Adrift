@@ -20,23 +20,40 @@ import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 public class Panic extends Goal {
 
     private static final double LOOK_ANGLE = 0.3;
-    private static final int LOOK_DELAY = 10;
+    private static final Vector SPEED = new Vector(1, 0.3);
+    private static final double JUMP_SPEED = 9;
+    private static final int JUMP_DELAY = 40;
     private static final int GUNSHOT_LOOK_DISTANCE = 40;
     private static final int GUNSHOT_TRIGGER_HAPPY_DISTANCE = 30;
     private static final int ADRENALINE_GUN_SHOT = 80;
     private static final int ADRENALINE_DAMAGE = 100;
     private static final int ADRENALINE_SPOT_LIVING = 40;
+    public static final int Y_LIMIT_FOR_JUMP = 3;
+
+    private Vector danger;
 
     public Panic(Bot bot, World world, EventBus eventBus) {
         super(bot, world, eventBus);
+        danger = new Vector();
     }
 
     @Override
     public void execute(long tick) {
-        move(new Vector(RANDOM.nextDouble() - 0.5, 0));
-        if (tick % LOOK_DELAY == 0) {
-            lookFor(bot.getSpeed(), LOOK_ANGLE, Living.class);
+        Vector dangerDirection = new Vector(danger);
+        dangerDirection.sub(bot.getBoundingBox().getCentre());
+
+        if (dangerDirection.getY() < -Y_LIMIT_FOR_JUMP && tick % JUMP_DELAY == 0) {
+            bot.accelerate(new Vector(0, JUMP_SPEED));
         }
+
+        dangerDirection.normalize();
+        if (bot.canShoot(tick)) {
+            eventBus.dispatch(new GunShot(bot.getGun(), dangerDirection, SERVER));
+        }
+        Vector moveDirection = new Vector(dangerDirection);
+        moveDirection.scale(-1);
+        moveDirection.elementWiseMultiple(SPEED);
+        move(moveDirection);
     }
 
     @Override
@@ -45,6 +62,7 @@ public class Panic extends Goal {
             if (bot.canShoot(tick)) {
                 eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
             }
+            danger = location;
             return ADRENALINE_SPOT_LIVING;
         }
 
@@ -59,6 +77,8 @@ public class Panic extends Goal {
                 lookFor(direction, LOOK_ANGLE, Living.class);
             }
 
+            danger = location;
+
             return (long) Math.max(ADRENALINE_GUN_SHOT - distance, 0);
         }
 
@@ -68,5 +88,6 @@ public class Panic extends Goal {
 
         return 0;
     }
+
 
 }
