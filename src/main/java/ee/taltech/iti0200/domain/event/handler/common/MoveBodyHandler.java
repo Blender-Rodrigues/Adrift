@@ -10,14 +10,16 @@ import ee.taltech.iti0200.domain.event.entity.UpdateVector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class MoveBodyHandler implements Subscriber<UpdateVector> {
 
     private final Logger logger = LogManager.getLogger(MoveBodyHandler.class);
+    private final HashMap<UUID, Long> updateCache = new HashMap<>();
 
-    private World world;
-    private UUID local;
+    private final World world;
+    private final UUID local;
 
     @Inject
     public MoveBodyHandler(World world, @GameId UUID local) {
@@ -39,6 +41,16 @@ public class MoveBodyHandler implements Subscriber<UpdateVector> {
         if (entity == null) {
             logger.trace("Vector update for a non-existing entity {} at {}", event.getId(), event.getPosition());
             return;
+        }
+
+        if (entity instanceof Living) {
+            long lastTick = updateCache.getOrDefault(event.getId(), 0L);
+            long currentTick = event.getTick();
+
+            if (currentTick < lastTick) {
+                return;
+            }
+            updateCache.put(event.getId(), currentTick);
         }
 
         entity.setPosition(event.getPosition());

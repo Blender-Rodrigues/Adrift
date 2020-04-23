@@ -23,8 +23,7 @@ public class ClientNetwork extends Network {
     private final Logger logger = LogManager.getLogger(ClientNetwork.class);
     private final Messenger messenger;
     private final ConnectionToServer connection;
-
-    private Player player;
+    private final Player player;
 
     @Inject
     public ClientNetwork(
@@ -78,7 +77,7 @@ public class ClientNetwork extends Network {
             .collect(Collectors.toList());
 
         // TODO: send only if the player has moved
-        events.add(new UpdateVector(player, Receiver.SERVER));
+        events.add(new UpdateVector(player, tick, Receiver.SERVER));
 
         messenger.writeOutbox(events);
     }
