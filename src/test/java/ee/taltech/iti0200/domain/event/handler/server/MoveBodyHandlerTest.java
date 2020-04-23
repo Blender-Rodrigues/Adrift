@@ -3,8 +3,8 @@ package ee.taltech.iti0200.domain.event.handler.server;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
-import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
+import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
 import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 class MoveBodyHandlerTest {
@@ -41,7 +41,7 @@ class MoveBodyHandlerTest {
 
         handler.handle(new UpdateVector(entity, 1L, EVERYONE));
 
-        verifyZeroInteractions(world);
+        verifyNoInteractions(world);
     }
 
     @Test

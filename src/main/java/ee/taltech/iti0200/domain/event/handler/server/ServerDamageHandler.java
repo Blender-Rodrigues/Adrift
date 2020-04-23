@@ -8,6 +8,7 @@ import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.GameWon;
 import ee.taltech.iti0200.domain.event.UpdateScore;
 import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
 import ee.taltech.iti0200.domain.event.entity.DropLoot;
@@ -21,6 +22,8 @@ import static ee.taltech.iti0200.network.message.Receiver.SERVER;
 
 public class ServerDamageHandler extends EntityDamageHandler {
 
+    private static final int GAME_WON_SCORE = 20;
+
     @Inject
     public ServerDamageHandler(World world, Score score, EventBus eventBus) {
         super(world, score, eventBus);
@@ -32,7 +35,11 @@ public class ServerDamageHandler extends EntityDamageHandler {
             score.addDeath((Player) target);
         }
         if (source.getOwner() != null && source.getOwner() instanceof Player && target instanceof Living) {
-            score.addKill((Player) source.getOwner());
+            Player player = (Player) source.getOwner();
+            score.addKill(player);
+            if (score.getKills(player) >= GAME_WON_SCORE) {
+                eventBus.dispatch(new GameWon(player, ALL_CLIENTS));
+            }
         }
 
         if (target instanceof Living) {

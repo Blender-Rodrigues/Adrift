@@ -120,4 +120,8 @@ public class BoundingBox implements Serializable {
         return this.centre.getY() + this.size.getY();
     }
 
+    public boolean hasMoved() {
+        return !centre.equals(lastCentre);
+    }
+
 }

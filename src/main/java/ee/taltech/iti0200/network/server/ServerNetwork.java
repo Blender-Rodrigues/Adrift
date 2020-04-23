@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.application.RecreateException;
 import ee.taltech.iti0200.di.annotations.ServerClients;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
@@ -75,8 +76,11 @@ public class ServerNetwork extends Network {
             })
             .collect(Collectors.toList());
 
-        // TODO: filter out only those who have moved
-        world.getMovableBodies().forEach(body -> events.add(new UpdateVector(body, tick, Receiver.ALL_CLIENTS)));
+        world.getMovableBodies()
+            .stream()
+            .filter(Entity::hasMoved)
+            .map(body -> new UpdateVector(body, tick, Receiver.ALL_CLIENTS))
+            .forEach(events::add);
 
         if (events.isEmpty()) {
             return;
@@ -115,7 +119,7 @@ public class ServerNetwork extends Network {
             }
             if (clients.size() == 0 && world.getEntitiesRemoved() > 0) {
                 logger.warn("Last player left, recreating the game");
-                throw new RecreateException();
+                throw new RecreateException(0);
             }
         }
     }

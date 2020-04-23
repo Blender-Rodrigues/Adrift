@@ -9,8 +9,10 @@ import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.GameWon;
 import ee.taltech.iti0200.domain.event.UpdateScore;
 import ee.taltech.iti0200.domain.event.handler.client.ClientGunShotHandler;
+import ee.taltech.iti0200.domain.event.handler.client.MatchRestartHandler;
 import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
 import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.handler.client.PlayerRespawnHandler;
@@ -65,6 +67,7 @@ public class ClientGame extends Game {
         UpdateScoreHandler scoreHandler,
         ClientGunShotHandler gunShotHandler,
         ChangeEquipmentHandler equipmentHandler,
+        MatchRestartHandler restartHandler,
         Score score
     ) {
         super(world, eventBus, timer);
@@ -88,6 +91,7 @@ public class ClientGame extends Game {
         eventBus.subscribe(UpdateScore.class, scoreHandler);
         eventBus.subscribe(GunShot.class, gunShotHandler);
         eventBus.subscribe(ChangeEquipment.class, equipmentHandler);
+        eventBus.subscribe(GameWon.class, restartHandler);
     }
 
     @Override

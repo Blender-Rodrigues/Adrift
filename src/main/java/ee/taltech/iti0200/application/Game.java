@@ -91,7 +91,7 @@ abstract public class Game {
         components.forEach(Component::terminate);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         List<Module> modules = new ArrayList<>();
 
         if (args.length == 0) {
@@ -122,6 +122,9 @@ abstract public class Game {
         try {
             injector.getInstance(Game.class).run();
         } catch (RecreateException exception) {
+            if (exception.delay > 0) {
+                Thread.sleep(exception.delay);
+            }
             main(args);
         }
     }

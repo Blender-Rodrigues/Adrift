@@ -6,6 +6,7 @@ import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.event.Event;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.GameWon;
 import ee.taltech.iti0200.domain.event.UpdateScore;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.DropLoot;
@@ -78,6 +79,30 @@ class ServerEntityDamageHandlerTest {
         assertThat(events.get(0)).isInstanceOf(DropLoot.class);
         assertThat(events.get(1)).isInstanceOf(RemoveEntity.class);
         assertThat(events.get(2)).isInstanceOf(UpdateScore.class);
+    }
+
+    @Test
+    void winningScoreDispatchesGameWonEvent() {
+        UUID victimId = UUID.randomUUID();
+
+        when(world.getEntity(victimId)).thenReturn(victim);
+        when(victim.getId()).thenReturn(victimId);
+        when(bullet.getOwner()).thenReturn(killer);
+        when(victim.getHealth()).thenReturn(0);
+
+        for (int i = 0; i < 19; i++) {
+            score.addKill(killer);
+        }
+
+        handler.handle(event);
+
+        verify(eventBus, times(4)).dispatch(captor.capture());
+        List<Event> events = captor.getAllValues();
+
+        assertThat(events.get(0)).isInstanceOf(GameWon.class);
+        assertThat(events.get(1)).isInstanceOf(DropLoot.class);
+        assertThat(events.get(2)).isInstanceOf(RemoveEntity.class);
+        assertThat(events.get(3)).isInstanceOf(UpdateScore.class);
     }
 
     @Test
