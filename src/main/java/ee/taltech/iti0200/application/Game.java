@@ -23,12 +23,12 @@ import static java.util.stream.Collectors.joining;
 abstract public class Game {
 
     private final Logger logger = LogManager.getLogger(Game.class);
+    private final Timer timer;
 
     protected EventBus eventBus;
     protected World world;
     protected List<Component> components = new LinkedList<>();
 
-    private Timer timer;
     private long tick = 0;
 
     public Game(World world, EventBus eventBus, Timer timer) {
@@ -46,7 +46,13 @@ abstract public class Game {
             components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
 
             for (Component component : components) {
+                long start = System.currentTimeMillis();
                 component.initialize();
+                logger.debug(
+                    "Initialized {} in {}ms",
+                    component.getClass().getSimpleName(),
+                    System.currentTimeMillis() - start
+                );
             }
         } catch (Exception e) {
             logger.error("Initialization failed " + e.getMessage(), e);

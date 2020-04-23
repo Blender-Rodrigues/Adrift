@@ -4,14 +4,17 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.di.factory.RendererFactory;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.BlastProjectile;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.FastGun;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.PlasmaProjectile;
+import ee.taltech.iti0200.domain.entity.equipment.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.domain.entity.Terrain;
 
 import ee.taltech.iti0200.graphics.Camera;
@@ -37,9 +40,9 @@ public class EntityRenderFacade implements Renderer {
 
     private static final HashMap<Class<? extends Body>, HashMap<String, Supplier<EntityRenderer>>> renderers = new HashMap<>();
 
-    private World world;
-    private RendererFactory rendererFactory;
-    private VisualFactory visualFactory;
+    private final World world;
+    private final RendererFactory rendererFactory;
+    private final VisualFactory visualFactory;
 
     @Inject
     public EntityRenderFacade(World world, RendererFactory rendererFactory, VisualFactory visualFactory) {
@@ -55,7 +58,9 @@ public class EntityRenderFacade implements Renderer {
         world.getEntities().forEach(entity -> {
             decorate(entity);
             if (entity instanceof Living) {
-                decorate(((Living) entity).getGun());
+                for (Gun weapon : ((Living) entity).getWeapons()) {
+                    decorate(weapon);
+                }
             }
         });
     }
@@ -84,7 +89,7 @@ public class EntityRenderFacade implements Renderer {
             }
             entity.render(shader, camera, tick);
             if (entity instanceof Living) {
-                Gun gun = ((Living) entity).getGun();
+                Gun gun = ((Living) entity).getActiveGun();
                 if (gun != null) {
                     gun.render(shader, camera, tick);
                 }
@@ -115,6 +120,7 @@ public class EntityRenderFacade implements Renderer {
     }
 
     private void createRenderers() throws IOException {
+        // terrain
         Texture terrainHealthy0 = visualFactory.create("world/", "healthy_0");
         Texture terrainHealthy1 = visualFactory.create("world/", "healthy_1");
         Texture terrainHealthy2 = visualFactory.create("world/", "healthy_2");
@@ -137,10 +143,16 @@ public class EntityRenderFacade implements Renderer {
         Texture terrainDamaged5 = visualFactory.create("world/", "damaged_5");
         Texture terrainDamaged6 = visualFactory.create("world/", "damaged_6");
 
+        // weapon
         Texture defaultTexture = visualFactory.create("", "default");
         Texture pistolTexture = visualFactory.create("gun/", "scoped_pistol");
         Texture smgTexture = visualFactory.create("gun/", "smg");
-        Texture projectileTexture = visualFactory.create("projectile/", "bullet");
+        Texture greenPistolTexture = visualFactory.create("gun/", "green_pistol");
+        Texture bulletTexture = visualFactory.create("projectile/", "bullet");
+        Texture plasmaTexture = visualFactory.create("projectile/", "plasma");
+        Texture blastTexture = visualFactory.create("projectile/", "green");
+
+        // health
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
         Texture healthBarEmpty = visualFactory.create("overhead/", "healthBarEmpty");
         Texture healthBarFull = visualFactory.create("overhead/", "healthBarFull");
@@ -161,67 +173,82 @@ public class EntityRenderFacade implements Renderer {
         Texture botJumpingRight = visualFactory.create("bot/stills/", "bot.jumping.right");
         Texture botJumpingLeft = visualFactory.create("bot/stills/", "bot.jumping.left");
 
-        HashMap<String, Supplier<EntityRenderer>> defaultRenderer = new HashMap<>();
-        defaultRenderer.put(DEFAULT, () -> rendererFactory.create(defaultTexture));
-        renderers.put(Entity.class, defaultRenderer);
+        new Builder(Entity.class)
+            .put(DEFAULT, () -> rendererFactory.create(defaultTexture));
 
-        HashMap<String, Supplier<EntityRenderer>> pistolRenderer = new HashMap<>();
-        pistolRenderer.put(DEFAULT, () -> rendererFactory.create(pistolTexture, RotatingDrawable.class));
-        renderers.put(Gun.class, pistolRenderer);
+        new Builder(Gun.class)
+            .put(DEFAULT, () -> rendererFactory.create(pistolTexture, RotatingDrawable.class));
 
-        HashMap<String, Supplier<EntityRenderer>> smgRenderer = new HashMap<>();
-        smgRenderer.put(DEFAULT, () -> rendererFactory.create(smgTexture, RotatingDrawable.class));
-        renderers.put(FastGun.class, smgRenderer);
+        new Builder(FastGun.class)
+            .put(DEFAULT, () -> rendererFactory.create(smgTexture, RotatingDrawable.class));
 
-        HashMap<String, Supplier<EntityRenderer>> playerRenderer = new HashMap<>();
-        playerRenderer.put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight));
-        playerRenderer.put("RUNNING.LEFT", () -> rendererFactory.create(playerRunningLeft));
-        playerRenderer.put("IDLE.RIGHT", () -> rendererFactory.create(playerIdleRight));
-        playerRenderer.put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft));
+        new Builder(SpecialGun.class)
+            .put(DEFAULT, () -> rendererFactory.create(greenPistolTexture, RotatingDrawable.class));
 
-        playerRenderer.put("JUMPING.RIGHT", () -> rendererFactory.create(playerJumpingRight));
-        playerRenderer.put("JUMPING.LEFT", () -> rendererFactory.create(playerJumpingLeft));
-        playerRenderer.put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
-        renderers.put(Player.class, playerRenderer);
+        new Builder(Player.class)
+            .put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight))
+            .put("RUNNING.LEFT", () -> rendererFactory.create(playerRunningLeft))
+            .put("IDLE.RIGHT", () -> rendererFactory.create(playerIdleRight))
+            .put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft))
+            .put("JUMPING.RIGHT", () -> rendererFactory.create(playerJumpingRight))
+            .put("JUMPING.LEFT", () -> rendererFactory.create(playerJumpingLeft))
+            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
 
-        HashMap<String, Supplier<EntityRenderer>> botRenderer = new HashMap<>();
-        botRenderer.put("IDLE", () -> rendererFactory.create(botIdle));
-        botRenderer.put("RIGHT", () -> rendererFactory.create(botMovingRight));
-        botRenderer.put("LEFT", () -> rendererFactory.create(botMovingLeft));
-        botRenderer.put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
-        renderers.put(Bot.class, botRenderer);
+        new Builder(Bot.class)
+            .put("IDLE", () -> rendererFactory.create(botIdle))
+            .put("RIGHT", () -> rendererFactory.create(botMovingRight))
+            .put("LEFT", () -> rendererFactory.create(botMovingLeft))
+            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
 
-        HashMap<String, Supplier<EntityRenderer>> terrainRenderer = new HashMap<>();
-        terrainRenderer.put("healthy_0", () -> rendererFactory.create(terrainHealthy0));
-        terrainRenderer.put("healthy_1", () -> rendererFactory.create(terrainHealthy1));
-        terrainRenderer.put("healthy_2", () -> rendererFactory.create(terrainHealthy2));
-        terrainRenderer.put("healthy_3", () -> rendererFactory.create(terrainHealthy3));
-        terrainRenderer.put("healthy_4", () -> rendererFactory.create(terrainHealthy4));
-        terrainRenderer.put("healthy_5", () -> rendererFactory.create(terrainHealthy5));
-        terrainRenderer.put("healthy_6", () -> rendererFactory.create(terrainHealthy6));
-        terrainRenderer.put("hurt_0", () -> rendererFactory.create(terrainHurt0));
-        terrainRenderer.put("hurt_1", () -> rendererFactory.create(terrainHurt1));
-        terrainRenderer.put("hurt_2", () -> rendererFactory.create(terrainHurt2));
-        terrainRenderer.put("hurt_3", () -> rendererFactory.create(terrainHurt3));
-        terrainRenderer.put("hurt_4", () -> rendererFactory.create(terrainHurt4));
-        terrainRenderer.put("hurt_5", () -> rendererFactory.create(terrainHurt5));
-        terrainRenderer.put("hurt_6", () -> rendererFactory.create(terrainHurt6));
-        terrainRenderer.put("damaged_0", () -> rendererFactory.create(terrainDamaged0));
-        terrainRenderer.put("damaged_1", () -> rendererFactory.create(terrainDamaged1));
-        terrainRenderer.put("damaged_2", () -> rendererFactory.create(terrainDamaged2));
-        terrainRenderer.put("damaged_3", () -> rendererFactory.create(terrainDamaged3));
-        terrainRenderer.put("damaged_4", () -> rendererFactory.create(terrainDamaged4));
-        terrainRenderer.put("damaged_5", () -> rendererFactory.create(terrainDamaged5));
-        terrainRenderer.put("damaged_6", () -> rendererFactory.create(terrainDamaged6));
-        renderers.put(Terrain.class, terrainRenderer);
+        new Builder(Terrain.class)
+            .put("healthy_0", () -> rendererFactory.create(terrainHealthy0))
+            .put("healthy_1", () -> rendererFactory.create(terrainHealthy1))
+            .put("healthy_2", () -> rendererFactory.create(terrainHealthy2))
+            .put("healthy_3", () -> rendererFactory.create(terrainHealthy3))
+            .put("healthy_4", () -> rendererFactory.create(terrainHealthy4))
+            .put("healthy_5", () -> rendererFactory.create(terrainHealthy5))
+            .put("healthy_6", () -> rendererFactory.create(terrainHealthy6))
+            .put("hurt_0", () -> rendererFactory.create(terrainHurt0))
+            .put("hurt_1", () -> rendererFactory.create(terrainHurt1))
+            .put("hurt_2", () -> rendererFactory.create(terrainHurt2))
+            .put("hurt_3", () -> rendererFactory.create(terrainHurt3))
+            .put("hurt_4", () -> rendererFactory.create(terrainHurt4))
+            .put("hurt_5", () -> rendererFactory.create(terrainHurt5))
+            .put("hurt_6", () -> rendererFactory.create(terrainHurt6))
+            .put("damaged_0", () -> rendererFactory.create(terrainDamaged0))
+            .put("damaged_1", () -> rendererFactory.create(terrainDamaged1))
+            .put("damaged_2", () -> rendererFactory.create(terrainDamaged2))
+            .put("damaged_3", () -> rendererFactory.create(terrainDamaged3))
+            .put("damaged_4", () -> rendererFactory.create(terrainDamaged4))
+            .put("damaged_5", () -> rendererFactory.create(terrainDamaged5))
+            .put("damaged_6", () -> rendererFactory.create(terrainDamaged6));
 
-        HashMap<String, Supplier<EntityRenderer>> projectileRenderer = new HashMap<>();
-        projectileRenderer.put(DEFAULT, () -> rendererFactory.create(projectileTexture));
-        renderers.put(Projectile.class, projectileRenderer);
+        new Builder(Projectile.class)
+            .put(DEFAULT, () -> rendererFactory.create(bulletTexture));
 
-        HashMap<String, Supplier<EntityRenderer>> healthGlobeRenderer = new HashMap<>();
-        healthGlobeRenderer.put(DEFAULT, () -> rendererFactory.create(healthGlobeTexture));
-        renderers.put(HealthGlobe.class, healthGlobeRenderer);
+        new Builder(BlastProjectile.class)
+            .put(DEFAULT, () -> rendererFactory.create(blastTexture));
+
+        new Builder(PlasmaProjectile.class)
+            .put(DEFAULT, () -> rendererFactory.create(plasmaTexture));
+
+        new Builder(HealthGlobe.class)
+            .put(DEFAULT, () -> rendererFactory.create(healthGlobeTexture));
+    }
+
+    private static class Builder {
+
+        HashMap<String, Supplier<EntityRenderer>> map = new HashMap<>();
+
+        private Builder(Class<? extends Body> type) {
+            renderers.put(type, map);
+        }
+
+        private Builder put(String key, Supplier<EntityRenderer> supplier) {
+            map.put(key, supplier);
+            return this;
+        }
+
     }
 
 }

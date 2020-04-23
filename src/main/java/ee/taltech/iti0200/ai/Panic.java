@@ -3,7 +3,7 @@ package ee.taltech.iti0200.ai;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
@@ -60,7 +60,7 @@ public class Panic extends Goal {
     public long react(long tick, Sensor sensor, Vector location, Vector direction, Entity other) {
         if (sensor == VISUAL && other instanceof Living) {
             if (bot.canShoot(tick)) {
-                eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
+                eventBus.dispatch(new GunShot(bot.getActiveGun(), direction, SERVER));
             }
             danger = location;
             return ADRENALINE_SPOT_LIVING;
@@ -71,7 +71,7 @@ public class Panic extends Goal {
 
             if (distance < GUNSHOT_TRIGGER_HAPPY_DISTANCE) {
                 if (RANDOM.nextBoolean() && bot.canShoot(tick)) {
-                    eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
+                    eventBus.dispatch(new GunShot(bot.getActiveGun(), direction, SERVER));
                 }
             } else if (distance < GUNSHOT_LOOK_DISTANCE) {
                 lookFor(direction, LOOK_ANGLE, Living.class);

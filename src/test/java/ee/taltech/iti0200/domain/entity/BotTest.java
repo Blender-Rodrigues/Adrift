@@ -2,6 +2,7 @@ package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.ai.HealthyBrain;
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,8 @@ class BotTest {
         Gun gun = mock(Gun.class);
 
         Bot bot = new Bot(position, world, null);
-        bot.setGun(gun);
+        bot.addWeapon(gun);
+        bot.setActiveGun(0);
 
         bot.setSpeed(new Vector(5, 10));
 

@@ -76,7 +76,7 @@ public class ServerNetwork extends Network {
             .collect(Collectors.toList());
 
         // TODO: filter out only those who have moved
-        world.getMovableBodies().forEach(body -> events.add(new UpdateVector(body, Receiver.ALL_CLIENTS)));
+        world.getMovableBodies().forEach(body -> events.add(new UpdateVector(body, tick, Receiver.ALL_CLIENTS)));
 
         if (events.isEmpty()) {
             return;

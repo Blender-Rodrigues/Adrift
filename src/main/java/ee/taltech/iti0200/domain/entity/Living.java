@@ -1,9 +1,14 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.equipment.Equipment;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.physics.BoundingBox;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Living extends Damageable {
 
@@ -11,14 +16,16 @@ public class Living extends Damageable {
 
     protected transient World world;
     protected boolean alive = true;
-    protected Gun gun;
+    protected List<Gun> weapons = new ArrayList<>();
+    protected List<Equipment> equipment = new ArrayList<>();
+    protected Gun activeGun;
 
     protected enum Action {
-        RUNNING, JUMPING, FALLING, IDLE;
+        RUNNING, JUMPING, FALLING, IDLE
     }
 
     protected enum Direction {
-        LEFT, RIGHT;
+        LEFT, RIGHT
     }
 
     protected Action action = Action.IDLE;
@@ -30,13 +37,33 @@ public class Living extends Damageable {
         this.movable = true;
     }
 
-    public Gun getGun() {
-        return gun;
+    public Gun getActiveGun() {
+        return activeGun;
     }
 
-    public void setGun(Gun gun) {
-        this.gun = gun;
-        gun.setOwner(this);
+    public void setActiveGun(int index) {
+        if (weapons.size() - 1 < index) {
+            return;
+        }
+        if (activeGun != null) {
+            activeGun.setActive(false);
+        }
+        activeGun = weapons.get(index);
+        activeGun.setActive(true);
+    }
+
+    public void addWeapon(Gun weapon) {
+        weapons.add(weapon);
+        equipment.add(weapon);
+        weapon.setOwner(this);
+    }
+
+    public List<Gun> getWeapons() {
+        return weapons;
+    }
+
+    public List<Equipment> getEquipment() {
+        return equipment;
     }
 
     public void setWorld(World world) {
@@ -61,4 +88,5 @@ public class Living extends Damageable {
         super.render(shader, camera, tick);
         renderers.get("healthBar").render(shader, camera, tick);
     }
+
 }

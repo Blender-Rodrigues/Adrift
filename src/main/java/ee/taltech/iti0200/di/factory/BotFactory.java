@@ -9,14 +9,14 @@ import ee.taltech.iti0200.ai.Panic;
 import ee.taltech.iti0200.ai.Wander;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.event.Event;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
-import ee.taltech.iti0200.domain.event.server.BotHurtHandler;
-import ee.taltech.iti0200.domain.event.server.BotNoiseHandler;
+import ee.taltech.iti0200.domain.event.handler.server.BotHurtHandler;
+import ee.taltech.iti0200.domain.event.handler.server.BotNoiseHandler;
 
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -40,8 +40,9 @@ public class BotFactory {
     public Bot create() {
         HealthyBrain brain = new HealthyBrain(world);
         Memory memory = new Memory();
-        Bot bot = new Bot(world.nextPlayerSpawnPoint(), world, brain);
-        bot.setGun(new Gun(bot.getBoundingBox()));
+        Bot bot = new Bot(world.nextSpawnPoint(), world, brain);
+        bot.addWeapon(new Gun(bot.getBoundingBox()));
+        bot.setActiveGun(0);
 
         HashMap<Class<? extends Event>, Subscriber<? extends Event>> subscribers = new HashMap<>();
         subscribers.put(DealDamage.class, new BotHurtHandler(bot));
@@ -52,7 +53,7 @@ public class BotFactory {
         TreeMap<Long, Goal> goals = new TreeMap<>();
         goals.put(0L, new Wander(bot, world, eventBus));
         goals.put(100L, new LookForPlayer(bot, world, eventBus, memory));
-        goals.put(200L, new Panic(bot, world, eventBus));
+        goals.put(1000L, new Panic(bot, world, eventBus));
 
         brain.bind(bot, goals, onDeath);
 

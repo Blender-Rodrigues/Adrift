@@ -3,7 +3,7 @@ package ee.taltech.iti0200.ai;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
@@ -73,7 +73,7 @@ public class LookForPlayer extends Goal {
     public long react(long tick, Sensor sensor, Vector location, Vector direction, Entity other) {
         if (sensor == VISUAL && other instanceof Player) {
             if (bot.canShoot(tick)) {
-                eventBus.dispatch(new GunShot(bot.getGun(), direction, SERVER));
+                eventBus.dispatch(new GunShot(bot.getActiveGun(), direction, SERVER));
             }
             memory.addTarget(location, TargetType.OPPONENT);
             targetChanged = true;
