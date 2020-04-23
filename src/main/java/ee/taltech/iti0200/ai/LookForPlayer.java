@@ -9,9 +9,7 @@ import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.physics.Vector;
 
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static ee.taltech.iti0200.ai.Sensor.AUDIO;
 import static ee.taltech.iti0200.ai.Sensor.DAMAGE;
@@ -113,7 +111,7 @@ public class LookForPlayer extends Goal {
 
     private void shootIfNecessary(long tick) {
         if (bot.canShoot(tick) && tick % LOOK_DELAY == 0) {
-            confirmNoTargets(bot.getLookingAt(), LOOK_ANGLE);
+            confirmNoTargets();
             lookFor(bot.getLookingAt(), LOOK_ANGLE, Player.class);
             if (bot.canShoot(tick) && memory.getTargets().size() != 0) {
                 eventBus.dispatch(new GunShot(bot.getActiveGun(), bot.getLookingAt(), SERVER));
@@ -135,16 +133,12 @@ public class LookForPlayer extends Goal {
         return direction;
     }
 
-    private void confirmNoTargets(Vector direction, double lookAngle) {
-        memory.setTargets(
-            new ArrayList<>(memory.getTargets().stream()
-            .filter(location -> {
-                Vector targetLocation = new Vector(location.getLeft());
-                targetLocation.sub(bot.getBoundingBox().getCentre());
-                return !(targetLocation.angle(direction) < lookAngle && visible(location.getLeft()));
-            })
-            .collect(Collectors.toList()))
-        );
+    private void confirmNoTargets() {
+        memory.getTargets().removeIf(location -> {
+            Vector targetLocation = new Vector(location.getLeft());
+            targetLocation.sub(bot.getBoundingBox().getCentre());
+            return !(targetLocation.angle(bot.getLookingAt()) < LOOK_ANGLE && visible(location.getLeft()));
+        });
     }
 
 }
