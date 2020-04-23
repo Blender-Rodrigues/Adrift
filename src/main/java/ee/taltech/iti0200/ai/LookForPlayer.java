@@ -27,7 +27,7 @@ public class LookForPlayer extends Goal {
     private static final Vector SPEED = new Vector(0.75, 0.2);
     private static final double JUMP_SPEED = 10;
     private static final int JUMP_DELAY = 50;
-    public static final double AIR_SPEED_MODIFIER = 0.15;
+    private static final double AIR_SPEED_MODIFIER = 0.15;
     private static final double TARGET_LOOK_INTENSITY = 0.9;
     private static final int LOOK_DELAY = 15;
     private static final int GUNSHOT_LOOK_DISTANCE = 20;
