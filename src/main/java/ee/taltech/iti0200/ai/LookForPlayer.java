@@ -27,7 +27,7 @@ public class LookForPlayer extends Goal {
     private static final int JUMP_DELAY = 50;
     private static final double AIR_SPEED_MODIFIER = 0.15;
     private static final double TARGET_LOOK_INTENSITY = 0.9;
-    private static final int LOOK_DELAY = 15;
+    private static final int LOOK_DELAY = 5;
     private static final int GUNSHOT_LOOK_DISTANCE = 20;
     private static final int ADRENALINE_GUN_SHOT = 20;
     private static final int ADRENALINE_DAMAGE = 50;
@@ -48,14 +48,16 @@ public class LookForPlayer extends Goal {
     @Override
     public void execute(long tick) {
         Vector target = getTarget();
-        Vector targetDirection = getLookingDirectionFromTarget(target);
-        jumpIfNecessary(tick, targetDirection);
+        Vector targetDirection;
 
-        if (targetDirection.equals(new Vector(0, 0))) {
+        if (target.equals(new Vector())) {
             targetDirection = new Vector(random.nextDouble() - 0.5, (random.nextDouble() - 0.45) / 5);
+        } else {
+            targetDirection = getLookingDirectionFromTarget(target);
         }
-        targetDirection.normalize();
 
+        jumpIfNecessary(tick, targetDirection);
+        targetDirection.normalize();
         bot.lookTowards(targetDirection, TARGET_LOOK_INTENSITY);
 
         targetDirection.elementWiseMultiple(SPEED);
@@ -65,7 +67,7 @@ public class LookForPlayer extends Goal {
 
         move(targetDirection);
 
-        shootIfNecessary(tick);
+        lookAndShoot(tick);
     }
 
     @Override
@@ -109,13 +111,17 @@ public class LookForPlayer extends Goal {
         }
     }
 
-    private void shootIfNecessary(long tick) {
-        if (bot.canShoot(tick) && tick % LOOK_DELAY == 0) {
+    private void lookAndShoot(long tick) {
+        if (tick % LOOK_DELAY == 0) {
             confirmNoTargets();
             lookFor(bot.getLookingAt(), LOOK_ANGLE, Player.class);
-            if (bot.canShoot(tick) && memory.getTargets().size() != 0) {
-                eventBus.dispatch(new GunShot(bot.getActiveGun(), bot.getLookingAt(), SERVER));
-            }
+            shootIfNecessary(tick);
+        }
+    }
+
+    private void shootIfNecessary(long tick) {
+        if (bot.canShoot(tick) && memory.getTargets().size() != 0) {
+            eventBus.dispatch(new GunShot(bot.getActiveGun(), bot.getLookingAt(), SERVER));
         }
     }
 
@@ -137,7 +143,7 @@ public class LookForPlayer extends Goal {
         memory.getTargets().removeIf(location -> {
             Vector targetLocation = new Vector(location.getLeft());
             targetLocation.sub(bot.getBoundingBox().getCentre());
-            return !(targetLocation.angle(bot.getLookingAt()) < LOOK_ANGLE && visible(location.getLeft()));
+            return targetLocation.angle(bot.getLookingAt()) < LOOK_ANGLE && visible(location.getLeft());
         });
     }
 
