@@ -37,8 +37,8 @@ public class Panic extends Goal {
     private Vector danger;
     private int shootAtDangerLeft;
 
-    public Panic(Bot bot, World world, EventBus eventBus, Random RANDOM) {
-        super(bot, world, eventBus, RANDOM);
+    public Panic(Bot bot, World world, EventBus eventBus, Random random) {
+        super(bot, world, eventBus, random);
         danger = new Vector();
         shootAtDangerLeft = 0;
     }

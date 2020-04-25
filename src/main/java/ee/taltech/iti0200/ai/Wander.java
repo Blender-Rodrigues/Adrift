@@ -36,8 +36,8 @@ public class Wander extends Goal {
 
     private double towards = SPEED;
 
-    public Wander(Bot bot, World world, EventBus eventBus, Random RANDOM) {
-        super(bot, world, eventBus, RANDOM);
+    public Wander(Bot bot, World world, EventBus eventBus, Random random) {
+        super(bot, world, eventBus, random);
     }
 
     @Override

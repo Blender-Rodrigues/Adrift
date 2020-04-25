@@ -62,7 +62,6 @@ public class HealthyBrain implements Brain {
         if (adrenaline < 0) {
             adrenaline = 0;
         }
-        System.out.println(adrenaline);
     }
 
     @Override
