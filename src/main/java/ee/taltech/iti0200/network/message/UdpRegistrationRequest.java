@@ -4,6 +4,8 @@ import org.apache.logging.log4j.core.net.Protocol;
 
 public class UdpRegistrationRequest implements Message {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     public Protocol getChannel() {
         return Protocol.TCP;

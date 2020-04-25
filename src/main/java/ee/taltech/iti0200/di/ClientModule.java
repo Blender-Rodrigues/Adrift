@@ -13,8 +13,9 @@ import ee.taltech.iti0200.di.annotations.GameId;
 import ee.taltech.iti0200.di.annotations.ServerHost;
 import ee.taltech.iti0200.di.annotations.ServerTcpPort;
 import ee.taltech.iti0200.domain.event.EventBus;
-import ee.taltech.iti0200.domain.event.handler.CollisionHandler;
-import ee.taltech.iti0200.domain.event.handler.ServerCollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.client.ClientCollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.network.Messenger;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.network.client.ClientMessenger;
@@ -32,12 +33,16 @@ import static java.net.InetAddress.getByName;
 
 public class ClientModule extends CommonModule {
 
-    private String host;
-    private int port;
+    private final String host;
+    private final int port;
 
-    public ClientModule(String host, int port) {
+    public ClientModule(String host, int port, String playerName) {
         this.host = host;
         this.port = port;
+        if (playerName == null) {
+            playerName = id.toString().replaceAll("[^\\d]", "").substring(0, 5);
+        }
+        player.setName(playerName);
     }
 
     protected void configure() {
@@ -56,10 +61,11 @@ public class ClientModule extends CommonModule {
         }
 
         bind(Game.class).to(ClientGame.class);
+        bind(CollisionHandler.class).to(ClientCollisionHandler.class);
 
-        bind(CollisionHandler.class).in(Singleton.class);
         bind(EventBus.class).in(Singleton.class);
         bind(ConnectionToServer.class).in(Singleton.class);
+        bind(EntityDamageHandler.class).in(Singleton.class);
         bind(Network.class).to(ClientNetwork.class).in(Singleton.class);
         bind(Messenger.class).to(ClientMessenger.class).in(Singleton.class);
     }

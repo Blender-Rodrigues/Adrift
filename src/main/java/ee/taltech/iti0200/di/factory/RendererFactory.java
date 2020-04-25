@@ -3,8 +3,6 @@ package ee.taltech.iti0200.di.factory;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.graphics.Animation;
-import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.CoordinateConverter;
 import ee.taltech.iti0200.graphics.renderer.Animateable;
 import ee.taltech.iti0200.graphics.renderer.Drawable;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
@@ -15,14 +13,10 @@ import ee.taltech.iti0200.graphics.Texture;
 
 public class RendererFactory {
 
-    private final CoordinateConverter converter;
-    private final Camera camera;
     private final Score score;
 
     @Inject
-    public RendererFactory(CoordinateConverter converter, Camera camera, Score score) {
-        this.converter = converter;
-        this.camera = camera;
+    public RendererFactory(Score score) {
         this.score = score;
     }
 
@@ -40,13 +34,13 @@ public class RendererFactory {
 
     public EntityRenderer create(Texture texture, Class<? extends EntityRenderer> type) {
         if (type == RotatingDrawable.class) {
-            return new RotatingDrawable(texture, converter, camera);
+            return new RotatingDrawable(texture);
         }
         return new Drawable(texture);
     }
 
-    public EntityRenderer create(Texture textureShell, Texture textureFilling) {
-        return new HealthBar(textureShell, textureFilling);
+    public EntityRenderer create(Texture textureEmpty, Texture textureFull, Texture textureGlobe) {
+        return new HealthBar(textureEmpty, textureFull, textureGlobe);
     }
 
 }

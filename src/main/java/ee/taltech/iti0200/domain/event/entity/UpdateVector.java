@@ -12,12 +12,16 @@ import static java.lang.String.format;
 
 public class UpdateVector extends Event {
 
-    private UUID id;
-    private Vector position;
-    private Vector speed;
+    private static final long serialVersionUID = 1L;
 
-    public UpdateVector(Entity entity, Receiver receiver) {
+    private final UUID id;
+    private final Vector position;
+    private final Vector speed;
+    private final long tick;
+
+    public UpdateVector(Entity entity, long tick, Receiver receiver) {
         super(receiver);
+        this.tick = tick;
         this.id = entity.getId();
         this.position = entity.getBoundingBox().getCentre();
         this.speed = entity.getSpeed();
@@ -25,6 +29,10 @@ public class UpdateVector extends Event {
 
     public UUID getId() {
         return id;
+    }
+
+    public long getTick() {
+        return tick;
     }
 
     public Vector getPosition() {

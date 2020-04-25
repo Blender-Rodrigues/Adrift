@@ -19,8 +19,11 @@ public class Player extends Living {
     private static final double FRICTION_COEFFICIENT = 0.99;
     private static final double JUMP_DELTA_V = 10.0;
     private static final int MAX_HEALTH = 200;
+    private static final int MAX_LIVES = 10;
     private static final double PERMEABILITY = 1;
 
+    private String name = "0";
+    private int lives;
     private int jumpsLeft;
     private Vector lookingAt;
 
@@ -31,6 +34,7 @@ public class Player extends Living {
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.lookingAt = new Vector(1f, 0f);
         this.permeability = PERMEABILITY;
+        this.lives = MAX_LIVES;
     }
 
     public void moveLeft() {
@@ -68,7 +72,7 @@ public class Player extends Living {
         targetPosition.sub(boundingBox.getCentre());
         targetPosition.normalize();
         lookingAt = targetPosition;
-        gun.setRotation(lookingAt);
+        activeGun.setRotation(lookingAt);
     }
 
     public Vector getLookingAt() {
@@ -85,6 +89,24 @@ public class Player extends Living {
 
     public int getJumpsLeft() {
         return this.jumpsLeft;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Player setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public Player setLives(int lives) {
+        this.lives = lives;
+        return this;
     }
 
     @Override

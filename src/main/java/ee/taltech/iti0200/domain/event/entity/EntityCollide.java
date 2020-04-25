@@ -7,6 +7,8 @@ import ee.taltech.iti0200.network.message.Receiver;
 
 public class EntityCollide extends Event implements Message {
 
+    private static final long serialVersionUID = 1L;
+
     private final Entity entity;
     private final Entity other;
 
@@ -22,6 +24,11 @@ public class EntityCollide extends Event implements Message {
 
     public Entity getOther() {
         return other;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("EntityCollide{%s -> %s}", entity, other);
     }
 
 }

@@ -3,8 +3,8 @@ package ee.taltech.iti0200.graphics;
 import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Gun;
 import ee.taltech.iti0200.domain.entity.Terrain;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.physics.BoundingBox;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 class EntityRenderFacadeTest {
@@ -66,7 +66,7 @@ class EntityRenderFacadeTest {
         Gun gun = mock(Gun.class);
 
         when(world.getEntities()).thenReturn(asList(bot, terrain));
-        when(bot.getGun()).thenReturn(gun);
+        when(bot.getActiveGun()).thenReturn(gun);
 
         when(camera.getPosition()).thenReturn(new Vector3f(5, 5, 0));
         when(camera.getZoom()).thenReturn(1f);
@@ -89,7 +89,7 @@ class EntityRenderFacadeTest {
 
         facade.decorate(bot);
 
-        verifyZeroInteractions(renderer);
+        verifyNoInteractions(renderer);
     }
 
     @Test

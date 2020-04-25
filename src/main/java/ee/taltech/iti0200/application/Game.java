@@ -23,12 +23,12 @@ import static java.util.stream.Collectors.joining;
 abstract public class Game {
 
     private final Logger logger = LogManager.getLogger(Game.class);
+    private final Timer timer;
 
     protected EventBus eventBus;
     protected World world;
     protected List<Component> components = new LinkedList<>();
 
-    private Timer timer;
     private long tick = 0;
 
     public Game(World world, EventBus eventBus, Timer timer) {
@@ -38,7 +38,7 @@ abstract public class Game {
         Thread.currentThread().setName(getClass().getSimpleName());
     }
 
-    void run() {
+    public void run() {
         try {
             initialize();
             timer.initialize();
@@ -46,7 +46,13 @@ abstract public class Game {
             components.sort(comparingInt(component -> priorities.getOrDefault(component.getClass(), 0)));
 
             for (Component component : components) {
+                long start = System.currentTimeMillis();
                 component.initialize();
+                logger.debug(
+                    "Initialized {} in {}ms",
+                    component.getClass().getSimpleName(),
+                    System.currentTimeMillis() - start
+                );
             }
         } catch (Exception e) {
             logger.error("Initialization failed " + e.getMessage(), e);
@@ -85,7 +91,7 @@ abstract public class Game {
         components.forEach(Component::terminate);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         List<Module> modules = new ArrayList<>();
 
         if (args.length == 0) {
@@ -98,15 +104,16 @@ abstract public class Game {
         } else if (args[0].equalsIgnoreCase("client")) {
             String host = args.length >= 2 ? args[1] : "localhost";
             int port = args.length >= 3 ? Integer.parseInt(args[2]) : 8880;
+            String playerName = args.length >= 4 ? args[3] : null;
 
-            modules.add(new ClientModule(host, port));
+            modules.add(new ClientModule(host, port, playerName));
             modules.add(new GuiModule());
         } else {
             throw new IllegalArgumentException(
                 "Invalid arguments provided, use one of the following: \n"
                     + "[no arguments] --> single player game\n"
                     + "server [port:8880] --> server game\n"
-                    + "client [host:localhost] [port:8880] --> client game\n"
+                    + "client [host:localhost] [port:8880] [playername: Unknown] --> client game\n"
             );
         }
 
@@ -115,6 +122,9 @@ abstract public class Game {
         try {
             injector.getInstance(Game.class).run();
         } catch (RecreateException exception) {
+            if (exception.delay > 0) {
+                Thread.sleep(exception.delay);
+            }
             main(args);
         }
     }

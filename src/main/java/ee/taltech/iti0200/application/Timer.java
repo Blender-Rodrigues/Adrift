@@ -3,45 +3,51 @@ package ee.taltech.iti0200.application;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static java.lang.System.currentTimeMillis;
+
 public class Timer {
 
-    private static final long THREAD_SLEEP = 10;
+    private final Logger logger = LogManager.getLogger(Timer.class);
+    private final long tickDuration;
 
-    private Logger logger = LogManager.getLogger(Timer.class);
     private long lastLoopTime;
-    private float sleepTime;
     private long tick = 0;
+    private long delta = 0;
 
-    public Timer(float fps) {
-        sleepTime = 1F / fps;
+    /**
+     * Input FPS to milliseconds for one tick duration
+     */
+    public Timer(long fps) {
+        tickDuration = Math.round((1f / fps) * 1000) - 1;
     }
 
     public void initialize() {
-        lastLoopTime = getTime();
+        lastLoopTime = currentTimeMillis();
     }
 
     public long sleep() {
-        double now = getTime();
+        long now = currentTimeMillis();
+        long sleep = (tickDuration - (now - lastLoopTime)) + delta;
 
-        while (now - lastLoopTime < sleepTime) {
-            Thread.yield();
+        if (sleep < 0) {
+            delta = sleep;
+            lastLoopTime = currentTimeMillis();
+            return tick++;
+        }
 
+        delta = 0;
+
+        if (sleep > 1) {
             try {
-                Thread.sleep(THREAD_SLEEP);
+                Thread.sleep(sleep);
             } catch (InterruptedException ex) {
                 logger.error("Sleep was interrupted", ex);
             }
-
-            now = getTime();
         }
 
-        lastLoopTime = getTime();
+        lastLoopTime = currentTimeMillis();
 
         return tick++;
-    }
-
-    private long getTime() {
-        return System.currentTimeMillis();
     }
 
 }

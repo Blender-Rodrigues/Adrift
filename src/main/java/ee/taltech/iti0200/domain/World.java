@@ -3,6 +3,7 @@ package ee.taltech.iti0200.domain;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
@@ -77,7 +78,7 @@ public class World {
         return this;
     }
 
-    public Vector nextPlayerSpawnPoint() {
+    public Vector nextSpawnPoint() {
         Vector position = spawnPoints.pop();
         spawnPoints.addLast(position);
         return position;
@@ -157,7 +158,9 @@ public class World {
             living.setWorld(this);
             livingEntities.add(living);
             if (entityRenderer != null) {
-                entityRenderer.decorate(living.getGun());
+                for (Gun weapon : ((Living) entity).getWeapons()) {
+                    entityRenderer.decorate(weapon);
+                }
             }
         }
     }

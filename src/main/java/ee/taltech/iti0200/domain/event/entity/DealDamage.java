@@ -11,8 +11,10 @@ import static java.lang.String.format;
 
 public class DealDamage extends Event implements Message {
 
-    private DamageSource source;
-    private Damageable target;
+    private static final long serialVersionUID = 1L;
+
+    private final DamageSource source;
+    private final Damageable target;
 
     public DealDamage(DamageSource source, Damageable target, Receiver receiver) {
         super(receiver);

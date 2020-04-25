@@ -76,6 +76,19 @@ public class Camera {
         return target;
     }
 
+    /**
+     * By some magical mathemagics by Kristjan, the dimensions are in pixels.
+     */
+    public Matrix4f getStaticProjection(int x, int y, float width, float height) {
+        Matrix4f projection = new Matrix4f();
+        projection.translate(-1, 1, 0);
+        projection.translate(width / this.width, - height / this.height, 0);
+        projection.translate(2f * x / this.width, - 2f * y / this.height, 0);
+        projection.scale(width / this.width, height / this.height, 1f);
+
+        return projection;
+    }
+
     public void moveLeft() {
         position.add(new Vector3f(CAMERA_SENSITIVITY * zoom, 0, 0));
     }

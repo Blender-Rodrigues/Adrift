@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class ScoreTest {
@@ -32,4 +31,14 @@ class ScoreTest {
         score.addDeath(player);
         assertThat(score.getPlayerScores().keySet()).containsExactly(player);
     }
+
+    @Test
+    void getSetUpdated() {
+        assertThat(score.getUpdated()).isTrue();
+
+        score.setUpdated(false);
+
+        assertThat(score.getUpdated()).isFalse();
+    }
+
 }

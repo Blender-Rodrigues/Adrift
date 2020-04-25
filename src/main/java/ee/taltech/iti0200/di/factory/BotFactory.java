@@ -8,22 +8,22 @@ import ee.taltech.iti0200.ai.Panic;
 import ee.taltech.iti0200.ai.Wander;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.event.Event;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
-import ee.taltech.iti0200.domain.event.handler.BotHurtHandler;
-import ee.taltech.iti0200.domain.event.handler.BotNoiseHandler;
+import ee.taltech.iti0200.domain.event.handler.server.BotHurtHandler;
+import ee.taltech.iti0200.domain.event.handler.server.BotNoiseHandler;
 
 import java.util.HashMap;
 import java.util.TreeMap;
 
 public class BotFactory {
 
-    private World world;
-    private EventBus eventBus;
+    private final World world;
+    private final EventBus eventBus;
 
     @Inject
     public BotFactory(World world, EventBus eventBus) {
@@ -38,14 +38,15 @@ public class BotFactory {
      */
     public Bot create() {
         HealthyBrain brain = new HealthyBrain(world);
-        Bot bot = new Bot(world.nextPlayerSpawnPoint(), world, brain);
-        bot.setGun(new Gun(bot.getBoundingBox()));
+        Bot bot = new Bot(world.nextSpawnPoint(), world, brain);
+        bot.addWeapon(new Gun(bot.getBoundingBox()));
+        bot.setActiveGun(0);
 
         HashMap<Class<? extends Event>, Subscriber<? extends Event>> subscribers = new HashMap<>();
         subscribers.put(DealDamage.class, new BotHurtHandler(bot));
         subscribers.put(GunShot.class, new BotNoiseHandler(bot));
-        subscribers.forEach((key, value) -> eventBus.subscribe(key, value));
-        Runnable onDeath = () -> subscribers.forEach((key, value) -> eventBus.unsubscribe(key, value));
+
+        Runnable onDeath = () -> subscribers.forEach(eventBus::unsubscribe);
 
         TreeMap<Long, Goal> goals = new TreeMap<>();
         goals.put(0L, new Wander(bot, world, eventBus));
@@ -53,6 +54,8 @@ public class BotFactory {
         goals.put(1000L, new Panic(bot, world, eventBus));
 
         brain.bind(bot, goals, onDeath);
+
+        subscribers.forEach(eventBus::subscribe);
 
         return bot;
     }

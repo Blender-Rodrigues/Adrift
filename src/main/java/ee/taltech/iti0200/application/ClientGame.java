@@ -4,21 +4,33 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.GameWon;
+import ee.taltech.iti0200.domain.event.UpdateScore;
+import ee.taltech.iti0200.domain.event.handler.client.ClientGunShotHandler;
+import ee.taltech.iti0200.domain.event.handler.client.MatchRestartHandler;
+import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
+import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
+import ee.taltech.iti0200.domain.event.handler.client.PlayerRespawnHandler;
+import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
+import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.domain.event.entity.Heal;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
+import ee.taltech.iti0200.domain.event.entity.RespawnPlayer;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
-import ee.taltech.iti0200.domain.event.handler.CollisionHandler;
-import ee.taltech.iti0200.domain.event.handler.EntityCreateHandler;
-import ee.taltech.iti0200.domain.event.handler.EntityDamageHandler;
-import ee.taltech.iti0200.domain.event.handler.EntityHealingHandler;
-import ee.taltech.iti0200.domain.event.handler.EntityRemoveHandler;
-import ee.taltech.iti0200.domain.event.handler.MoveBodyHandler;
+import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
+import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
+import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.network.Network;
@@ -26,15 +38,14 @@ import ee.taltech.iti0200.physics.Physics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class ClientGame extends Game {
 
     private final Logger logger = LogManager.getLogger(ClientGame.class);
 
-    private Player player;
-    private Graphics graphics;
-    private Network network;
-    private Score score;
+    private final Player player;
+    private final Graphics graphics;
+    private final Network network;
+    private final Score score;
 
     @Inject
     public ClientGame(
@@ -52,13 +63,17 @@ public class ClientGame extends Game {
         EntityCreateHandler entityCreateHandler,
         MoveBodyHandler moveBodyHandler,
         CollisionHandler collisionHandler,
+        PlayerRespawnHandler respawnHandler,
+        UpdateScoreHandler scoreHandler,
+        ClientGunShotHandler gunShotHandler,
+        ChangeEquipmentHandler equipmentHandler,
+        MatchRestartHandler restartHandler,
         Score score
     ) {
         super(world, eventBus, timer);
         this.player = player;
         this.graphics = graphics;
         this.network = network;
-
         this.score = score;
 
         components.add(physics);
@@ -72,11 +87,19 @@ public class ClientGame extends Game {
         eventBus.subscribe(CreateEntity.class, entityCreateHandler);
         eventBus.subscribe(UpdateVector.class, moveBodyHandler);
         eventBus.subscribe(EntityCollide.class, collisionHandler);
+        eventBus.subscribe(RespawnPlayer.class, respawnHandler);
+        eventBus.subscribe(UpdateScore.class, scoreHandler);
+        eventBus.subscribe(GunShot.class, gunShotHandler);
+        eventBus.subscribe(ChangeEquipment.class, equipmentHandler);
+        eventBus.subscribe(GameWon.class, restartHandler);
     }
 
     @Override
     protected void initialize() {
-        player.setGun(new FastGun(player.getBoundingBox()));
+        player.addWeapon(new Gun(player.getBoundingBox()));
+        player.addWeapon(new FastGun(player.getBoundingBox()));
+        player.addWeapon(new SpecialGun(player.getBoundingBox()));
+        player.setActiveGun(0);
         world.addEntity(player);
 
         logger.info("Added {} to the world", player);
