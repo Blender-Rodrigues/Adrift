@@ -19,16 +19,16 @@ public abstract class Goal {
 
     private static final double TERRAIN_Y_OFFSET = TERRAIN_BLOCK_SIZE / 2;
 
-    protected static final Random RANDOM = new Random();
-
     protected Bot bot;
     protected World world;
     protected EventBus eventBus;
+    protected Random random;
 
-    public Goal(Bot bot, World world, EventBus eventBus) {
+    public Goal(Bot bot, World world, EventBus eventBus, Random random) {
         this.bot = bot;
         this.world = world;
         this.eventBus = eventBus;
+        this.random = random;
     }
 
     abstract public void execute(long tick);
@@ -83,10 +83,7 @@ public abstract class Goal {
      * From the position of the bot start looking towards the target to see
      * if the bot has a clear line of sight or if there is a terrain block in between.
      */
-    private boolean visible(Map.Entry<Vector, ? extends Entity> entry) {
-        Vector target = entry.getValue().getBoundingBox().getCentre();
-
-        Vector direction = entry.getKey();
+    public boolean visible(Vector target, Vector direction) {
         direction.normalize();
 
         Vector centre = new Vector(bot.getBoundingBox().getCentre());
@@ -108,11 +105,21 @@ public abstract class Goal {
         return true;
     }
 
+    public boolean visible(Vector target) {
+        Vector direction = new Vector(target);
+        direction.sub(bot.getBoundingBox().getCentre());
+        return visible(target, direction);
+    }
+
+    public boolean visible(Map.Entry<Vector, ? extends Entity> entry) {
+        return visible(entry.getValue().getBoundingBox().getCentre(), entry.getKey());
+    }
+
     private boolean shouldContinue(Vector direction, Vector centre, Vector target) {
-        if (direction.x >= 0 && centre.x >= target.x) {
+        if (direction.x > 0 && centre.x >= target.x) {
             return false;
         }
-        if (direction.y >= 0 && centre.y >= target.y) {
+        if (direction.y > 0 && centre.y >= target.y) {
             return false;
         }
         if (direction.x < 0 && centre.x < target.x) {

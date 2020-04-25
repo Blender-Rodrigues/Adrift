@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.ai.Goal;
 import ee.taltech.iti0200.ai.HealthyBrain;
 import ee.taltech.iti0200.ai.LookForPlayer;
+import ee.taltech.iti0200.ai.Memory;
 import ee.taltech.iti0200.ai.Panic;
 import ee.taltech.iti0200.ai.Wander;
 import ee.taltech.iti0200.domain.World;
@@ -18,17 +19,20 @@ import ee.taltech.iti0200.domain.event.handler.server.BotHurtHandler;
 import ee.taltech.iti0200.domain.event.handler.server.BotNoiseHandler;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.TreeMap;
 
 public class BotFactory {
 
     private final World world;
     private final EventBus eventBus;
+    private final Random random;
 
     @Inject
-    public BotFactory(World world, EventBus eventBus) {
+    public BotFactory(World world, EventBus eventBus, Random random) {
         this.world = world;
         this.eventBus = eventBus;
+        this.random = random;
     }
 
     /**
@@ -38,6 +42,7 @@ public class BotFactory {
      */
     public Bot create() {
         HealthyBrain brain = new HealthyBrain(world);
+        Memory memory = new Memory();
         Bot bot = new Bot(world.nextSpawnPoint(), world, brain);
         bot.addWeapon(new Gun(bot.getBoundingBox()));
         bot.setActiveGun(0);
@@ -49,9 +54,9 @@ public class BotFactory {
         Runnable onDeath = () -> subscribers.forEach(eventBus::unsubscribe);
 
         TreeMap<Long, Goal> goals = new TreeMap<>();
-        goals.put(0L, new Wander(bot, world, eventBus));
-        goals.put(100L, new LookForPlayer(bot, world, eventBus));
-        goals.put(1000L, new Panic(bot, world, eventBus));
+        goals.put(0L, new Wander(bot, world, eventBus, random));
+        goals.put(100L, new LookForPlayer(bot, world, eventBus, memory, random));
+        goals.put(1500L, new Panic(bot, world, eventBus, random));
 
         brain.bind(bot, goals, onDeath);
 

@@ -9,6 +9,8 @@ import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.physics.Vector;
 
+import java.util.Random;
+
 import static ee.taltech.iti0200.ai.Sensor.AUDIO;
 import static ee.taltech.iti0200.ai.Sensor.DAMAGE;
 import static ee.taltech.iti0200.ai.Sensor.TACTILE;
@@ -23,6 +25,8 @@ public class Wander extends Goal {
     private static final double SIDE_WAYS_MAX = 1 / Math.sqrt(2);
     private static final double SPEED = 0.1;
     private static final double LOOK_ANGLE = 0.2;
+    private static final double WANDER_LOOK_INTENSITY = 0.4;
+    private static final double MOVING_DIRECTION_LOOK_INTENSITY = 0.2;
     private static final int LOOK_DELAY = 20;
     private static final int GUNSHOT_LOOK_DISTANCE = 30;
     private static final int ADRENALINE_WALL_BUMP = 20;
@@ -32,15 +36,25 @@ public class Wander extends Goal {
 
     private double towards = SPEED;
 
-    public Wander(Bot bot, World world, EventBus eventBus) {
-        super(bot, world, eventBus);
+    public Wander(Bot bot, World world, EventBus eventBus, Random random) {
+        super(bot, world, eventBus, random);
     }
 
     @Override
     public void execute(long tick) {
         move(new Vector(towards, 0));
+
+        Vector newLookingDirection = new Vector(random.nextDouble() - 0.5, random.nextDouble() - 0.5);
+        Vector movingDirection = new Vector(bot.getSpeed());
+
+        newLookingDirection.normalize();
+        movingDirection.normalize();
+
+        bot.lookTowards(newLookingDirection, WANDER_LOOK_INTENSITY);
+        bot.lookTowards(movingDirection, MOVING_DIRECTION_LOOK_INTENSITY);
+
         if (tick % LOOK_DELAY == 0) {
-            lookFor(bot.getSpeed(), LOOK_ANGLE, Player.class);
+            lookFor(bot.getLookingAt(), LOOK_ANGLE, Player.class);
         }
     }
 
