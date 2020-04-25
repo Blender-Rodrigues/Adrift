@@ -23,13 +23,13 @@ public class Panic extends Goal {
 
     private static final double LOOK_ANGLE = 0.3;
     private static final Vector SPEED = new Vector(1, 0.3);
-    private static final double JUMP_SPEED = 9;
+    private static final double JUMP_SPEED = 8;
     private static final int JUMP_DELAY = 40;
     private static final int GUNSHOT_LOOK_DISTANCE = 40;
     private static final int GUNSHOT_TRIGGER_HAPPY_DISTANCE = 30;
-    private static final int ADRENALINE_GUN_SHOT = 80;
-    private static final int ADRENALINE_DAMAGE = 100;
-    private static final int ADRENALINE_SPOT_LIVING = 40;
+    private static final int ADRENALINE_GUN_SHOT = 10;
+    private static final int ADRENALINE_DAMAGE = 25;
+    private static final int ADRENALINE_SPOT_LIVING = 10;
     public static final int Y_LIMIT_FOR_JUMP = 3;
     private static final int SHOOT_AT_DANGER_TIMES = 3;
     private static final double SHOOT_DEVIATION_PER_SHOT = 0.25;

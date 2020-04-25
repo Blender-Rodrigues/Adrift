@@ -56,7 +56,7 @@ public class BotFactory {
         TreeMap<Long, Goal> goals = new TreeMap<>();
         goals.put(0L, new Wander(bot, world, eventBus, random));
         goals.put(100L, new LookForPlayer(bot, world, eventBus, memory, random));
-        goals.put(1000L, new Panic(bot, world, eventBus, random));
+        goals.put(1500L, new Panic(bot, world, eventBus, random));
 
         brain.bind(bot, goals, onDeath);
 

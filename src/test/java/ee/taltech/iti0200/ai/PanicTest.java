@@ -41,7 +41,7 @@ class PanicTest {
         when(bot.canShoot(0L)).thenReturn(true);
 
         long adrenaline = panic.react(0L, Sensor.AUDIO, new Vector(2, 0), new Vector(1, 0), shootingGun);
-        assertThat(adrenaline).isEqualTo(78);
+        assertThat(adrenaline).isEqualTo(8);
         verify(eventBus).dispatch(captor.capture());
         GunShot shot = captor.getValue();
         assertThat(shot.getGun()).isEqualTo(botGun);
