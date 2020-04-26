@@ -3,8 +3,8 @@ package ee.taltech.iti0200.domain.entity;
 import ee.taltech.iti0200.ai.Brain;
 import ee.taltech.iti0200.ai.InertBrain;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -69,10 +69,10 @@ public class Bot extends Living {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
+    public void render(Shader shader, ViewPort viewPort, long tick) {
         String action = getAcceleration().getX() > 0 ? "LEFT" : "IDLE";
-        renderers.get(action).render(shader, camera, tick);
-        renderers.get("healthBar").render(shader, camera, tick);
+        renderers.get(action).render(shader, viewPort, tick);
+        renderers.get("healthBar").render(shader, viewPort, tick);
     }
 
 }

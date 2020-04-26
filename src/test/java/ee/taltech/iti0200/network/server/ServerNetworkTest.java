@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.network.server;
 
-import ee.taltech.iti0200.application.RecreateException;
+import ee.taltech.iti0200.application.RestartGame;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.event.Event;
@@ -120,7 +120,7 @@ class ServerNetworkTest {
         Throwable throwable = catchThrowable(() -> network.propagate(1L));
 
         assertThat(throwable)
-            .isInstanceOf(RecreateException.class)
+            .isInstanceOf(RestartGame.class)
             .hasNoCause();
 
         verifyNoInteractions(eventBus);

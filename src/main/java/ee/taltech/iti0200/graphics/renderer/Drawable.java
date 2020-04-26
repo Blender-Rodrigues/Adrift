@@ -1,8 +1,8 @@
 package ee.taltech.iti0200.graphics.renderer;
 
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.Texture;
+import ee.taltech.iti0200.graphics.ViewPort;
 
 public class Drawable extends EntityRenderer {
 
@@ -13,8 +13,8 @@ public class Drawable extends EntityRenderer {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
-        super.render(shader, camera, tick);
+    public void render(Shader shader, ViewPort viewPort, long tick) {
+        super.render(shader, viewPort, tick);
         texture.bind(0);
         model.render();
     }
