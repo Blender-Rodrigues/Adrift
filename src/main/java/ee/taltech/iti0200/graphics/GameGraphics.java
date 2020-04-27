@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.graphics;
 
 import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.MainShader;
 import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.graphics.renderer.Background;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
@@ -18,11 +19,12 @@ public class GameGraphics extends Graphics {
     public GameGraphics(
         @WindowId long window,
         ViewPort viewPort,
+        @MainShader Shader shader,
         EntityRenderFacade entityRenderer,
         GuiRenderFacade guiRenderer,
         Background backgroundRenderer
     ) {
-        super(window, viewPort);
+        super(window, viewPort, shader);
         this.entityRenderer = entityRenderer;
         this.guiRenderer = guiRenderer;
         this.backgroundRenderer = backgroundRenderer;

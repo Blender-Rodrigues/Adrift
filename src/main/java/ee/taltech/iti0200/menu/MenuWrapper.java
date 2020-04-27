@@ -60,9 +60,16 @@ public class MenuWrapper {
             graphics.update(tick);
             input.update(tick);
 
+            if (!graphics.isWindowOpen()) {
+                return;
+            }
+
             Thread.sleep(10);
             tick++;
         }
+
+        input.terminate();
+        graphics.terminate();
 
         runClient(menu, glfw);
     }
@@ -71,18 +78,21 @@ public class MenuWrapper {
         List<Module> modules = new ArrayList<>();
         modules.add(glfw);
 
-        if (menu.getGameMode() == 1) {
-            modules.add(new SinglePlayerModule());
-        } else {
-            modules.add(new ClientModule(menu.getHost(), menu.getPort(), menu.getPlayerName()));
-        }
-
-        modules.add(new GuiModule());
-
-        Injector injector = Guice.createInjector(modules);
-
         try {
-            injector.getInstance(Game.class).run();
+            if (menu.getGameMode() == 1) {
+                modules.add(new SinglePlayerModule());
+            } else {
+                modules.add(new ClientModule(
+                    menu.getHost().getValue(),
+                    Integer.parseInt(menu.getPort().getValue()),
+                    menu.getPlayerName().getValue()
+                ));
+            }
+
+            modules.add(new GuiModule());
+
+            Guice.createInjector(modules).getInstance(Game.class).run();
+
             menu.setMessage("Game initialization failed");
         } catch (RestartGame exception) {
             menu.setMessage(exception.getMessage());

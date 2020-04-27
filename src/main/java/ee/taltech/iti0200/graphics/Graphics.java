@@ -2,6 +2,7 @@ package ee.taltech.iti0200.graphics;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
+import ee.taltech.iti0200.di.annotations.MainShader;
 import ee.taltech.iti0200.di.annotations.WindowId;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.nio.IntBuffer;
 
 import static ee.taltech.iti0200.graphics.ViewPort.INITIAL_ZOOM_VALUE;
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
@@ -33,9 +35,10 @@ public class Graphics implements Component {
     protected int frameWidth;
 
     @Inject
-    public Graphics(@WindowId long window, ViewPort viewPort) {
+    public Graphics(@WindowId long window, ViewPort viewPort, @MainShader Shader shader) {
         this.window = window;
         this.viewPort = viewPort;
+        this.shader = shader;
     }
 
     @Override
@@ -49,8 +52,6 @@ public class Graphics implements Component {
             glfwGetWindowSize(window, pWidth, pHeight);
             frameHeight = pHeight.get(0);
             frameWidth = pWidth.get(0);
-
-
         } // the stack frame is popped automatically
 
         glfwSetFramebufferSizeCallback(window, (long window, int w, int h) -> {
@@ -64,15 +65,9 @@ public class Graphics implements Component {
         viewPort.setWidth(frameWidth).setHeight(frameHeight).setZoom(INITIAL_ZOOM_VALUE);
         viewPort.setPosition(new Vector3f(0, 0, 0));
 
-        shader = new Shader("shader");
-
         initRenderers();
 
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
-    }
-
-    public boolean isWindowOpen() {
-        return !glfwWindowShouldClose(window);
     }
 
     @Override
@@ -86,6 +81,15 @@ public class Graphics implements Component {
         updateRenderers(tick);
 
         glfwSwapBuffers(window); // swap the color buffers
+    }
+
+    @Override
+    public void terminate() {
+        glfwFreeCallbacks(window);
+    }
+
+    public boolean isWindowOpen() {
+        return !glfwWindowShouldClose(window);
     }
 
     protected void initRenderers() throws IOException {

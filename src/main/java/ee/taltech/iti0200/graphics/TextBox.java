@@ -25,4 +25,5 @@ public class TextBox {
             alphabet.render(text.charAt(i), viewPort, (int) (xDistance + i * size), yDistance, size);
         }
     }
+
 }

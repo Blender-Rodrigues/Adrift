@@ -54,7 +54,7 @@ public class Input implements Component {
         bindings.put(event.key, event);
     }
 
-    private void invokeKey(long window, int key, int scanCode, int action, int mods) {
+    protected void invokeKey(long window, int key, int scanCode, int action, int mods) {
         if (key >= GLFW_KEY_SPACE) {
             invoke(window, key, scanCode, action, mods);
         }

@@ -2,7 +2,9 @@ package ee.taltech.iti0200.di;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
+import ee.taltech.iti0200.di.annotations.MainShader;
 import ee.taltech.iti0200.di.annotations.WindowId;
+import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.renderer.Alphabet;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -58,7 +60,8 @@ public class GlfwModule extends AbstractModule {
         bind(Key.get(Long.class, WindowId.class)).toInstance(windowId);
 
         try {
-            bind(Alphabet.class).toInstance(new Alphabet("fonts/", "basicFont"));
+            bind(Key.get(Shader.class, MainShader.class)).toInstance(new Shader("shader"));
+            bind(Alphabet.class).toInstance(new Alphabet("fonts/", "expanse"));
         } catch (IOException e) {
             addError(e);
         }
