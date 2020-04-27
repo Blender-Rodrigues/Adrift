@@ -58,7 +58,7 @@ public class Graphics implements Component {
             if (w > 0 && h > 0 && (frameWidth != w || frameHeight != h)) {
                 frameWidth = w;
                 frameHeight = h;
-                viewPort.setPosition(new Vector3f(0, 0, 0));
+                viewPort.setHeight(h).setWidth(w).setZoom(viewPort.getZoom());
             }
         });
 
