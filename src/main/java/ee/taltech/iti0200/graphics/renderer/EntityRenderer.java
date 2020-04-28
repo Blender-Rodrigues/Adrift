@@ -10,7 +10,7 @@ import org.joml.Vector3f;
 
 public abstract class EntityRenderer implements Renderer {
 
-    protected transient Model model;
+    protected static transient Model model;
     protected transient Transform transform;
     protected Entity entity;
 
@@ -21,7 +21,11 @@ public abstract class EntityRenderer implements Renderer {
 
     @Override
     public void initialize() {
-        model = createSquare();
+        // filters out the non-null models, which do exists.
+        if (model == null) {
+            model = Renderer.square;
+        }
+
         transform = new Transform();
         transform.scale = new Vector3f((float) entity.getBoundingBox().getSize().getX(), (float) entity.getBoundingBox().getSize().getY(), 1);
     }

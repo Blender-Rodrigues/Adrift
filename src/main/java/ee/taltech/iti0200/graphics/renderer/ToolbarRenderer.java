@@ -24,7 +24,7 @@ public class ToolbarRenderer implements Renderer {
 
     @Override
     public void initialize() {
-        model = createSquare();
+        model = Renderer.square;
     }
 
     @Override
