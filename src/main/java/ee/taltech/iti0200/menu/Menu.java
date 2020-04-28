@@ -12,8 +12,8 @@ public class Menu {
     private int gameMode = 0;
     private String message = "";
 
-    private final MenuItem singlePlayer = new MenuItem("Start", "Single Player", false);
-    private final MenuItem client = new MenuItem("Start", "Multi player", false);
+    private final MenuItem singlePlayer = new MenuItem("Start", "Single-player", false);
+    private final MenuItem client = new MenuItem("Start", "Multiplayer", false);
     private final MenuItem host = new MenuItem("Host:", "localhost", true);
     private final MenuItem port = new MenuItem("Port:", "8880", true);
     private final MenuItem playerName = new MenuItem("Player Name:", "Unknown", true);

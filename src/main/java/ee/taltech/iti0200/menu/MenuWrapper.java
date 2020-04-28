@@ -68,6 +68,9 @@ public class MenuWrapper {
             tick++;
         }
 
+        menu.setMessage("Starting...");
+        graphics.update(++tick);
+
         input.terminate();
         graphics.terminate();
 
