@@ -27,7 +27,7 @@ public class Background implements Renderer {
 
     @Override
     public void render(Shader shader, ViewPort viewPort, long tick) {
-        float[] dimensions = getDimensions(viewPort);
+        float[] dimensions = backgroundImage.scaleToViewPort(viewPort);
         transform.scale = new Vector3f(dimensions[0] * viewPort.getZoom() / 2, dimensions[1] * viewPort.getZoom() / 2, 1);
 
         shader.bind();
@@ -42,22 +42,6 @@ public class Background implements Renderer {
         shader.setUniform("projection", transform.getProjection(viewPort.getProjection()));
         belt.bind(0);
         model.render();
-    }
-
-    private float[] getDimensions(ViewPort viewPort) {
-        float cameraWidth = viewPort.getWidth();
-        float cameraHeight = viewPort.getHeight();
-        float bgWidth = backgroundImage.getWidth();
-        float bgHeight = backgroundImage.getHeight();
-
-        float cameraRatio = cameraWidth / cameraHeight;
-        float backgroundRatio = bgWidth / bgHeight;
-
-        if (cameraRatio >= backgroundRatio) {
-            return new float[] {cameraWidth, cameraWidth / backgroundRatio};
-        } else {
-            return new float[] {cameraHeight * backgroundRatio, cameraHeight};
-        }
     }
 
 }

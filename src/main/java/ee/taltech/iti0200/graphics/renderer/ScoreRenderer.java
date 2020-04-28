@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ScoreRenderer {
 
-    private static final int DISPLAY_HEIGHT = 40;
+    private static final int SIZE = 16;
 
     private final List<Pair<Player, TextBox>> scoreBoxes = new ArrayList<>();
     private final Score score;
@@ -23,7 +23,7 @@ public class ScoreRenderer {
     }
 
     public void addPlayer(Player player) {
-        TextBox textBox = new TextBox(0, DISPLAY_HEIGHT * scoreBoxes.size(), "", DISPLAY_HEIGHT);
+        TextBox textBox = new TextBox(SIZE, SIZE + SIZE * scoreBoxes.size(), "", SIZE);
         textBox.setText(player.getName() + " " + score.getKills(player) + " " + score.getDeaths(player));
         scoreBoxes.add(new MutablePair<>(player, textBox));
     }

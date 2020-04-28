@@ -1,12 +1,15 @@
 package ee.taltech.iti0200.menu;
 
+import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.TextBox;
+import ee.taltech.iti0200.graphics.Texture;
 import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.graphics.renderer.Alphabet;
 import ee.taltech.iti0200.graphics.renderer.Renderer;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 public class MenuRenderer implements Renderer {
 
@@ -21,6 +24,8 @@ public class MenuRenderer implements Renderer {
     private final Alphabet alphabet;
 
     private String cursor = PREFIX;
+    private Texture background;
+    private Model model;
 
     @Inject
     public MenuRenderer(Alphabet alphabet, Menu menu) {
@@ -29,12 +34,21 @@ public class MenuRenderer implements Renderer {
     }
 
     @Override
-    public void initialize() {
+    public void initialize() throws IOException {
         alphabet.initialize();
+        background = new Texture("/", "eros_station");
+        model = createSquare();
     }
 
     @Override
     public void render(Shader shader, ViewPort viewPort, long tick) {
+        float[] dimensions = background.scaleToViewPort(viewPort);
+        alphabet.getShader().bind();
+        alphabet.getShader().setUniform("sampler", 0);
+        alphabet.getShader().setUniform("projection", viewPort.getStaticProjection(0, 0, dimensions[0], dimensions[1]));
+        background.bind(0);
+        model.render();
+
         if (tick % 20 == 0) {
             cursor = PREFIX.equals(cursor) ? " " : PREFIX;
         }
@@ -52,7 +66,7 @@ public class MenuRenderer implements Renderer {
         new TextBox(right_offset, TOP_OFFSET + TOP_MARGIN, menu.getHost().getText(cursor), FONT_SIZE).render(alphabet, viewPort);
         new TextBox(right_offset, TOP_OFFSET + TOP_MARGIN * 2, menu.getPort().getText(cursor), FONT_SIZE).render(alphabet, viewPort);
         new TextBox(right_offset, TOP_OFFSET + TOP_MARGIN * 3, menu.getPlayerName().getText(cursor), FONT_SIZE).render(alphabet, viewPort);
-        new TextBox(center - 70, TOP_OFFSET + TOP_MARGIN * 6, menu.getExit().getText(cursor), FONT_SIZE).render(alphabet, viewPort);
+        new TextBox(right_offset, TOP_OFFSET + TOP_MARGIN * 6, menu.getExit().getText(cursor), FONT_SIZE).render(alphabet, viewPort);
     }
 
 }

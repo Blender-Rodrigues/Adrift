@@ -22,7 +22,7 @@ public class Player extends Living {
     private static final int MAX_LIVES = 10;
     private static final double PERMEABILITY = 1;
 
-    private String name = "0";
+    private String name = "Unknown";
     private int lives;
     private int jumpsLeft;
     private Vector lookingAt;

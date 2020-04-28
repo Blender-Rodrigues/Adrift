@@ -59,7 +59,7 @@ public class Menu {
 
         exit.addNeighbour(LEFT, singlePlayer)
             .addNeighbour(RIGHT, client)
-            .addNeighbour(UP, client)
+            .addNeighbour(UP, playerName)
             .setAction(() -> { throw new RestartGame("Exit was pressed"); });
     }
 

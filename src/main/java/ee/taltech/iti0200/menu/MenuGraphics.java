@@ -7,6 +7,8 @@ import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.ViewPort;
 
+import java.io.IOException;
+
 public class MenuGraphics extends Graphics {
 
     private final MenuRenderer MenuRenderer;
@@ -18,7 +20,7 @@ public class MenuGraphics extends Graphics {
     }
 
     @Override
-    protected void initRenderers() {
+    protected void initRenderers() throws IOException {
         MenuRenderer.initialize();
     }
 

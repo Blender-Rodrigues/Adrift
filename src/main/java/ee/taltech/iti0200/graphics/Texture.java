@@ -56,4 +56,21 @@ public class Texture {
         return height;
     }
 
+    /**
+     * Returns [width, height] matched to cover whole viewport
+     */
+    public float[] scaleToViewPort(ViewPort viewPort) {
+        float viewPortWidth = viewPort.getWidth();
+        float viewPortHeight = viewPort.getHeight();
+
+        float cameraRatio = viewPortWidth / viewPortHeight;
+        float ratio = (float) width / (float) height;
+
+        if (cameraRatio >= ratio) {
+            return new float[] {viewPortWidth, viewPortWidth / ratio};
+        } else {
+            return new float[] {viewPortHeight * ratio, viewPortHeight};
+        }
+    }
+
 }
