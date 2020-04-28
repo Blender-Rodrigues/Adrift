@@ -18,7 +18,7 @@ public class Background implements Renderer {
 
     @Override
     public void initialize() throws IOException {
-        model = createSquare();
+        model = Renderer.square;
         transform = new Transform();
 
         backgroundImage = new Texture("world/", "background");

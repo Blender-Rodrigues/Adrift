@@ -35,26 +35,7 @@ public class Alphabet {
     }
 
     public void initialize() {
-        float[] vertices = new float[]{
-            -1f, 1f, 0,
-            1f, 1f, 0,
-            1f, -1f, 0,
-            -1f, -1f, 0
-        };
-
-        float[] texture = new float[]{
-            0, 0,
-            1, 0,
-            1, 1,
-            0, 1
-        };
-
-        int[] indices = new int[]{
-            0, 1, 2,
-            2, 3, 0
-        };
-
-        model = new Model(vertices, texture, indices);
+        model = Renderer.square;
     }
 
     public void render(char letter, ViewPort viewPort, int x, int y, float size) {

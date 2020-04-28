@@ -37,7 +37,7 @@ public class MenuRenderer implements Renderer {
     public void initialize() throws IOException {
         alphabet.initialize();
         background = new Texture("/", "eros_station");
-        model = createSquare();
+        model = Renderer.square;
     }
 
     @Override

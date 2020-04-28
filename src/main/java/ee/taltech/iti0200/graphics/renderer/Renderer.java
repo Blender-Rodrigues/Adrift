@@ -8,10 +8,12 @@ import java.io.IOException;
 
 public interface Renderer {
 
+    Model square = createSquare();
+
     void initialize() throws IOException;
     void render(Shader shader, ViewPort viewPort, long tick);
 
-    default Model createSquare() {
+    static Model createSquare() {
         float[] vertices = new float[]{
             -1f, 1f, 0,
             1f, 1f, 0,
