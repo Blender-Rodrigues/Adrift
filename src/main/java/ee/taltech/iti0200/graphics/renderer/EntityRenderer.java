@@ -21,10 +21,7 @@ public abstract class EntityRenderer implements Renderer {
 
     @Override
     public void initialize() {
-        // filters out the non-null models, which do exists.
-        if (model == null) {
-            model = Renderer.square;
-        }
+        model = Renderer.square;
 
         transform = new Transform();
         transform.scale = new Vector3f((float) entity.getBoundingBox().getSize().getX(), (float) entity.getBoundingBox().getSize().getY(), 1);
