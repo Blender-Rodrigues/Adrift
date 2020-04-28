@@ -2,11 +2,11 @@ package ee.taltech.iti0200.graphics.renderer;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
-import ee.taltech.iti0200.domain.entity.equipment.Equipment;
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.domain.entity.equipment.Equipment;
 import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
 import org.joml.Matrix4f;
 
 
@@ -28,8 +28,8 @@ public class ToolbarRenderer implements Renderer {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
-        Matrix4f projection = camera.getStaticProjection(camera.getWidth() / 2 - SIZE / 2, camera.getHeight() - SIZE, SIZE, SIZE);
+    public void render(Shader shader, ViewPort viewPort, long tick) {
+        Matrix4f projection = viewPort.getStaticProjection(viewPort.getWidth() / 2 - SIZE / 2, viewPort.getHeight() - SIZE, SIZE, SIZE);
 
         shader.bind();
         shader.setUniform("sampler", 0);

@@ -2,9 +2,8 @@ package ee.taltech.iti0200.graphics.renderer;
 
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.TextBox;
-
+import ee.taltech.iti0200.graphics.ViewPort;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class ScoreRenderer {
 
-    private static final int DISPLAY_HEIGHT = 40;
+    private static final int SIZE = 16;
 
     private final List<Pair<Player, TextBox>> scoreBoxes = new ArrayList<>();
     private final Score score;
@@ -24,7 +23,7 @@ public class ScoreRenderer {
     }
 
     public void addPlayer(Player player) {
-        TextBox textBox = new TextBox(0, DISPLAY_HEIGHT * scoreBoxes.size(), "", DISPLAY_HEIGHT);
+        TextBox textBox = new TextBox(SIZE, SIZE + SIZE * scoreBoxes.size(), "", SIZE);
         textBox.setText(player.getName() + " " + score.getKills(player) + " " + score.getDeaths(player));
         scoreBoxes.add(new MutablePair<>(player, textBox));
     }
@@ -36,12 +35,12 @@ public class ScoreRenderer {
         }
     }
 
-    public void render(Alphabet alphabet, Camera camera) {
+    public void render(Alphabet alphabet, ViewPort viewPort) {
         if (score.getUpdated()) {
             score.setUpdated(false);
             update();
         }
-        scoreBoxes.forEach(entry -> entry.getValue().render(alphabet, camera));
+        scoreBoxes.forEach(entry -> entry.getValue().render(alphabet, viewPort));
     }
 
 }

@@ -91,6 +91,7 @@ public class ConnectionToServer extends Connection {
 
         udpOutput = new PacketObjectOutputStream(udpSocket, address, response.getUdpPort());
 
+        // TODO: why is udp registration response waiting on tcp input?
         retry(UdpRegistrationResponse.class, tcpInput, () -> {
             udpOutput.writeObject(new UdpRegistrationRequest());
             logger.debug("Trying to register UDP against port " + response.getUdpPort());

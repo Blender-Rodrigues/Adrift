@@ -1,7 +1,7 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -46,8 +46,8 @@ public class Terrain extends Damageable {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
-        renderers.get(texture).render(shader, camera, tick);
+    public void render(Shader shader, ViewPort viewPort, long tick) {
+        renderers.get(texture).render(shader, viewPort, tick);
     }
 
 }

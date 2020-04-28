@@ -1,8 +1,8 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -22,7 +22,7 @@ public class Player extends Living {
     private static final int MAX_LIVES = 10;
     private static final double PERMEABILITY = 1;
 
-    private String name = "0";
+    private String name = "Unknown";
     private int lives;
     private int jumpsLeft;
     private Vector lookingAt;
@@ -117,10 +117,10 @@ public class Player extends Living {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
+    public void render(Shader shader, ViewPort viewPort, long tick) {
         direction = getLookingAt().getX() > 0 ? Direction.RIGHT : Direction.LEFT;
-        renderers.get(action + "." + direction).render(shader, camera, tick);
-        renderers.get("healthBar").render(shader, camera, tick);
+        renderers.get(action + "." + direction).render(shader, viewPort, tick);
+        renderers.get("healthBar").render(shader, viewPort, tick);
         action = Action.IDLE;
     }
 

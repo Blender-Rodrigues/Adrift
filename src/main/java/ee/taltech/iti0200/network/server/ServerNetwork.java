@@ -1,7 +1,7 @@
 package ee.taltech.iti0200.network.server;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.application.RecreateException;
+import ee.taltech.iti0200.application.RestartGame;
 import ee.taltech.iti0200.di.annotations.ServerClients;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Entity;
@@ -118,8 +118,7 @@ public class ServerNetwork extends Network {
                 iterator.remove();
             }
             if (clients.size() == 0 && world.getEntitiesRemoved() > 0) {
-                logger.warn("Last player left, recreating the game");
-                throw new RecreateException(0);
+                throw new RestartGame("Last player left");
             }
         }
     }
