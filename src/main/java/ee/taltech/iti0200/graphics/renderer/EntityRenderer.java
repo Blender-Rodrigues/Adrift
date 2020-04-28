@@ -10,7 +10,7 @@ import org.joml.Vector3f;
 
 public abstract class EntityRenderer implements Renderer {
 
-    protected static transient Model model;
+    protected transient Model model;
     protected transient Transform transform;
     protected Entity entity;
 
