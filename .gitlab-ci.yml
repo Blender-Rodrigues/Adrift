@@ -1,5 +1,7 @@
 stages:
   - test
+  - build
+  - deploy
 
 test:
   tags:
@@ -18,3 +20,43 @@ test:
       - build/reports/
       - build/test-results/
       - build/libs/
+
+build:
+  tags:
+    - iti0200
+  image: docker:19.03.8
+  stage: build
+  only:
+    refs:
+      - development
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:19.03.8-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+    - docker build -t jaakkytt/escape-from-eros:latest -f ci/Dockerfile .
+    - docker push jaakkytt/escape-from-eros:latest
+    - docker logout
+
+deploy:
+  tags:
+    - iti0200
+  image: ubuntu
+  stage: deploy
+  only:
+    refs:
+      - development
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - echo "$GAMESERVER_KEY" > ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - ssh game@$SERVER_IP "docker pull jaakkytt/escape-from-eros:latest"
+    - ssh game@$SERVER_IP "docker stop escape-from-eros || true && docker rm -f escape-from-eros || true"
+    - ssh game@$SERVER_IP "docker run -d --network host --restart=always --name escape-from-eros jaakkytt/escape-from-eros:latest"

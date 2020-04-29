@@ -2,7 +2,7 @@ FROM openjdk:8-jre-alpine
 
 VOLUME /tmp
 
-ADD /build/libs/*.jar game.jar
+ADD /build/libs/escape-from-eros-linux.jar game.jar
 
 RUN sh -c 'touch /game.jar'
 
