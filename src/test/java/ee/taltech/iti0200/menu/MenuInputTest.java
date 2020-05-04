@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.menu;
 
-import ee.taltech.iti0200.proxy.GlfwInput;
+import ee.taltech.iti0200.facade.GlfwInput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
@@ -32,15 +32,15 @@ import static org.mockito.Mockito.when;
 class MenuInputTest {
 
     private ArgumentCaptor<GLFWKeyCallbackI> captor;
-    private GlfwInput proxy;
+    private GlfwInput facade;
     private Menu menu;
     private MenuInput input;
 
     @BeforeEach
     void setUp() {
-        proxy = mock(GlfwInput.class);
+        facade = mock(GlfwInput.class);
         menu = mock(Menu.class, RETURNS_DEEP_STUBS);
-        input = new MenuInput(proxy, menu);
+        input = new MenuInput(facade, menu);
         captor = ArgumentCaptor.forClass(GLFWKeyCallbackI.class);
     }
 
@@ -48,7 +48,7 @@ class MenuInputTest {
     void initializeBindsArrowMenuChangeKeys() {
         input.initialize();
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_RIGHT, 0,  GLFW_RELEASE, 0);
         callback.invoke(1L, GLFW_KEY_LEFT, 0,  GLFW_RELEASE, 0);
@@ -71,7 +71,7 @@ class MenuInputTest {
 
         when(menu.getActive().getAction()).thenReturn(action);
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_ENTER, 0,  GLFW_RELEASE, 0);
 
@@ -86,7 +86,7 @@ class MenuInputTest {
 
         when(menu.getActive().getAction()).thenReturn(null);
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_ENTER, 0,  GLFW_RELEASE, 0);
 
@@ -101,7 +101,7 @@ class MenuInputTest {
 
         when(menu.getActive().isWritable()).thenReturn(false);
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_0, 0,  GLFW_RELEASE, 0);
 
@@ -115,7 +115,7 @@ class MenuInputTest {
 
         when(menu.getActive().isWritable()).thenReturn(true);
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_KP_DIVIDE, 0,  GLFW_RELEASE, 0);
 
@@ -130,7 +130,7 @@ class MenuInputTest {
         when(menu.getActive().isWritable()).thenReturn(true);
         when(menu.getActive().getValue()).thenReturn("");
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_BACKSPACE, 0,  GLFW_RELEASE, 0);
 
@@ -146,7 +146,7 @@ class MenuInputTest {
         when(menu.getActive().isWritable()).thenReturn(true);
         when(menu.getActive().getValue()).thenReturn("Character");
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_BACKSPACE, 0,  GLFW_RELEASE, 0);
 
@@ -163,7 +163,7 @@ class MenuInputTest {
         when(menu.getPort()).thenReturn(port);
         when(port.isWritable()).thenReturn(true);
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_A, 0,  GLFW_RELEASE, 0);
 
@@ -182,7 +182,7 @@ class MenuInputTest {
         when(port.isWritable()).thenReturn(true);
         when(port.getValue()).thenReturn("0120");
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_9, 0,  GLFW_RELEASE, 0);
 

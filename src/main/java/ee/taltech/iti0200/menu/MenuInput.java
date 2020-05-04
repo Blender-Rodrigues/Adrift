@@ -3,7 +3,7 @@ package ee.taltech.iti0200.menu;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.input.KeyEvent;
-import ee.taltech.iti0200.proxy.GlfwInput;
+import ee.taltech.iti0200.facade.GlfwInput;
 
 import static ee.taltech.iti0200.menu.Direction.DOWN;
 import static ee.taltech.iti0200.menu.Direction.LEFT;
@@ -31,8 +31,8 @@ public class MenuInput extends Input {
     private final Menu menu;
 
     @Inject
-    public MenuInput(GlfwInput proxy, Menu menu) {
-        super(proxy);
+    public MenuInput(GlfwInput facade, Menu menu) {
+        super(facade);
         this.menu = menu;
     }
 

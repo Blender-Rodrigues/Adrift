@@ -8,7 +8,7 @@ import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.proxy.GlfwInput;
+import ee.taltech.iti0200.facade.GlfwInput;
 
 import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_1;
@@ -39,13 +39,13 @@ public class GameInput extends Input {
 
     @Inject
     public GameInput(
-        GlfwInput proxy,
+        GlfwInput facade,
         @LocalPlayer Player player,
         Camera camera,
         Mouse mouse,
         EventBus eventBus
     ) {
-        super(proxy);
+        super(facade);
         this.player = player;
         this.camera = camera;
         this.mouse = mouse;

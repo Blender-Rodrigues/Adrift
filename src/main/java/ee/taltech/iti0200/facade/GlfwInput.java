@@ -1,4 +1,4 @@
-package ee.taltech.iti0200.proxy;
+package ee.taltech.iti0200.facade;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.WindowId;

@@ -6,7 +6,7 @@ import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.proxy.GlfwInput;
+import ee.taltech.iti0200.facade.GlfwInput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 class GameInputTest {
 
     private ArgumentCaptor<GLFWKeyCallbackI> captor;
-    private GlfwInput proxy;
+    private GlfwInput facade;
     private Player player;
     private Camera camera;
     private Mouse mouse;
@@ -43,13 +43,13 @@ class GameInputTest {
 
     @BeforeEach
     void setUp() {
-        proxy = mock(GlfwInput.class);
+        facade = mock(GlfwInput.class);
         player = mock(Player.class);
         camera = mock(Camera.class);
         mouse = mock(Mouse.class);
         eventBus = mock(EventBus.class);
 
-        input = new GameInput(proxy, player, camera, mouse, eventBus);
+        input = new GameInput(facade, player, camera, mouse, eventBus);
         captor = ArgumentCaptor.forClass(GLFWKeyCallbackI.class);
     }
 
@@ -57,7 +57,7 @@ class GameInputTest {
     void initializeBindsPlayerMoveKeys() {
         input.initialize();
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_A, 0,  GLFW_PRESS, 0);
         callback.invoke(1L, GLFW_KEY_D, 0,  GLFW_PRESS, 0);
@@ -81,7 +81,7 @@ class GameInputTest {
 
         input.initialize();
 
-        verify(proxy).setMouseButtonCallback(mouseCaptor.capture());
+        verify(facade).setMouseButtonCallback(mouseCaptor.capture());
         GLFWMouseButtonCallbackI callback = mouseCaptor.getValue();
         callback.invoke(1L, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, 0);
 
@@ -94,7 +94,7 @@ class GameInputTest {
     void initializeBindsKeysForCameraControl() {
         input.initialize();
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_RIGHT, 0,  GLFW_PRESS, 0);
         callback.invoke(1L, GLFW_KEY_LEFT, 0,  GLFW_PRESS, 0);
@@ -119,7 +119,7 @@ class GameInputTest {
     void initializeBindsKeysForInventoryChange() {
         input.initialize();
 
-        verify(proxy).setKeyCallback(captor.capture());
+        verify(facade).setKeyCallback(captor.capture());
         GLFWKeyCallbackI callback = captor.getValue();
         callback.invoke(1L, GLFW_KEY_3, 0,  GLFW_PRESS, 0);
 

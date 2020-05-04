@@ -3,7 +3,7 @@ package ee.taltech.iti0200.input;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.application.RestartGame;
-import ee.taltech.iti0200.proxy.GlfwInput;
+import ee.taltech.iti0200.facade.GlfwInput;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,21 +19,21 @@ import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
 
 public class Input implements Component {
 
-    protected final GlfwInput proxy;
+    protected final GlfwInput facade;
     protected final Set<KeyEvent> events = new HashSet<>();
     protected final Map<Integer, KeyEvent> bindings = new HashMap<>();
 
     protected long currentTick;
 
     @Inject
-    public Input(GlfwInput proxy) {
-        this.proxy = proxy;
+    public Input(GlfwInput facade) {
+        this.facade = facade;
     }
 
     @Override
     public void initialize() {
-        proxy.setKeyCallback(this::invokeKey);
-        proxy.setMouseButtonCallback(this::invokeMouse);
+        facade.setKeyCallback(this::invokeKey);
+        facade.setMouseButtonCallback(this::invokeMouse);
     }
 
     public void update(long tick) {

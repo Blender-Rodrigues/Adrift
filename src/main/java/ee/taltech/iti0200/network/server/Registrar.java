@@ -1,16 +1,10 @@
 package ee.taltech.iti0200.network.server;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.di.annotations.ConcurrentInbox;
 import ee.taltech.iti0200.di.annotations.ConnectionAlive;
 import ee.taltech.iti0200.di.annotations.ServerClients;
-import ee.taltech.iti0200.network.message.Receiver;
-import ee.taltech.iti0200.network.Listener;
-import ee.taltech.iti0200.network.Messenger;
-import ee.taltech.iti0200.network.PacketObjectInputStream;
-import ee.taltech.iti0200.network.PacketObjectOutputStream;
-import ee.taltech.iti0200.network.Sender;
 import ee.taltech.iti0200.network.message.Message;
+import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.message.TcpRegistrationRequest;
 import ee.taltech.iti0200.network.message.TcpRegistrationResponse;
 import ee.taltech.iti0200.network.message.UdpRegistrationRequest;
@@ -28,7 +22,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -37,20 +30,20 @@ public class Registrar extends Thread {
     private final Logger logger = LogManager.getLogger(Registrar.class);
     private final ServerSocket serverSocket;
     private final Set<ConnectionToClient> clients;
-    private final ConcurrentLinkedQueue<Message> inbox;
     private final AtomicBoolean alive;
+    private final ServerThreadFactory factory;
 
     @Inject
     public Registrar(
         ServerSocket serverSocket,
         @ServerClients Set<ConnectionToClient> clients,
-        @ConcurrentInbox ConcurrentLinkedQueue<Message> inbox,
-        @ConnectionAlive AtomicBoolean alive
+        @ConnectionAlive AtomicBoolean alive,
+        ServerThreadFactory factory
     ) {
         this.serverSocket = serverSocket;
         this.clients = clients;
-        this.inbox = inbox;
         this.alive = alive;
+        this.factory = factory;
         setName("Server registrar");
     }
 
@@ -74,7 +67,7 @@ public class Registrar extends Thread {
                     logger.warn("Client connection {}:{} already existing.", address.getHostName(), port);
                 } else {
                     logger.info("Connection accepted from {}:{} ", address.getHostName(), port);
-                    register(socket, connection);
+                    register(factory.getBuilderFor(socket, connection), connection);
                 }
             } catch (IOException e) {
                 logger.error("I/O error: " + e.getMessage(), e);
@@ -86,15 +79,15 @@ public class Registrar extends Thread {
      * Creates separate sockets and threads for handling per client TCP and UDP communication.
      * Handles initial client communication setup.
      */
-    private void register(Socket socket, ConnectionToClient connection) throws IOException {
-        ObjectInputStream tcpInput = new ObjectInputStream(socket.getInputStream());
-        ObjectOutputStream tcpOutput = new ObjectOutputStream(socket.getOutputStream());
+    private void register(ConnectionBuilder builder, ConnectionToClient connection) throws IOException {
+        ObjectInputStream tcpInput = builder.createTcpInput();
+        ObjectOutputStream tcpOutput = builder.createTcpOutput();
         tcpOutput.flush();
 
-        DatagramSocket udpSocket = new DatagramSocket();
+        DatagramSocket udpSocket = builder.createUdpSocket();
         Integer udpPort = udpSocket.getLocalPort();
 
-        connection.setTcpSocket(socket)
+        connection.setTcpSocket(builder.getTcpSocket())
             .setTcpInput(tcpInput)
             .setTcpOutput(tcpOutput)
             .setUdpSocket(udpSocket)
@@ -107,8 +100,9 @@ public class Registrar extends Thread {
             }
 
             try {
-                tcpOutput.writeObject(new UdpRegistrationResponse(new Receiver(connection.getId())));
-                tcpOutput.flush();
+                ObjectOutputStream udpOutput = connection.getUdpOutput();
+                udpOutput.writeObject(new UdpRegistrationResponse(new Receiver(connection.getId())));
+                udpOutput.flush();
                 connection.finalized();
                 clients.add(connection);
             } catch (IOException e) {
@@ -124,20 +118,14 @@ public class Registrar extends Thread {
             logger.info("Responding to client {} with UDP port: {}", request.getId(), udpPort);
 
             try {
-                ObjectInputStream udpInput = new PacketObjectInputStream(udpSocket);
-                ObjectOutputStream udpOutput = new PacketObjectOutputStream(
-                    udpSocket,
-                    connection.getAddress(),
-                    request.getUdpPort()
-                );
+                ObjectInputStream udpInput = builder.createUdpInput();
+                ObjectOutputStream udpOutput = builder.createUdpOutput(request.getUdpPort());
 
                 connection.setUdpInput(udpInput).setUdpOutput(udpOutput);
 
                 logger.debug("Client UDP port received: " + request.getUdpPort());
 
-                Messenger udpMessenger = new Messenger(inbox, connection.getUdpOutbox(), alive);
-                new Listener("Server UDP", udpInput, udpMessenger, connection, udpHandlers).start();
-                new Sender("Server UDP", udpOutput, udpMessenger, connection).start();
+                builder.createUdpThreads(udpHandlers).forEach(Thread::start);
 
                 tcpOutput.writeObject(new TcpRegistrationResponse(udpPort, new Receiver(request.getId())));
                 tcpOutput.flush();
@@ -146,9 +134,7 @@ public class Registrar extends Thread {
             }
         });
 
-        Messenger tcpMessenger = new Messenger(inbox, connection.getTcpOutbox(), alive);
-        new Listener("Server TCP", tcpInput, tcpMessenger, connection, tcpHandlers).start();
-        new Sender("Server TCP", tcpOutput, tcpMessenger, connection).start();
+        builder.createTcpThreads(tcpHandlers).forEach(Thread::start);
     }
 
 }

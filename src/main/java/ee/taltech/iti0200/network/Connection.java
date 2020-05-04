@@ -56,6 +56,10 @@ abstract public class Connection {
         return tcpOutput;
     }
 
+    public ObjectOutputStream getUdpOutput() {
+        return udpOutput;
+    }
+
     public Connection setTcpOutput(ObjectOutputStream tcpOutput) {
         this.tcpOutput = tcpOutput;
         return this;
