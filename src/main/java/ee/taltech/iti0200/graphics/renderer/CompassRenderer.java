@@ -46,7 +46,6 @@ public class CompassRenderer implements Renderer {
 
         texture.bind(0);
         model.render();
-        shader.setUniform("rotation", new Matrix4f());
     }
 
     public void setDirection(Vector direction) {
