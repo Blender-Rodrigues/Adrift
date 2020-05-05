@@ -22,6 +22,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -95,13 +96,17 @@ public class Registrar extends Thread {
 
         Map<Class<? extends Message>, Consumer<Message>> udpHandlers = new HashMap<>();
         udpHandlers.put(UdpRegistrationRequest.class, (message) -> {
+            UUID id = connection.getId();
+
             if (connection.isFinalized()) {
-                return;
+                logger.warn("Re-responding to client {} UdpRegistrationRequest", id);
+            } else {
+                logger.info("Responding to client {} UdpRegistrationRequest", id);
             }
 
             try {
                 ObjectOutputStream udpOutput = connection.getUdpOutput();
-                udpOutput.writeObject(new UdpRegistrationResponse(new Receiver(connection.getId())));
+                udpOutput.writeObject(new UdpRegistrationResponse(new Receiver(id)));
                 udpOutput.flush();
                 connection.finalized();
                 clients.add(connection);
@@ -123,7 +128,7 @@ public class Registrar extends Thread {
 
                 connection.setUdpInput(udpInput).setUdpOutput(udpOutput);
 
-                logger.debug("Client UDP port received: " + request.getUdpPort());
+                logger.info("Client UDP port received: " + request.getUdpPort());
 
                 builder.createUdpThreads(udpHandlers).forEach(Thread::start);
 

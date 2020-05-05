@@ -68,6 +68,8 @@ public class ConnectionToServer extends Connection {
         udpOutput = factory.createUdpOutput(response.getUdpPort());
         udpInput = factory.createUdpInput();
 
+        udpSocket.setSoTimeout(RETRY);
+
         retry(UdpRegistrationResponse.class, udpInput, () -> {
             udpOutput.writeObject(new UdpRegistrationRequest());
             logger.debug("Trying to register UDP against port " + response.getUdpPort());
@@ -79,6 +81,7 @@ public class ConnectionToServer extends Connection {
         });
 
         tcpSocket.setSoTimeout(0);
+        udpSocket.setSoTimeout(0);
 
         factory.createConnectionThreads(this).forEach(Thread::start);
 
