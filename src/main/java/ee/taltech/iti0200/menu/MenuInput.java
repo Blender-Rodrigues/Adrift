@@ -1,9 +1,9 @@
 package ee.taltech.iti0200.menu;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.input.Input;
 import ee.taltech.iti0200.input.KeyEvent;
+import ee.taltech.iti0200.facade.GlfwInput;
 
 import static ee.taltech.iti0200.menu.Direction.DOWN;
 import static ee.taltech.iti0200.menu.Direction.LEFT;
@@ -31,8 +31,8 @@ public class MenuInput extends Input {
     private final Menu menu;
 
     @Inject
-    public MenuInput(@WindowId long window, Menu menu) {
-        super(window);
+    public MenuInput(GlfwInput facade, Menu menu) {
+        super(facade);
         this.menu = menu;
     }
 
@@ -63,10 +63,12 @@ public class MenuInput extends Input {
         if (key < GLFW_KEY_SPACE || action != GLFW_RELEASE) {
             return;
         }
+
         MenuItem active = menu.getActive();
         if (!active.isWritable()) {
             return;
         }
+
         boolean keyInValidRange = (key >= GLFW_KEY_0 && key <= GLFW_KEY_SEMICOLON)
             || (key >= GLFW_KEY_A && key <= GLFW_KEY_Z)
             || key == GLFW_KEY_MINUS
@@ -91,8 +93,6 @@ public class MenuInput extends Input {
             if (key < GLFW_KEY_0 || key > GLFW_KEY_9) {
                 return;
             }
-            active.setValue(active.getValue() + (char) key);
-            return;
         }
 
         active.setValue(active.getValue() + (char) key);
