@@ -3,7 +3,7 @@ package ee.taltech.iti0200.input;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.application.Component;
 import ee.taltech.iti0200.application.RestartGame;
-import ee.taltech.iti0200.di.annotations.WindowId;
+import ee.taltech.iti0200.facade.GlfwInput;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,26 +16,24 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_8;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 
 public class Input implements Component {
 
-    protected final long window;
+    protected final GlfwInput facade;
     protected final Set<KeyEvent> events = new HashSet<>();
     protected final Map<Integer, KeyEvent> bindings = new HashMap<>();
 
     protected long currentTick;
 
     @Inject
-    public Input(@WindowId long window) {
-        this.window = window;
+    public Input(GlfwInput facade) {
+        this.facade = facade;
     }
 
     @Override
     public void initialize() {
-        glfwSetKeyCallback(window, this::invokeKey);
-        glfwSetMouseButtonCallback(window, this::invokeMouse);
+        facade.setKeyCallback(this::invokeKey);
+        facade.setMouseButtonCallback(this::invokeMouse);
     }
 
     public void update(long tick) {
