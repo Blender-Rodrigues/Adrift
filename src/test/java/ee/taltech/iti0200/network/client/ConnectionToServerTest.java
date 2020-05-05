@@ -25,7 +25,7 @@ class ConnectionToServerTest {
         // given
         InetAddress address = InetAddress.getLocalHost();
         Player player = mock(Player.class);
-        ConnecionBuilder factory = mock(ConnecionBuilder.class, RETURNS_DEEP_STUBS);
+        ConnectionBuilder factory = mock(ConnectionBuilder.class, RETURNS_DEEP_STUBS);
 
         Socket tcpSocket = mock(Socket.class);
         ObjectInputStream tcpInput = mock(ObjectInputStream.class);

@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Arrays.asList;
 
-public class ConnecionBuilder extends ThreadFactory {
+public class ConnectionBuilder extends ThreadFactory {
 
     private final ConcurrentLinkedQueue<Message> inbox;
     private final ConcurrentLinkedQueue<Message> tcpOutbox;
@@ -44,7 +44,7 @@ public class ConnecionBuilder extends ThreadFactory {
     private ObjectOutputStream udpOutput;
 
     @Inject
-    public ConnecionBuilder(
+    public ConnectionBuilder(
         @ServerHost InetAddress address,
         @ServerTcpPort int tcpPort,
         @ConcurrentInbox ConcurrentLinkedQueue<Message> inbox,

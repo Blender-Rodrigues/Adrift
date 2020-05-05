@@ -28,7 +28,7 @@ public class ConnectionToServer extends Connection {
 
     private final Logger logger = LogManager.getLogger(ConnectionToServer.class);
     private final Player player;
-    private final ConnecionBuilder factory;
+    private final ConnectionBuilder factory;
 
     private LoadWorld worldData;
 
@@ -37,7 +37,7 @@ public class ConnectionToServer extends Connection {
         @ServerHost InetAddress address,
         @ServerTcpPort int tcpPort,
         @LocalPlayer Player player,
-        ConnecionBuilder factory
+        ConnectionBuilder factory
     ) {
         super(address, tcpPort);
         this.player = player;
