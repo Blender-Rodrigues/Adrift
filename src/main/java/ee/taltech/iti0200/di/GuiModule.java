@@ -6,6 +6,7 @@ import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.GameGraphics;
 import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.graphics.ViewPort;
+import ee.taltech.iti0200.graphics.renderer.CompassRenderer;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.input.GameInput;
 import ee.taltech.iti0200.input.Input;
@@ -20,6 +21,7 @@ public class GuiModule extends AbstractModule {
         bind(Graphics.class).to(GameGraphics.class).in(Singleton.class);
         bind(Mouse.class).in(Singleton.class);
         bind(EntityRenderFacade.class).in(Singleton.class);
+        bind(CompassRenderer.class).in(Singleton.class);
     }
 
 }
