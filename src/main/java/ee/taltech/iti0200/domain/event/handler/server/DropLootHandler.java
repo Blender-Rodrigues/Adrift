@@ -3,7 +3,6 @@ package ee.taltech.iti0200.domain.event.handler.server;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.factory.LootFactory;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Loot;
 import ee.taltech.iti0200.domain.event.EventBus;

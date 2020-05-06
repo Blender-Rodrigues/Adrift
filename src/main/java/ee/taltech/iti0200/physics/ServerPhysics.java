@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.GameId;
 import ee.taltech.iti0200.domain.Fall;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;

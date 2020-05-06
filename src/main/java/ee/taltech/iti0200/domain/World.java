@@ -1,7 +1,6 @@
 package ee.taltech.iti0200.domain;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Loot;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;

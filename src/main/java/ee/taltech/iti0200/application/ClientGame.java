@@ -9,6 +9,7 @@ import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.GameWon;
 import ee.taltech.iti0200.domain.event.UpdateScore;
+import ee.taltech.iti0200.domain.event.entity.AddGun;
 import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
@@ -26,6 +27,7 @@ import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
 import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityGiveGunHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
 import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
@@ -59,6 +61,7 @@ public class ClientGame extends Game {
         EntityHealingHandler healingHandler,
         EntityRemoveHandler entityRemoveHandler,
         EntityCreateHandler entityCreateHandler,
+        EntityGiveGunHandler entityGiveGunHandler,
         MoveBodyHandler moveBodyHandler,
         CollisionHandler collisionHandler,
         PlayerRespawnHandler respawnHandler,
@@ -83,6 +86,7 @@ public class ClientGame extends Game {
         eventBus.subscribe(Heal.class, healingHandler);
         eventBus.subscribe(RemoveEntity.class, entityRemoveHandler);
         eventBus.subscribe(CreateEntity.class, entityCreateHandler);
+        eventBus.subscribe(AddGun.class, entityGiveGunHandler);
         eventBus.subscribe(UpdateVector.class, moveBodyHandler);
         eventBus.subscribe(EntityCollide.class, collisionHandler);
         eventBus.subscribe(RespawnPlayer.class, respawnHandler);

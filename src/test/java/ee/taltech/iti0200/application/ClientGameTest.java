@@ -12,6 +12,7 @@ import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
 import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityGiveGunHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
 import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
@@ -45,6 +46,7 @@ class ClientGameTest {
     EntityHealingHandler healingHandler;
     EntityRemoveHandler entityRemoveHandler;
     EntityCreateHandler entityCreateHandler;
+    EntityGiveGunHandler entityGiveGunHandler;
     MoveBodyHandler moveBodyHandler;
     CollisionHandler collisionHandler;
     PlayerRespawnHandler respawnHandler;
@@ -70,6 +72,7 @@ class ClientGameTest {
         healingHandler = mock(EntityHealingHandler.class);
         entityRemoveHandler = mock(EntityRemoveHandler.class);
         entityCreateHandler = mock(EntityCreateHandler.class);
+        entityGiveGunHandler = mock(EntityGiveGunHandler.class);
         moveBodyHandler = mock(MoveBodyHandler.class);
         collisionHandler = mock(CollisionHandler.class);
         respawnHandler = mock(PlayerRespawnHandler.class);
@@ -92,6 +95,7 @@ class ClientGameTest {
             healingHandler,
             entityRemoveHandler,
             entityCreateHandler,
+            entityGiveGunHandler,
             moveBodyHandler,
             collisionHandler,
             respawnHandler,
@@ -105,7 +109,7 @@ class ClientGameTest {
 
     @Test
     void constructorSubscribesHandlers() {
-        verify(eventBus, times(11)).subscribe(any(), any());
+        verify(eventBus, times(12)).subscribe(any(), any());
     }
 
     @Test

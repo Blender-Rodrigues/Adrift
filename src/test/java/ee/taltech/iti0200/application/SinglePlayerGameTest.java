@@ -14,6 +14,7 @@ import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
 import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityGiveGunHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
 import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
@@ -44,6 +45,7 @@ class SinglePlayerGameTest {
     Intelligence ai;
     EntityDamageHandler damageHandler;
     EntityHealingHandler healingHandler;
+    EntityGiveGunHandler entityGiveGunHandler;
     EntityRemoveHandler entityRemoveHandler;
     EntityCreateHandler entityCreateHandler;
     DropLootHandler dropLootHandler;
@@ -72,6 +74,7 @@ class SinglePlayerGameTest {
         ai = mock(Intelligence.class);
         damageHandler = mock(EntityDamageHandler.class);
         healingHandler = mock(EntityHealingHandler.class);
+        entityGiveGunHandler = mock(EntityGiveGunHandler.class);
         entityRemoveHandler = mock(EntityRemoveHandler.class);
         entityCreateHandler = mock(EntityCreateHandler.class);
         dropLootHandler = mock(DropLootHandler.class);
@@ -97,6 +100,7 @@ class SinglePlayerGameTest {
             gunShotHandler,
             damageHandler,
             healingHandler,
+            entityGiveGunHandler,
             entityRemoveHandler,
             entityCreateHandler,
             dropLootHandler,
