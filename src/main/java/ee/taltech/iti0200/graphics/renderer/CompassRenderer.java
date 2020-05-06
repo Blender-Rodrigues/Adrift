@@ -16,6 +16,8 @@ public class CompassRenderer implements Renderer {
     private final World world;
     private Model model;
 
+    public static final float SIZE = 50f;
+
     private Vector direction;
     private Texture texture;
 
@@ -33,7 +35,7 @@ public class CompassRenderer implements Renderer {
     public void render(Shader shader, ViewPort viewPort, long tick) {
         Matrix4f projection = new Matrix4f();
         projection.translate((float) direction.getX(), (float) direction.getY(), 0);
-        projection.scale(0.1f);
+        projection.scale(SIZE / viewPort.getWidth(), SIZE /viewPort.getHeight(), 0);
 
         Matrix4f rotation = new Matrix4f();
         float rotationAngle = - (float) (Math.atan2(direction.getX(), direction.getY()));
