@@ -31,9 +31,14 @@ public class EntityGiveGunHandler implements Subscriber<AddGun> {
 
         Gun gun = event.getGun();
 
-        target.addWeapon(gun);
+        if (!target.hasGun(gun)) {
+            target.addWeapon(gun);
+            logger.info("{} was given {}", target, gun);
+            return;
+        }
 
-        logger.info("{} was given {}", target, gun);
+        logger.info("{} already had {} and was not given a second one", target, gun);
+
     }
 
     private Living loadLocal(Entity entity) {
