@@ -1,10 +1,11 @@
 package ee.taltech.iti0200.domain.event.handler.server;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.di.factory.ConsumableFactory;
+import ee.taltech.iti0200.di.factory.LootFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Living;
+import ee.taltech.iti0200.domain.entity.Loot;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
@@ -18,14 +19,14 @@ import static ee.taltech.iti0200.network.message.Receiver.EVERYONE;
 public class DropLootHandler implements Subscriber<DropLoot> {
 
     private World world;
-    private ConsumableFactory consumableFactory;
+    private LootFactory lootFactory;
     private EventBus eventBus;
-    private Map<Living, Consumable> loots = new HashMap<>();
+    private Map<Living, Loot> loots = new HashMap<>();
 
     @Inject
-    public DropLootHandler(World world, ConsumableFactory consumableFactory, EventBus eventBus) {
+    public DropLootHandler(World world, LootFactory lootFactory, EventBus eventBus) {
         this.world = world;
-        this.consumableFactory = consumableFactory;
+        this.lootFactory = lootFactory;
         this.eventBus = eventBus;
     }
 
@@ -35,8 +36,8 @@ public class DropLootHandler implements Subscriber<DropLoot> {
             return;
         }
 
-        Consumable consumable = consumableFactory.create(event.getLocation());
-        eventBus.dispatch(new CreateEntity(consumable, EVERYONE));
+        Loot loot = lootFactory.create(event.getLocation());
+        eventBus.dispatch(new CreateEntity(loot, EVERYONE));
     }
 
 }
