@@ -7,9 +7,7 @@ import ee.taltech.iti0200.domain.Layout;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.domain.entity.equipment.FastGun;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
-import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.UpdateScore;
 import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
@@ -101,8 +99,6 @@ public class SinglePlayerGame extends Game {
 
         player.setPosition(world.nextSpawnPoint());
         player.addWeapon(new Gun(player.getBoundingBox()));
-        player.addWeapon(new FastGun(player.getBoundingBox()));
-        player.addWeapon(new SpecialGun(player.getBoundingBox()));
         player.setActiveGun(0);
 
         world.addEntity(player);

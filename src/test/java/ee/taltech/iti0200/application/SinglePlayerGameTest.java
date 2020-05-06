@@ -1,13 +1,15 @@
 package ee.taltech.iti0200.application;
 
+import ee.taltech.iti0200.ai.Intelligence;
+import ee.taltech.iti0200.domain.Layout;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.event.EventBus;
-import ee.taltech.iti0200.domain.event.handler.client.ClientGunShotHandler;
 import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
 import ee.taltech.iti0200.domain.event.handler.client.MatchRestartHandler;
+import ee.taltech.iti0200.domain.event.handler.client.PlayerRespawnHandler;
 import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
 import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
@@ -15,8 +17,9 @@ import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
 import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
-import ee.taltech.iti0200.domain.event.handler.client.PlayerRespawnHandler;
-import ee.taltech.iti0200.graphics.GameGraphics;
+import ee.taltech.iti0200.domain.event.handler.server.DropLootHandler;
+import ee.taltech.iti0200.domain.event.handler.server.GunShotHandler;
+import ee.taltech.iti0200.graphics.Graphics;
 import ee.taltech.iti0200.input.GameInput;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.physics.Physics;
@@ -24,37 +27,36 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-class ClientGameTest {
+class SinglePlayerGameTest {
 
     World world;
     EventBus eventBus;
     Timer timer;
     Player player;
-    GameGraphics gameGraphics;
+    Layout layout;
+    Graphics graphics;
     Network network;
     GameInput input;
     Physics physics;
+    Intelligence ai;
     EntityDamageHandler damageHandler;
     EntityHealingHandler healingHandler;
     EntityRemoveHandler entityRemoveHandler;
     EntityCreateHandler entityCreateHandler;
+    DropLootHandler dropLootHandler;
     MoveBodyHandler moveBodyHandler;
     CollisionHandler collisionHandler;
     PlayerRespawnHandler respawnHandler;
     UpdateScoreHandler scoreHandler;
-    ClientGunShotHandler gunShotHandler;
+    GunShotHandler gunShotHandler;
     ChangeEquipmentHandler equipmentHandler;
     MatchRestartHandler restartHandler;
     Score score;
 
-    private ClientGame game;
+    private SinglePlayerGame game;
 
     @BeforeEach
     void setUp() {
@@ -62,50 +64,48 @@ class ClientGameTest {
         eventBus = mock(EventBus.class);
         timer = mock(Timer.class);
         player = mock(Player.class);
-        gameGraphics = mock(GameGraphics.class);
+        layout = mock(Layout.class);
+        graphics = mock(Graphics.class);
         network = mock(Network.class);
         input = mock(GameInput.class);
         physics = mock(Physics.class);
+        ai = mock(Intelligence.class);
         damageHandler = mock(EntityDamageHandler.class);
         healingHandler = mock(EntityHealingHandler.class);
         entityRemoveHandler = mock(EntityRemoveHandler.class);
         entityCreateHandler = mock(EntityCreateHandler.class);
+        dropLootHandler = mock(DropLootHandler.class);
         moveBodyHandler = mock(MoveBodyHandler.class);
         collisionHandler = mock(CollisionHandler.class);
         respawnHandler = mock(PlayerRespawnHandler.class);
         scoreHandler = mock(UpdateScoreHandler.class);
-        gunShotHandler = mock(ClientGunShotHandler.class);
+        gunShotHandler = mock(GunShotHandler.class);
         equipmentHandler = mock(ChangeEquipmentHandler.class);
         restartHandler = mock(MatchRestartHandler.class);
         score = mock(Score.class);
 
-        game = new ClientGame(
+        game = new SinglePlayerGame(
             world,
             eventBus,
             timer,
             player,
-            gameGraphics,
-            network,
+            layout,
+            graphics,
             input,
             physics,
+            ai,
+            gunShotHandler,
             damageHandler,
             healingHandler,
             entityRemoveHandler,
             entityCreateHandler,
+            dropLootHandler,
             moveBodyHandler,
             collisionHandler,
-            respawnHandler,
             scoreHandler,
-            gunShotHandler,
             equipmentHandler,
-            restartHandler,
             score
         );
-    }
-
-    @Test
-    void constructorSubscribesHandlers() {
-        verify(eventBus, times(11)).subscribe(any(), any());
     }
 
     @Test
@@ -116,36 +116,6 @@ class ClientGameTest {
         verify(player).setActiveGun(0);
         verify(world).addEntity(player);
         verify(score).addPlayer(player);
-    }
-
-    @Test
-    void runAvoidsLoopIfInitializationThrowsException() throws Exception {
-        doThrow(new RuntimeException()).when(timer).initialize();
-
-        game.run();
-
-        verify(network, never()).initialize();
-        verify(gameGraphics, never()).isWindowOpen();
-    }
-
-    @Test
-    void loopDelegatesToNetwork() {
-        when(timer.sleep()).thenReturn(1L);
-        when(gameGraphics.isWindowOpen()).thenReturn(true).thenReturn(true).thenReturn(false);
-
-        game.run();
-
-        verify(world).update(0L);
-        verify(world).update(1L);
-        verify(network).propagate(0L);
-        verify(network).propagate(1L);
-    }
-
-    @Test
-    void isGameRunningDelegatesToGraphics() {
-        game.run();
-
-        verify(gameGraphics).isWindowOpen();
     }
 
 }
