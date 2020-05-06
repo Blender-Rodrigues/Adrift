@@ -19,6 +19,11 @@ public abstract class EntityRenderer implements Renderer {
         return this;
     }
 
+    public void reScale() {
+        transform = new Transform();
+        transform.scale = new Vector3f((float) entity.getBoundingBox().getSize().getX(), (float) entity.getBoundingBox().getSize().getY(), 1);
+    }
+
     @Override
     public void initialize() {
         model = Renderer.square;

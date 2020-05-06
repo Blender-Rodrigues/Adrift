@@ -7,6 +7,7 @@ import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.AddGun;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +34,7 @@ public class EntityGiveGunHandler implements Subscriber<AddGun> {
 
         if (!target.hasGun(gun)) {
             target.addWeapon(gun);
+            ((EntityRenderer) gun.getRenderer()).reScale();
             logger.info("{} was given {}", target, gun);
             return;
         }
