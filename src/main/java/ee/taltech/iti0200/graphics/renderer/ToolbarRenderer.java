@@ -33,6 +33,7 @@ public class ToolbarRenderer implements Renderer {
 
         shader.bind();
         shader.setUniform("sampler", 0);
+        shader.setUniform("rotation", new Matrix4f());
 
         projection.translate(-0.75f * player.getEquipment().size(), 0, 0);
 

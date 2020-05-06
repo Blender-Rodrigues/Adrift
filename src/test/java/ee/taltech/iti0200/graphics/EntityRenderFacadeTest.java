@@ -5,6 +5,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
+import ee.taltech.iti0200.graphics.renderer.CompassRenderer;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.physics.BoundingBox;
@@ -47,8 +48,9 @@ class EntityRenderFacadeTest {
         RendererFactory rendererFactory = mock(RendererFactory.class, RETURNS_DEEP_STUBS);
         when(rendererFactory.create(texture)).thenReturn(renderer);
         when(rendererFactory.create(texture, texture, texture)).thenReturn(renderer);
+        CompassRenderer compassRenderer = mock(CompassRenderer.class);
 
-        facade = new EntityRenderFacade(world, rendererFactory, visualFactory);
+        facade = new EntityRenderFacade(world, rendererFactory, visualFactory, compassRenderer);
     }
 
     @Test

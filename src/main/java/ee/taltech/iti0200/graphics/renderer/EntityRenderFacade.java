@@ -22,6 +22,7 @@ import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.graphics.VisualFactory;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
+import ee.taltech.iti0200.physics.Vector;
 import org.joml.Vector3f;
 
 import java.io.IOException;
@@ -40,12 +41,14 @@ public class EntityRenderFacade implements Renderer {
     private final World world;
     private final RendererFactory rendererFactory;
     private final VisualFactory visualFactory;
+    private final CompassRenderer compassRenderer;
 
     @Inject
-    public EntityRenderFacade(World world, RendererFactory rendererFactory, VisualFactory visualFactory) {
+    public EntityRenderFacade(World world, RendererFactory rendererFactory, VisualFactory visualFactory, CompassRenderer compassRenderer) {
         this.world = world;
         this.rendererFactory = rendererFactory;
         this.visualFactory = visualFactory;
+        this.compassRenderer = compassRenderer;
     }
 
     @Override
@@ -60,6 +63,7 @@ public class EntityRenderFacade implements Renderer {
                 }
             }
         });
+        compassRenderer.initialize();
     }
 
     /**
@@ -79,18 +83,34 @@ public class EntityRenderFacade implements Renderer {
         double minY = (pos.y - h);
         double maxY = (pos.y + h);
 
+        int livingThingsOnScreen = 0;
+        Vector closestDistance = new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+
         for (Entity entity : world.getEntities()) {
             BoundingBox box = entity.getBoundingBox();
             if (box.getMinX() < minX || box.getMaxX() > maxX || box.getMinY() < minY || box.getMinY() > maxY) {
+                if (entity instanceof Living) {
+                    Vector distance = new Vector(entity.getBoundingBox().getCentre());
+                    distance.sub(new Vector(pos.x, pos.y));
+                    if (distance.lengthSquared() < closestDistance.lengthSquared()) {
+                        closestDistance = distance;
+                    }
+                }
                 continue;
             }
             entity.render(shader, viewPort, tick);
             if (entity instanceof Living) {
+                livingThingsOnScreen++;
+
                 Gun gun = ((Living) entity).getActiveGun();
                 if (gun != null) {
                     gun.render(shader, viewPort, tick);
                 }
             }
+        }
+        if (livingThingsOnScreen < 2) {
+            compassRenderer.setDirection(closestDistance);
+            compassRenderer.render(shader, viewPort, tick);
         }
     }
 
@@ -169,6 +189,10 @@ public class EntityRenderFacade implements Renderer {
         Animation botIdle = visualFactory.create(6, "bot/animations/", "bot.idle", 15);
         Texture botJumpingRight = visualFactory.create("bot/stills/", "bot.jumping.right");
         Texture botJumpingLeft = visualFactory.create("bot/stills/", "bot.jumping.left");
+
+        // compass
+        Texture compassArrow = visualFactory.create("compass/", "arrow");
+        compassRenderer.setTexture(compassArrow);
 
         new Builder(Entity.class)
             .put(DEFAULT, () -> rendererFactory.create(defaultTexture));

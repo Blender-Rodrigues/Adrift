@@ -5,6 +5,7 @@ import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.Texture;
 import ee.taltech.iti0200.graphics.Transform;
 import ee.taltech.iti0200.graphics.ViewPort;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class Background implements Renderer {
 
         shader.bind();
         shader.setUniform("sampler", 0);
+        shader.setUniform("rotation", new Matrix4f());
 
         transform.pos.set(new Vector3f(-viewPort.getPosition().x, -viewPort.getPosition().y, 0));
         shader.setUniform("projection", transform.getProjection(viewPort.getProjection()));
