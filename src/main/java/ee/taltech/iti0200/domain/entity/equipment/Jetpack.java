@@ -7,7 +7,7 @@ import ee.taltech.iti0200.physics.Vector;
 
 public class Jetpack extends Equipment {
 
-    private static final int JACKPOT_CHARGES = 20;
+    private static final int JACKPOT_CHARGES = 10;
     private int charges;
 
     public Jetpack(BoundingBox boundingBox) {
@@ -17,7 +17,7 @@ public class Jetpack extends Equipment {
 
     public void use() {
         if (charges >= 1) {
-            owner.accelerate(new Vector(0.0, ((Player)owner).getJumpDeltaV()));
+            owner.accelerate(new Vector(0.0, ((Player)owner).getJumpDeltaV() / 1.5));
             charges --;
         }
 
