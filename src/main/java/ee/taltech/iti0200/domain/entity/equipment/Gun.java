@@ -30,12 +30,6 @@ public class Gun extends Equipment implements Rotatable {
         projectileSpeed = 8;
     }
 
-    public Gun setOwner(Living owner) {
-        this.owner = owner;
-        this.boundingBox = owner.getBoundingBox();
-        return this;
-    }
-
     public boolean canShoot(long tick) {
         return cooldown <= tick;
     }

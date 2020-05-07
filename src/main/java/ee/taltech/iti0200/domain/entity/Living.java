@@ -63,8 +63,12 @@ public class Living extends Damageable {
 
     public void addWeapon(Gun weapon) {
         weapons.add(weapon);
-        equipment.add(weapon);
-        weapon.setOwner(this);
+        addEquipment(weapon);
+    }
+
+    public void addEquipment(Equipment equipment) {
+        this.equipment.add(equipment);
+        equipment.setOwner(this);
     }
 
     public List<Gun> getWeapons() {

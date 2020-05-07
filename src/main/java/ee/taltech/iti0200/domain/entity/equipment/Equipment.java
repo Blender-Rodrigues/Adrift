@@ -24,6 +24,12 @@ public class Equipment extends Loot {
         return renderers.get(DEFAULT);
     }
 
+    public Equipment setOwner(Living owner) {
+        this.owner = owner;
+        this.boundingBox = owner.getBoundingBox();
+        return this;
+    }
+
     public void setActive(boolean active) {
         isActive = active;
     }

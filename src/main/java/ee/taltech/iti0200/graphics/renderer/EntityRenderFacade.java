@@ -12,8 +12,10 @@ import ee.taltech.iti0200.domain.entity.PlasmaProjectile;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
 import ee.taltech.iti0200.domain.entity.Terrain;
+import ee.taltech.iti0200.domain.entity.equipment.Equipment;
 import ee.taltech.iti0200.domain.entity.equipment.FastGun;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.Jetpack;
 import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.graphics.Animation;
 import ee.taltech.iti0200.graphics.Shader;
@@ -58,8 +60,8 @@ public class EntityRenderFacade implements Renderer {
         world.getEntities().forEach(entity -> {
             decorate(entity);
             if (entity instanceof Living) {
-                for (Gun weapon : ((Living) entity).getWeapons()) {
-                    decorate(weapon);
+                for (Equipment equipment : ((Living) entity).getEquipment()) {
+                    decorate(equipment);
                 }
             }
         });
@@ -168,6 +170,7 @@ public class EntityRenderFacade implements Renderer {
         Texture bulletTexture = visualFactory.create("projectile/", "bullet");
         Texture plasmaTexture = visualFactory.create("projectile/", "plasma");
         Texture blastTexture = visualFactory.create("projectile/", "green");
+        Texture jetpackTexture = visualFactory.create("gun/", "jeptock");
 
         // health
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
@@ -205,6 +208,9 @@ public class EntityRenderFacade implements Renderer {
 
         new Builder(SpecialGun.class)
             .put(DEFAULT, () -> rendererFactory.create(greenPistolTexture, RotatingDrawable.class));
+
+        new Builder(Jetpack.class)
+                .put(DEFAULT, () -> rendererFactory.create(jetpackTexture, Drawable.class));
 
         new Builder(Player.class)
             .put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight))

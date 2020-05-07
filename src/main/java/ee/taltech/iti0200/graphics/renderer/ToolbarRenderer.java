@@ -3,7 +3,7 @@ package ee.taltech.iti0200.graphics.renderer;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.domain.entity.equipment.Equipment;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.ViewPort;
@@ -35,16 +35,16 @@ public class ToolbarRenderer implements Renderer {
         shader.setUniform("sampler", 0);
         shader.setUniform("rotation", new Matrix4f());
 
-        projection.translate(-0.75f * player.getEquipment().size(), 0, 0);
+        projection.translate(-0.75f * player.getWeapons().size(), 0, 0);
 
-        for (Equipment equipment : player.getEquipment()) {
-            float offset = equipment.isActive() ? 0.5f : 0;
+        for (Gun weapon : player.getWeapons()) {
+            float offset = weapon.isActive() ? 0.5f : 0;
 
             projection.translate(0, offset, 0);
             shader.setUniform("projection", projection);
             projection.translate(1.5f, -offset, 0);
 
-            ((Drawable) equipment.getRenderer()).getTexture().bind(0);
+            ((Drawable) weapon.getRenderer()).getTexture().bind(0);
             model.render();
         }
     }

@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.domain.entity;
 
 import ee.taltech.iti0200.domain.World;
+import ee.taltech.iti0200.domain.entity.equipment.Jetpack;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.physics.BoundingBox;
@@ -65,6 +66,13 @@ public class Player extends Living {
         if (isAlive() && getJumpsLeft() > 0) {
             setJumpsLeft(getJumpsLeft() - 1);
             accelerate(new Vector(0.0, getJumpDeltaV()));
+        } else {
+            for (Object equipment : equipment) {
+                if (equipment instanceof Jetpack) {
+                    ((Jetpack) equipment).use();
+                    break;
+                }
+            }
         }
     }
 
