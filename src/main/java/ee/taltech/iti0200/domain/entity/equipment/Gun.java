@@ -12,11 +12,16 @@ public class Gun extends Equipment implements Rotatable {
     private static final long serialVersionUID = 1L;
 
     private Vector pointedAt = new Vector(1, 0);
+    protected static final Vector SIZE = new Vector(2, 2);
 
     protected long cooldown = 0;
     protected int damage;
     protected long rechargeRate;
     protected double projectileSpeed;
+
+    public Gun(Vector position) {
+        this(new BoundingBox(position, SIZE));
+    }
 
     public Gun(BoundingBox boundingBox) {
         super(boundingBox);

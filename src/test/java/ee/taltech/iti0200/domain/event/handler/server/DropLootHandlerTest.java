@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.domain.event.handler.server;
 
-import ee.taltech.iti0200.di.factory.ConsumableFactory;
+import ee.taltech.iti0200.di.factory.LootFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.Event;
@@ -27,14 +27,14 @@ class DropLootHandlerTest {
     private World world;
     private EventBus eventBus;
     private DropLootHandler handler;
-    private ConsumableFactory consumableFactory;
+    private LootFactory lootFactory;
 
     @BeforeEach
     void setUp() {
         world = mock(World.class);
         eventBus = mock(EventBus.class);
-        consumableFactory = mock(ConsumableFactory.class, RETURNS_DEEP_STUBS);
-        handler = new DropLootHandler(world, consumableFactory, eventBus);
+        lootFactory = mock(LootFactory.class, RETURNS_DEEP_STUBS);
+        handler = new DropLootHandler(world, lootFactory, eventBus);
     }
 
     @Test

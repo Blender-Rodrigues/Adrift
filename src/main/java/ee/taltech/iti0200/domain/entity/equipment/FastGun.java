@@ -9,6 +9,10 @@ public class FastGun extends Gun {
 
     private static final long serialVersionUID = 1L;
 
+    public FastGun(Vector position) {
+        this(new BoundingBox(position, SIZE));
+    }
+
     public FastGun(BoundingBox boundingBox) {
         super(boundingBox);
         damage = 5;

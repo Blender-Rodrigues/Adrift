@@ -41,6 +41,15 @@ public class Living extends Damageable {
         return activeGun;
     }
 
+    public boolean hasGun(Gun gun) {
+        for (Gun ownedGun: weapons) {
+            if (gun.getClass() == ownedGun.getClass()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setActiveGun(int index) {
         if (weapons.size() - 1 < index) {
             return;

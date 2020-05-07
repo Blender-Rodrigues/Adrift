@@ -4,13 +4,16 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.ai.Sensor;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
-import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
+import ee.taltech.iti0200.domain.entity.Loot;
+import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.entity.AddGun;
 import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.EntityCollide;
@@ -44,8 +47,11 @@ public class ServerCollisionHandler extends CollisionHandler {
             botHitAny((Bot) event.getEntity(), event.getOther());
         }
 
-        if (event.getEntity() instanceof Consumable && event.getOther() instanceof Living) {
-            livingHitConsumable((Living) event.getOther(), (Consumable) event.getEntity());
+        if (
+            event.getEntity() instanceof Loot && event.getOther() instanceof Player
+            || event.getEntity() instanceof HealthGlobe && event.getOther() instanceof Living
+        ) {
+            livingHitLoot((Living) event.getOther(), (Loot) event.getEntity());
         }
         event.stop();
     }
@@ -66,12 +72,14 @@ public class ServerCollisionHandler extends CollisionHandler {
         bot.getBrain().updateSensor(Sensor.TACTILE, other.getBoundingBox().getCentre(), other);
     }
 
-    private void livingHitConsumable(Living living, Consumable consumable) {
-        if (consumable instanceof HealthGlobe) {
-            eventBus.dispatch(new Heal((HealthGlobe) consumable, living, EVERYONE));
+    private void livingHitLoot(Living living, Loot loot) {
+        if (loot instanceof HealthGlobe) {
+            eventBus.dispatch(new Heal((HealthGlobe) loot, living, EVERYONE));
+        } else if (loot instanceof Gun) {
+            eventBus.dispatch(new AddGun((Gun) loot, living, EVERYONE));
         }
 
-        eventBus.dispatch(new RemoveEntity(consumable, EVERYONE));
+        eventBus.dispatch(new RemoveEntity(loot, EVERYONE));
     }
 
 }
