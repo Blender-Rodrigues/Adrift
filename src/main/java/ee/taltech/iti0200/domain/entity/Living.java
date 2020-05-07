@@ -73,6 +73,15 @@ public class Living extends Damageable {
         equipment.setOwner(this);
     }
 
+    public void removeEquipment(Equipment equipment) {
+        if (equipment instanceof Gun) {
+            weapons.remove(equipment);
+        } else {
+            consumables.remove(equipment);
+        }
+        this.equipment.remove(equipment);
+    }
+
     public List<Gun> getWeapons() {
         return weapons;
     }

@@ -20,6 +20,10 @@ public class Jetpack extends Equipment {
             owner.accelerate(new Vector(0.0, ((Player)owner).getJumpDeltaV()));
             charges --;
         }
+
+        if (charges <= 0) {
+            owner.removeEquipment(this);
+        }
     }
 
     public int getCharges() {
