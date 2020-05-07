@@ -6,6 +6,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.HealingSource;
 import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Loot;
@@ -49,7 +50,7 @@ public class ServerCollisionHandler extends CollisionHandler {
 
         if (
             event.getEntity() instanceof Loot && event.getOther() instanceof Player
-            || event.getEntity() instanceof HealthGlobe && event.getOther() instanceof Living
+            || event.getEntity() instanceof HealingSource && event.getOther() instanceof Living
         ) {
             livingHitLoot((Living) event.getOther(), (Loot) event.getEntity());
         }

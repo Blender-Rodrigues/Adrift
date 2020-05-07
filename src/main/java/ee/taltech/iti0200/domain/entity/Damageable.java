@@ -8,11 +8,21 @@ public class Damageable extends Entity {
 
     protected int health;
     protected int maxHealth;
+    protected int shield;
 
     public Damageable(double mass, BoundingBox boundingBox, int health) {
         super(mass, boundingBox);
         this.health = health;
         this.maxHealth = health;
+        this.shield = 0;
+    }
+
+    public int getShield() {
+        return shield;
+    }
+
+    public void setShield(int shield) {
+        this.shield = shield;
     }
 
     public void setHealth(int health) {
