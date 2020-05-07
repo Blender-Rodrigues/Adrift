@@ -170,7 +170,7 @@ public class EntityRenderFacade implements Renderer {
         Texture bulletTexture = visualFactory.create("projectile/", "bullet");
         Texture plasmaTexture = visualFactory.create("projectile/", "plasma");
         Texture blastTexture = visualFactory.create("projectile/", "green");
-        Texture jetpackTexture = visualFactory.create("gun/", "jeptock");
+        Texture jetpackTexture = visualFactory.create("gun/", "feather");
 
         // health
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
