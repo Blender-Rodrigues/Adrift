@@ -116,7 +116,7 @@ class SinglePlayerGameTest {
     void initializePreparesPlayerForWorld() {
         game.run();
 
-        verify(player).addWeapon(any(Gun.class));
+        verify(player).addEquipment(any(Gun.class));
         verify(player).setActiveGun(0);
         verify(world).addEntity(player);
         verify(score).addPlayer(player);

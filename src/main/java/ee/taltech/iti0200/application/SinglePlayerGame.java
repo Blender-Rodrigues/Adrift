@@ -104,8 +104,7 @@ public class SinglePlayerGame extends Game {
         world.initialize();
 
         player.setPosition(world.nextSpawnPoint());
-        player.addWeapon(new Gun(player.getBoundingBox()));
-        player.addWeapon(new SpecialGun(player.getBoundingBox()));
+        player.addEquipment(new Gun(player.getBoundingBox()));
         player.setActiveGun(0);
         player.addEquipment(new Jetpack(player.getBoundingBox()));
 

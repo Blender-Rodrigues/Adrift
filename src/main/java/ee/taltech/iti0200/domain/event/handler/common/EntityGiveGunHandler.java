@@ -33,7 +33,7 @@ public class EntityGiveGunHandler implements Subscriber<AddGun> {
         Gun gun = event.getGun();
 
         if (!target.hasGun(gun)) {
-            target.addWeapon(gun);
+            target.addEquipment(gun);
             ((EntityRenderer) gun.getRenderer()).reScale();
             logger.info("{} was given {}", target, gun);
             return;

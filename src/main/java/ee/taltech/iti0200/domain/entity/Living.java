@@ -61,12 +61,11 @@ public class Living extends Damageable {
         activeGun.setActive(true);
     }
 
-    public void addWeapon(Gun weapon) {
-        weapons.add(weapon);
-        addEquipment(weapon);
-    }
-
     public void addEquipment(Equipment equipment) {
+        if (equipment instanceof Gun) {
+            weapons.add((Gun) equipment);
+        }
+
         this.equipment.add(equipment);
         equipment.setOwner(this);
     }

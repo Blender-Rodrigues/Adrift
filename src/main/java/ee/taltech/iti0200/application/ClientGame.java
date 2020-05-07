@@ -100,8 +100,7 @@ public class ClientGame extends Game {
 
     @Override
     protected void initialize() {
-        player.addWeapon(new Gun(player.getBoundingBox()));
-        player.addWeapon(new SpecialGun(player.getBoundingBox()));
+        player.addEquipment(new Gun(player.getBoundingBox()));
         player.setActiveGun(0);
         player.addEquipment(new Jetpack(player.getBoundingBox()));
         world.addEntity(player);
