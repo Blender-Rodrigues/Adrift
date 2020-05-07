@@ -11,6 +11,7 @@ import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.PlasmaProjectile;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
+import ee.taltech.iti0200.domain.entity.Shield;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.entity.equipment.FastGun;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
@@ -171,6 +172,7 @@ public class EntityRenderFacade implements Renderer {
 
         // health
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
+        Texture shieldTexture = visualFactory.create("consumable/", "shield");
         Texture healthBarEmpty = visualFactory.create("overhead/", "healthBarEmpty");
         Texture healthBarFull = visualFactory.create("overhead/", "healthBarFull");
         Texture healthBarGlobe = visualFactory.create("overhead/", "healthBarGlobe");
@@ -255,6 +257,9 @@ public class EntityRenderFacade implements Renderer {
 
         new Builder(HealthGlobe.class)
             .put(DEFAULT, () -> rendererFactory.create(healthGlobeTexture));
+
+        new Builder(Shield.class)
+            .put(DEFAULT, () -> rendererFactory.create(shieldTexture));
     }
 
     private static class Builder {
