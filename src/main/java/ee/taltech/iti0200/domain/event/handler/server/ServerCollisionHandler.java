@@ -7,7 +7,6 @@ import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.HealingSource;
-import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Loot;
 import ee.taltech.iti0200.domain.entity.Player;
@@ -74,8 +73,8 @@ public class ServerCollisionHandler extends CollisionHandler {
     }
 
     private void livingHitLoot(Living living, Loot loot) {
-        if (loot instanceof HealthGlobe) {
-            eventBus.dispatch(new Heal((HealthGlobe) loot, living, EVERYONE));
+        if (loot instanceof HealingSource) {
+            eventBus.dispatch(new Heal((HealingSource) loot, living, EVERYONE));
         } else if (loot instanceof Gun) {
             eventBus.dispatch(new AddGun((Gun) loot, living, EVERYONE));
         }
