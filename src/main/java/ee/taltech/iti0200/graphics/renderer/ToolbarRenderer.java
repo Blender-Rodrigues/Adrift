@@ -3,6 +3,7 @@ package ee.taltech.iti0200.graphics.renderer;
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.entity.equipment.Equipment;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
@@ -29,6 +30,11 @@ public class ToolbarRenderer implements Renderer {
 
     @Override
     public void render(Shader shader, ViewPort viewPort, long tick) {
+        renderWeapons(shader, viewPort);
+        renderConsumables(shader, viewPort);
+    }
+
+    private void renderWeapons(Shader shader, ViewPort viewPort) {
         Matrix4f projection = viewPort.getStaticProjection(viewPort.getWidth() / 2 - SIZE / 2, viewPort.getHeight() - SIZE, SIZE, SIZE);
 
         shader.bind();
@@ -45,6 +51,24 @@ public class ToolbarRenderer implements Renderer {
             projection.translate(1.5f, -offset, 0);
 
             ((Drawable) weapon.getRenderer()).getTexture().bind(0);
+            model.render();
+        }
+    }
+
+    private void renderConsumables(Shader shader, ViewPort viewPort) {
+        Matrix4f projection = viewPort.getStaticProjection(viewPort.getWidth() - SIZE, viewPort.getHeight() / 2 - SIZE / 2, SIZE, SIZE);
+
+        shader.bind();
+        shader.setUniform("sampler", 0);
+        shader.setUniform("rotation", new Matrix4f());
+
+        projection.translate(0, -0.75f * player.getWeapons().size(), 0);
+
+        for (Equipment consumable: player.getConsumables()) {
+            shader.setUniform("projection", projection);
+            projection.translate(0, 1.5f, 0);
+
+            ((Drawable) consumable.getRenderer()).getTexture().bind(0);
             model.render();
         }
     }

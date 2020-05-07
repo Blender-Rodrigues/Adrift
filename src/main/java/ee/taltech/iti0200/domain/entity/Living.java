@@ -17,6 +17,7 @@ public class Living extends Damageable {
     protected transient World world;
     protected boolean alive = true;
     protected List<Gun> weapons = new ArrayList<>();
+    protected List<Equipment> consumables = new ArrayList<>();
     protected List<Equipment> equipment = new ArrayList<>();
     protected Gun activeGun;
 
@@ -64,6 +65,8 @@ public class Living extends Damageable {
     public void addEquipment(Equipment equipment) {
         if (equipment instanceof Gun) {
             weapons.add((Gun) equipment);
+        } else {
+            consumables.add(equipment);
         }
 
         this.equipment.add(equipment);
@@ -72,6 +75,10 @@ public class Living extends Damageable {
 
     public List<Gun> getWeapons() {
         return weapons;
+    }
+
+    public List<Equipment> getConsumables() {
+        return consumables;
     }
 
     public List<Equipment> getEquipment() {
