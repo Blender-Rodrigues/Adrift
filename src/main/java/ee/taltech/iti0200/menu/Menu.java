@@ -14,7 +14,7 @@ public class Menu {
 
     private final MenuItem singlePlayer = new MenuItem("Start", "Single-player", false);
     private final MenuItem client = new MenuItem("Start", "Multiplayer", false);
-    private final MenuItem host = new MenuItem("Host:", "localhost", true);
+    private final MenuItem host = new MenuItem("Host:", "104.248.243.136", true);
     private final MenuItem port = new MenuItem("Port:", "8880", true);
     private final MenuItem playerName = new MenuItem("Player Name:", "Unknown", true);
     private final MenuItem exit = new MenuItem("Exit", "", false);
