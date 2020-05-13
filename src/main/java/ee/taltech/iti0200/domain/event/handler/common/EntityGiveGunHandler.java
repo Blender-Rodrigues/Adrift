@@ -15,7 +15,7 @@ public class EntityGiveGunHandler implements Subscriber<AddGun> {
 
     private final Logger logger = LogManager.getLogger(EntityGiveGunHandler.class);
 
-    private World world;
+    private final World world;
 
     @Inject
     public EntityGiveGunHandler(World world) {
@@ -34,16 +34,18 @@ public class EntityGiveGunHandler implements Subscriber<AddGun> {
 
         if (!target.hasGun(gun)) {
             target.addWeapon(gun);
-            ((EntityRenderer) gun.getRenderer()).reScale();
+            if (gun.getRenderer() != null) {
+                ((EntityRenderer) gun.getRenderer()).reScale();
+            }
             logger.info("{} was given {}", target, gun);
             return;
         }
 
         logger.info("{} already had {} and was not given a second one", target, gun);
-
     }
 
     private Living loadLocal(Entity entity) {
         return (Living) world.getEntity(entity.getId());
     }
+
 }
