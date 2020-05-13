@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.di.factory;
 
 import ee.taltech.iti0200.domain.Score;
+import ee.taltech.iti0200.graphics.CoordinateConverter;
 import ee.taltech.iti0200.graphics.renderer.Animateable;
 import ee.taltech.iti0200.graphics.Animation;
 import ee.taltech.iti0200.graphics.renderer.Drawable;
@@ -17,11 +18,13 @@ class EntityRendererFactoryTest {
 
     private RendererFactory factory;
     private Score score;
+    private CoordinateConverter converter;
 
     @BeforeEach
     void setUp() {
         score = mock(Score.class);
-        factory = new RendererFactory(score);
+        converter = mock(CoordinateConverter.class);
+        factory = new RendererFactory(score, converter);
     }
 
     @Test
@@ -37,7 +40,7 @@ class EntityRendererFactoryTest {
     void createReturnsDrawable() {
         Texture texture = mock(Texture.class);
 
-        factory = new RendererFactory(score);
+        factory = new RendererFactory(score, converter);
 
         EntityRenderer renderer = factory.create(texture);
 
@@ -48,7 +51,7 @@ class EntityRendererFactoryTest {
     void createReturnsAnimatable() {
         Animation animation = mock(Animation.class);
 
-        factory = new RendererFactory(score);
+        factory = new RendererFactory(score, converter);
 
         EntityRenderer renderer = factory.create(animation);
 

@@ -3,6 +3,7 @@ package ee.taltech.iti0200.di;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import ee.taltech.iti0200.di.annotations.MainShader;
+import ee.taltech.iti0200.di.annotations.ShieldShader;
 import ee.taltech.iti0200.di.annotations.WindowId;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.renderer.Alphabet;
@@ -61,6 +62,7 @@ public class GlfwModule extends AbstractModule {
 
         try {
             bind(Key.get(Shader.class, MainShader.class)).toInstance(new Shader("shader"));
+            bind(Key.get(Shader.class, ShieldShader.class)).toInstance(new Shader("shield"));
             bind(Alphabet.class).toInstance(new Alphabet("fonts/", "expanse"));
         } catch (IOException e) {
             addError(e);

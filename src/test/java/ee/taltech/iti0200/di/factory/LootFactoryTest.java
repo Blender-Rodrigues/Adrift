@@ -1,6 +1,7 @@
 package ee.taltech.iti0200.di.factory;
 
 import ee.taltech.iti0200.domain.entity.HealthGlobe;
+import ee.taltech.iti0200.domain.entity.Shield;
 import ee.taltech.iti0200.domain.entity.equipment.FastGun;
 import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.physics.Vector;
@@ -25,6 +26,9 @@ class LootFactoryTest {
 
         when(random.nextDouble()).thenReturn(LootFactory.FAST_GUN_CHANCE);
         assertTrue(lootFactory.create(position) instanceof FastGun);
+
+        when(random.nextDouble()).thenReturn(LootFactory.SHIELD_CHANCE);
+        assertTrue(lootFactory.create(position) instanceof Shield);
 
         when(random.nextDouble()).thenReturn(1d);
         assertTrue(lootFactory.create(position) instanceof HealthGlobe);

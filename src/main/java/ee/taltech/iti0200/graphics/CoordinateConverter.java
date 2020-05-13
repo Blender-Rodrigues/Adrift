@@ -37,7 +37,7 @@ public class CoordinateConverter {
         double y = - physicsPosition.getY();
         double x = physicsPosition.getX();
         x += camera.getPosition().get(0);
-        y -= camera.getPosition().get(1);
+        y += camera.getPosition().get(1);
         return new Vector(x, y);
     }
 

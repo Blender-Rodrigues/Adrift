@@ -42,7 +42,13 @@ public class EntityDamageHandler implements Subscriber<DealDamage> {
             return;
         }
 
-        target.setHealth(target.getHealth() - source.getDamage());
+        int shieldPostDamage = target.getShield() - source.getDamage();
+        if (shieldPostDamage >= 0) {
+            target.setShield(shieldPostDamage);
+        } else {
+            target.setShield(0);
+            target.setHealth(target.getHealth() + shieldPostDamage);
+        }
         String action = "hit";
 
         if (target.getHealth() <= 0) {
