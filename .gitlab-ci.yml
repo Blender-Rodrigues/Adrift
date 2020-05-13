@@ -63,7 +63,6 @@ deploy:
     - ssh game@$SERVER_IP "docker stop escape-from-eros || true && docker rm -f escape-from-eros || true"
     - ssh game@$SERVER_IP "docker run -d --network host --restart=always --name escape-from-eros jaakkytt/escape-from-eros:latest"
 
-
 web:
   tags:
     - iti0200
@@ -83,7 +82,6 @@ web:
     - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
     - cp build/libs/*jar static
-    - ls -la static
     - scp static/* game@$SERVER_IP:/home/game/static
     - ssh game@$SERVER_IP "docker stop web || true && docker rm -f web || true"
     - ssh game@$SERVER_IP "docker run -d -p 80:8080 --restart=always -v /home/game/static:/web --name web halverneus/static-file-server:latest"
