@@ -33,6 +33,7 @@ class EntityRenderFacadeTest {
     private EntityRenderer renderer;
     private World world;
     private EntityRenderFacade facade;
+    private Shader shader;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -40,6 +41,7 @@ class EntityRenderFacadeTest {
         terrain = mock(Terrain.class);
         renderer = mock(EntityRenderer.class);
         world = mock(World.class);
+        shader = mock(Shader.class);
 
         Texture texture = mock(Texture.class);
         VisualFactory visualFactory = mock(VisualFactory.class);
@@ -50,7 +52,7 @@ class EntityRenderFacadeTest {
         when(rendererFactory.create(texture, texture, texture)).thenReturn(renderer);
         CompassRenderer compassRenderer = mock(CompassRenderer.class);
 
-        facade = new EntityRenderFacade(world, rendererFactory, visualFactory, compassRenderer);
+        facade = new EntityRenderFacade(world, rendererFactory, visualFactory, compassRenderer, shader);
     }
 
     @Test

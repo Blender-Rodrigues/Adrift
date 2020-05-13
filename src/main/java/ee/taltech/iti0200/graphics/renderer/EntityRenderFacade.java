@@ -1,6 +1,8 @@
 package ee.taltech.iti0200.graphics.renderer;
 
 import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.MainShader;
+import ee.taltech.iti0200.di.annotations.ShieldShader;
 import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.BlastProjectile;
@@ -47,18 +49,18 @@ public class EntityRenderFacade implements Renderer {
     private Shader shieldShader;
 
     @Inject
-    public EntityRenderFacade(World world, RendererFactory rendererFactory, VisualFactory visualFactory, CompassRenderer compassRenderer) {
+    public EntityRenderFacade(World world, RendererFactory rendererFactory, VisualFactory visualFactory, CompassRenderer compassRenderer, @ShieldShader Shader shader) {
         this.world = world;
         this.rendererFactory = rendererFactory;
         this.visualFactory = visualFactory;
         this.compassRenderer = compassRenderer;
+        this.shieldShader = shader;
     }
 
     @Override
     public void initialize() throws IOException {
         createRenderers();
 
-        shieldShader = new Shader("shield");
         world.getEntities().forEach(entity -> {
             decorate(entity);
             if (entity instanceof Living) {
