@@ -34,10 +34,10 @@ public class CoordinateConverter {
     }
 
     public Vector physicsToCamera(Vector physicsPosition) {
-        double y = - physicsPosition.getY();
+        double y = physicsPosition.getY();
         double x = physicsPosition.getX();
         x += camera.getPosition().get(0);
-        y -= camera.getPosition().get(1);
+        y += camera.getPosition().get(1);
         return new Vector(x, y);
     }
 

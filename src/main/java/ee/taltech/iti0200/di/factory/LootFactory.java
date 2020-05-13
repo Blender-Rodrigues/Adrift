@@ -16,7 +16,7 @@ public class LootFactory {
 
     public static final double SPECIAL_GUN_CHANCE = 0.1;
     public static final double FAST_GUN_CHANCE = 0.1 + SPECIAL_GUN_CHANCE;
-    public static final double SHIELD_CHANCE = 0.2 + FAST_GUN_CHANCE;
+    public static final double SHIELD_CHANCE = 0.25 + FAST_GUN_CHANCE;
 
     @Inject
     public LootFactory(Random random) {

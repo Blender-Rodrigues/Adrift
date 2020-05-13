@@ -1,5 +1,7 @@
 package ee.taltech.iti0200.domain.entity;
 
+import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.physics.BoundingBox;
 
 public class Damageable extends Entity {
@@ -35,6 +37,12 @@ public class Damageable extends Entity {
 
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public void renderShield(Shader shader, ViewPort viewPort, long tick) {
+        if (shield > 0) {
+            renderers.get("shield").render(shader, viewPort, tick);
+        }
     }
 
 }

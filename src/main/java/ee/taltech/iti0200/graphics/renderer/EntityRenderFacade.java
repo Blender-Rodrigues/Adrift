@@ -5,6 +5,7 @@ import ee.taltech.iti0200.di.factory.RendererFactory;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.BlastProjectile;
 import ee.taltech.iti0200.domain.entity.Bot;
+import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
@@ -43,6 +44,7 @@ public class EntityRenderFacade implements Renderer {
     private final RendererFactory rendererFactory;
     private final VisualFactory visualFactory;
     private final CompassRenderer compassRenderer;
+    private Shader shieldShader;
 
     @Inject
     public EntityRenderFacade(World world, RendererFactory rendererFactory, VisualFactory visualFactory, CompassRenderer compassRenderer) {
@@ -56,6 +58,7 @@ public class EntityRenderFacade implements Renderer {
     public void initialize() throws IOException {
         createRenderers();
 
+        shieldShader = new Shader("shield");
         world.getEntities().forEach(entity -> {
             decorate(entity);
             if (entity instanceof Living) {
@@ -98,6 +101,10 @@ public class EntityRenderFacade implements Renderer {
                     }
                 }
                 continue;
+            }
+
+            if (entity instanceof Damageable) {
+                ((Damageable) entity).renderShield(shieldShader, viewPort, tick);
             }
             entity.render(shader, viewPort, tick);
             if (entity instanceof Living) {
@@ -199,6 +206,9 @@ public class EntityRenderFacade implements Renderer {
         new Builder(Entity.class)
             .put(DEFAULT, () -> rendererFactory.create(defaultTexture));
 
+        new Builder(Damageable.class)
+            .put("shield", () -> rendererFactory.create(shieldTexture));
+
         new Builder(Gun.class)
             .put(DEFAULT, () -> rendererFactory.create(pistolTexture, RotatingDrawable.class));
 
@@ -215,13 +225,15 @@ public class EntityRenderFacade implements Renderer {
             .put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft))
             .put("JUMPING.RIGHT", () -> rendererFactory.create(playerJumpingRight))
             .put("JUMPING.LEFT", () -> rendererFactory.create(playerJumpingLeft))
-            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
+            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe))
+            .put("shield", () -> rendererFactory.createShield());;
 
         new Builder(Bot.class)
             .put("IDLE", () -> rendererFactory.create(botIdle))
             .put("RIGHT", () -> rendererFactory.create(botMovingRight))
             .put("LEFT", () -> rendererFactory.create(botMovingLeft))
-            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
+            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe))
+            .put("shield", () -> rendererFactory.createShield());;
 
         new Builder(Terrain.class)
             .put("healthy_0", () -> rendererFactory.create(terrainHealthy0))
