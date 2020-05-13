@@ -2,7 +2,7 @@
 
 ## Overview
 
-2D shooter game inspired by Liero video game and loosely themed after The Expanse TV series.
+Real time 2D shooter game inspired by Liero video game and loosely themed after The Expanse TV series.
 Can be played both in single-player and multiplayer mode.
 
 Goal of the game: shoot other bots and players, get 20 kills to win. 
