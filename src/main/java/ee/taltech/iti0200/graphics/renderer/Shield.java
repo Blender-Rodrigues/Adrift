@@ -18,7 +18,7 @@ public class Shield extends EntityRenderer {
     @Override
     public void render(Shader shader, ViewPort viewPort, long tick) {
         Vector location = entity.getBoundingBox().getCentre();
-        location = converter.physicsToCamera(location);
+        location = converter.physicsToCamera(new Vector(location.getX(), - location.getY()));
         location = converter.cameraToScreen(location);
 
         shader.bind();
