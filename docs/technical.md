@@ -75,3 +75,9 @@ Bots moods:
 * panic - tries to move away for gunshot locations, also aggressive towards other bots
 
 (see [here](ai.md) for longer description)
+
+## Misc
+
+World map structure is read from a jpg file.
+ 
+Server recreates the world once all players have disconnected, or a player has won a match.
