@@ -70,7 +70,7 @@ web:
   stage: web
   only:
     refs:
-      - feature/static-web
+      - development
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
