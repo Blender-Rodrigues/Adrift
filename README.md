@@ -24,7 +24,19 @@ Run the jar with `java -jar path-to-file`.
 
 Our game server `104.248.243.136:8880` is already configured as the default connection.
 
-## Optionally you can pass the following jar arguments
+In menu:
+* keyboard arrow kes to navigate
+* `Enter` key to select a game mode
+* `Esc` to close the game
+
+In game: 
+* use `A` and `D` keys to move sideways, 
+* `W` to jump, 
+* numbers `1`, `2`, `3` to select active equipment and 
+* mouse cursor to aim and left click to shoot,
+* `Esc` to return to menu
+
+## Optionally the jar accepts either of the following set of arguments
 
 * client [server ip, defaults to 104.248.243.136] [server tcp port, defaults to 8880] [player name, defaults to Unknown]
 * server [server tcp port, defaults to 8880]
