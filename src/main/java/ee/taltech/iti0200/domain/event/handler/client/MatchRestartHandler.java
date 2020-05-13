@@ -23,7 +23,7 @@ public class MatchRestartHandler implements Subscriber<GameWon> {
         UUID id = event.getId();
         Player player = (Player) world.getEntity(id);
 
-        throw new RestartGame(String.format("Game won by %s", player == null ? id : player));
+        throw new RestartGame(String.format("Game won by %s", player == null ? id : player.getName()));
     }
 
 }

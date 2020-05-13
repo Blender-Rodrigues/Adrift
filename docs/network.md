@@ -1,13 +1,6 @@
 # Network
 
-Overview: Server side is keeping the game state, clients send and receive updates.
-
-* Server has 1 TCP port shared `Registrar` thread + 2x client `Listener` & `Sender` threads.
-* Server has a separate UDP port for each client which is shared by separate `Listener` & `Sender` threads.
-* Client has 1 TCP port shared by separate `Listener` & `Sender` threads.
-* Client has 1 UDP port shared by separate `Listener` & `Sender` threads.
-
-## Creating initial connection
+## Establishing initial connection
 
 [Client]
 *  `ClientNetwork` initializes `ConnectionToServer` on startup
@@ -17,7 +10,7 @@ Overview: Server side is keeping the game state, clients send and receive update
 
 [Server]
 * `ServerNetwork` initializes and runs `Registrar` on a separate thread on startup
-* `Registrar` accepts new TCP connections on `ServerSocket`
+* `Registrar` accepts a new TCP connections on `ServerSocket`
 * creates 4 threads, 2 for TCP and 2 for UDP with a new `DatagramSocket`
 * responds to request with `TcpRegistrationResponse` containing UDP port nr
 
@@ -42,14 +35,3 @@ Overview: Server side is keeping the game state, clients send and receive update
 [Client]
  * `ConnectionToServer` starts up 4 threads for the TCP and UDP connections
  * `ClientNetwork` adds all entities to local world and corrects the player position
-
-## Other events
-
-(TODO: will describe later as some are subject to change)
-
-* gunshot by player
-* gunshot by bot
-* create entity
-* deal damage
-* remove entity
-* update location and speed vector
