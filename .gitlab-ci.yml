@@ -3,12 +3,20 @@ stages:
   - build
   - deploy
   - web
+  - test_write
+  - test_read
+
+variables:
+  TAG_NAME: "test"
 
 test:
   tags:
     - iti0200
   stage: test
   image: openjdk:8-jdk-alpine
+  only:
+    refs:
+      - master
   script:
     - chmod 700 gradlew
     - export NO_GUI=true
@@ -23,6 +31,22 @@ test:
       - build/libs/
       - static/
 
+test_write:
+  stage: test_write
+  only:
+    refs:
+      - feature/separate-master
+  script:
+    - export $TAG_NAME="overwriting"
+
+test_read:
+  stage: test_read
+  only:
+    refs:
+      - feature/separate-master
+  script:
+    - echo $TAG_NAME
+
 build:
   tags:
     - iti0200
@@ -30,15 +54,15 @@ build:
   stage: build
   only:
     refs:
-      - development
+      - master
   variables:
     DOCKER_TLS_CERTDIR: ""
   services:
     - docker:19.03.8-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-    - docker build -t jaakkytt/escape-from-eros:latest -f ci/Dockerfile .
-    - docker push jaakkytt/escape-from-eros:latest
+    - docker build -t jaakkytt/escape-from-eros:$TAG_NAME -f ci/Dockerfile .
+    - docker push jaakkytt/escape-from-eros:$TAG_NAME
     - docker logout
 
 deploy:
@@ -48,7 +72,7 @@ deploy:
   stage: deploy
   only:
     refs:
-      - development
+      - master
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
@@ -59,9 +83,9 @@ deploy:
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - ssh game@$SERVER_IP "docker pull jaakkytt/escape-from-eros:latest"
-    - ssh game@$SERVER_IP "docker stop escape-from-eros || true && docker rm -f escape-from-eros || true"
-    - ssh game@$SERVER_IP "docker run -d --network host --restart=always --name escape-from-eros jaakkytt/escape-from-eros:latest"
+    - ssh game@$SERVER_IP "docker pull jaakkytt/escape-from-eros:$TAG_NAME"
+    - ssh game@$SERVER_IP "docker stop escape-from-eros-$TAG_NAME || true && docker rm -f escape-from-eros-$TAG_NAME || true"
+    - ssh game@$SERVER_IP "docker run -d --network host --restart=always --name escape-from-eros-$TAG_NAME jaakkytt/escape-from-eros:$TAG_NAME"
 
 web:
   tags:
@@ -70,7 +94,7 @@ web:
   stage: web
   only:
     refs:
-      - development
+      - master
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
