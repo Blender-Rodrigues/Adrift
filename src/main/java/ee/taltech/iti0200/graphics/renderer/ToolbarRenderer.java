@@ -13,7 +13,8 @@ import org.joml.Matrix4f;
 
 public class ToolbarRenderer implements Renderer {
 
-    private static final int SIZE = 100;
+    private static final int WEAPON_SIZE = 100;
+    private static final int CONSUMABLE_SIZE = 50;
 
     private final Player player;
     private Model model;
@@ -35,7 +36,7 @@ public class ToolbarRenderer implements Renderer {
     }
 
     private void renderWeapons(Shader shader, ViewPort viewPort) {
-        Matrix4f projection = viewPort.getStaticProjection(viewPort.getWidth() / 2 - SIZE / 2, viewPort.getHeight() - SIZE, SIZE, SIZE);
+        Matrix4f projection = viewPort.getStaticProjection(viewPort.getWidth() / 2 - WEAPON_SIZE / 2, viewPort.getHeight() - WEAPON_SIZE, WEAPON_SIZE, WEAPON_SIZE);
 
         shader.bind();
         shader.setUniform("sampler", 0);
@@ -56,17 +57,15 @@ public class ToolbarRenderer implements Renderer {
     }
 
     private void renderConsumables(Shader shader, ViewPort viewPort) {
-        Matrix4f projection = viewPort.getStaticProjection(viewPort.getWidth() - SIZE, viewPort.getHeight() / 2 - SIZE / 2, SIZE, SIZE);
+        Matrix4f projection = viewPort.getStaticProjection(viewPort.getWidth() - 2 * CONSUMABLE_SIZE, viewPort.getHeight() - 2 * CONSUMABLE_SIZE, CONSUMABLE_SIZE, CONSUMABLE_SIZE);
 
         shader.bind();
         shader.setUniform("sampler", 0);
         shader.setUniform("rotation", new Matrix4f());
 
-        projection.translate(0, -0.75f * player.getWeapons().size(), 0);
-
         for (Equipment consumable: player.getConsumables()) {
             shader.setUniform("projection", projection);
-            projection.translate(0, 1.5f, 0);
+            projection.translate(-3f, 0, 0);
 
             ((Drawable) consumable.getRenderer()).getTexture().bind(0);
             model.render();

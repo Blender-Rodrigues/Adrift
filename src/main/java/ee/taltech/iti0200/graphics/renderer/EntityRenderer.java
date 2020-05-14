@@ -43,7 +43,6 @@ public abstract class EntityRenderer implements Renderer {
         setShaderRotation(shader);
     }
 
-    // this is like a class variable except it is a method.
     protected Vector3f getLocation() {
         return new Vector3f((float) entity.getBoundingBox().getCentre().x, (float) entity.getBoundingBox().getCentre().y, 0);
     }

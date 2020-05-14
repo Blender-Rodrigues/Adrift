@@ -24,6 +24,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_I;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_O;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
@@ -57,6 +58,7 @@ public class GameInput extends Input {
         bind(new KeyEvent(GLFW_KEY_A, player::moveLeft, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_D, player::moveRight, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_KEY_W, player::jump, GLFW_PRESS));
+        bind(new KeyEvent(GLFW_KEY_SPACE, this::playerUseJetpack, GLFW_PRESS, GLFW_REPEAT));
         bind(new KeyEvent(GLFW_MOUSE_BUTTON_LEFT, this::playerShoot, GLFW_PRESS, GLFW_REPEAT));
 
         bind(new KeyEvent(GLFW_KEY_RIGHT, camera::moveRight, GLFW_PRESS, GLFW_REPEAT));
@@ -84,6 +86,10 @@ public class GameInput extends Input {
 
     private void changeSlot(int slot) {
         eventBus.dispatch(new ChangeEquipment(player, slot, EVERYONE));
+    }
+
+    private void playerUseJetpack() {
+        player.useJetpack(currentTick);
     }
 
     private void playerShoot() {

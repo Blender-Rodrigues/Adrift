@@ -100,6 +100,11 @@ public class EntityRenderFacade implements Renderer {
                 }
                 continue;
             }
+            if (entity instanceof Player) {
+                for (Equipment consumable : ((Player) entity).getConsumables()) {
+                    consumable.render(shader, viewPort, tick);
+                }
+            }
             entity.render(shader, viewPort, tick);
             if (entity instanceof Living) {
                 livingThingsOnScreen++;
@@ -170,7 +175,7 @@ public class EntityRenderFacade implements Renderer {
         Texture bulletTexture = visualFactory.create("projectile/", "bullet");
         Texture plasmaTexture = visualFactory.create("projectile/", "plasma");
         Texture blastTexture = visualFactory.create("projectile/", "green");
-        Texture jetpackTexture = visualFactory.create("gun/", "feather");
+        Texture jetpackTexture = visualFactory.create("gun/", "jetpack");
 
         // health
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
@@ -197,6 +202,8 @@ public class EntityRenderFacade implements Renderer {
         Texture compassArrow = visualFactory.create("compass/", "arrow");
         compassRenderer.setTexture(compassArrow);
 
+        Animation fire = visualFactory.create(50,"fire/", "fire", 1);
+
         new Builder(Entity.class)
             .put(DEFAULT, () -> rendererFactory.create(defaultTexture));
 
@@ -210,7 +217,8 @@ public class EntityRenderFacade implements Renderer {
             .put(DEFAULT, () -> rendererFactory.create(greenPistolTexture, RotatingDrawable.class));
 
         new Builder(Jetpack.class)
-                .put(DEFAULT, () -> rendererFactory.create(jetpackTexture, Drawable.class));
+                .put(DEFAULT, () -> rendererFactory.create(jetpackTexture, Drawable.class))
+                .put("FIRE", () -> rendererFactory.create(fire));
 
         new Builder(Player.class)
             .put("RUNNING.RIGHT", () -> rendererFactory.create(playerRunningRight))
