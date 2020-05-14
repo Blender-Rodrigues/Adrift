@@ -72,7 +72,7 @@ build_master:
   stage: build_master
   only:
     refs:
-      - feature/separate-master
+      - master
   variables:
     DOCKER_TLS_CERTDIR: ""
   services:
@@ -90,7 +90,7 @@ deploy_master:
   stage: deploy_master
   only:
     refs:
-      - feature/separate-master
+      - master
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
