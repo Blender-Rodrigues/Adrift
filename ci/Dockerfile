@@ -7,5 +7,6 @@ ADD /build/libs/escape-from-eros-linux.jar game.jar
 RUN sh -c 'touch /game.jar'
 
 ENV JAVA_OPTS=""
+ENV GAME_OPS=""
 
-ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /game.jar server" ]
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /game.jar server $GAME_OPS" ]
