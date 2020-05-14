@@ -182,8 +182,6 @@ public class EntityRenderFacade implements Renderer {
         Texture healthBarEmpty = visualFactory.create("overhead/", "healthBarEmpty");
         Texture healthBarFull = visualFactory.create("overhead/", "healthBarFull");
         Texture healthBarGlobe = visualFactory.create("overhead/", "healthBarGlobe");
-        Texture manaBarEmpty = visualFactory.create("overhead/", "manaBarEmpty");
-        Texture manaBarFull = visualFactory.create("overhead/", "manaBarFull");
 
         // player
         Animation playerRunningRight = visualFactory.create(10, "player/animations/", "player.running.right", 3);

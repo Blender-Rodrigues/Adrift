@@ -12,6 +12,12 @@ public class Animateable extends EntityRenderer {
         this.animation = animation;
     }
 
+    public void renderWithOffset(Shader shader, ViewPort viewPort, long tick) {
+        super.renderWithOffset(shader, viewPort, tick);
+        animation.bind(tick);
+        model.render();
+    }
+
     @Override
     public void render(Shader shader, ViewPort viewPort, long tick) {
         super.render(shader, viewPort, tick);

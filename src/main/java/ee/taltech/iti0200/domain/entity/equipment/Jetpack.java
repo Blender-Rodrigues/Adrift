@@ -8,10 +8,11 @@ import ee.taltech.iti0200.physics.Vector;
 
 public class Jetpack extends Equipment {
 
-    private static final int JACKPOT_CHARGES = 300;
+    public static final int JACKPOT_CHARGES = 300;
     public static final int MAXIMUM_SPEED = 7;
     public static final double ACCELERATION = 1.2;
     private long lastUsed;
+    protected int charges;
 
     public Jetpack(BoundingBox boundingBox) {
         super(boundingBox);
@@ -38,10 +39,14 @@ public class Jetpack extends Equipment {
         return this;
     }
 
+    public int getCharges() {
+        return charges;
+    }
+
     @Override
     public void render(Shader shader, ViewPort viewPort, long tick) {
         if (lastUsed + 5 >= tick) {
-            renderers.get("FIRE").render(shader, viewPort, tick);
+            renderers.get("FIRE").renderWithOffset(shader, viewPort, tick);
         }
     }
 

@@ -11,7 +11,6 @@ public class Equipment extends Loot {
 
     protected Living owner;
     protected boolean isActive;
-    protected int charges;
 
     public Equipment(BoundingBox boundingBox) {
         super(0, boundingBox);

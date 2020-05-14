@@ -8,6 +8,8 @@ import ee.taltech.iti0200.graphics.ViewPort;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import javax.swing.text.View;
+
 public abstract class EntityRenderer implements Renderer {
 
     protected transient Model model;
@@ -30,6 +32,17 @@ public abstract class EntityRenderer implements Renderer {
 
         transform = new Transform();
         transform.scale = new Vector3f((float) entity.getBoundingBox().getSize().getX(), (float) entity.getBoundingBox().getSize().getY(), 1);
+    }
+
+    public void renderWithOffset(Shader shader, ViewPort viewPort, long tick) {
+        Vector3f location = getLocation();
+        transform.pos.set(location);
+        transform.pos.add(0.0f, -0.6f, 0.0f);
+
+        shader.bind();
+        shader.setUniform("sampler", 0);
+        shader.setUniform("projection", transform.getProjection(viewPort.getProjection()));
+        setShaderRotation(shader);
     }
 
     @Override
