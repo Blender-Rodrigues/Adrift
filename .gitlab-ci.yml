@@ -32,6 +32,8 @@ test:
       - static/
 
 test_write:
+  tags:
+    - iti0200
   stage: test_write
   only:
     refs:
@@ -40,6 +42,8 @@ test_write:
     - export $TAG_NAME="overwriting"
 
 test_read:
+  tags:
+    - iti0200
   stage: test_read
   only:
     refs:
