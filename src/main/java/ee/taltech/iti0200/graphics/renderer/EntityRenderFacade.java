@@ -177,11 +177,13 @@ public class EntityRenderFacade implements Renderer {
         Texture blastTexture = visualFactory.create("projectile/", "green");
         Texture jetpackTexture = visualFactory.create("gun/", "jetpack");
 
-        // health
+        // health & mana
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
         Texture healthBarEmpty = visualFactory.create("overhead/", "healthBarEmpty");
         Texture healthBarFull = visualFactory.create("overhead/", "healthBarFull");
         Texture healthBarGlobe = visualFactory.create("overhead/", "healthBarGlobe");
+        Texture manaBarEmpty = visualFactory.create("overhead/", "manaBarEmpty");
+        Texture manaBarFull = visualFactory.create("overhead/", "manaBarFull");
 
         // player
         Animation playerRunningRight = visualFactory.create(10, "player/animations/", "player.running.right", 3);

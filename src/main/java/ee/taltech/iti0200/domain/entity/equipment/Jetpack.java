@@ -5,14 +5,12 @@ import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
-import org.joml.Vector3f;
 
 public class Jetpack extends Equipment {
 
     private static final int JACKPOT_CHARGES = 300;
     public static final int MAXIMUM_SPEED = 7;
     public static final double ACCELERATION = 1.2;
-    private int charges;
     private long lastUsed;
 
     public Jetpack(BoundingBox boundingBox) {
