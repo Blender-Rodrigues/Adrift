@@ -31,14 +31,14 @@ class PhysicsTest {
 
         physics.update(1);
 
-        assertThat(player.getBoundingBox().getCentre()).isEqualTo(new Vector(0, 1));
+        assertThat(player.getBoundingBox().getCentre()).isEqualTo(new Vector(0, 1 - (1 - player.getBoundingBox().getSize().getY() * 2) / 2));
     }
 
     @Test
     void bodyFallsNextToWallAndAcceleratesTowardsWallWhenImpactToGround() {
         World world = mock(World.class);
         EventBus eventBus = mock(EventBus.class);
-        Player player = new Player(new Vector(0, 5), world);
+        Player player = new Player(new Vector(0.0625, 5), world);
         List<Entity> terrainBlocks = asList(
             new Terrain(new Vector(0, 0)),
             new Terrain(new Vector(1, 0)),
@@ -59,8 +59,8 @@ class PhysicsTest {
             physics.update(i);
             player.moveRight();
             Vector location = player.getBoundingBox().getCentre();
-            assertThat(location.getX()).isBetween(-0.01, 0.01);
-            assertThat(location.getY()).isGreaterThanOrEqualTo(1);
+            assertThat(location.getX()).isBetween((1 - player.getBoundingBox().getSize().getX() * 2 ) / 2 - 0.01, (1 - player.getBoundingBox().getSize().getY() * 2) / 2 + 0.01);
+            assertThat(location.getY()).isGreaterThanOrEqualTo(player.getBoundingBox().getSize().getY() * 2);
         }
     }
 

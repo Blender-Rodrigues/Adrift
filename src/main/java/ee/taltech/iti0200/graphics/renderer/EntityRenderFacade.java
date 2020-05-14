@@ -30,6 +30,8 @@ import ee.taltech.iti0200.physics.Vector;
 import org.joml.Vector3f;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -92,6 +94,8 @@ public class EntityRenderFacade implements Renderer {
         int livingThingsOnScreen = 0;
         Vector closestDistance = new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
+        Collection<Living> livingThings = new ArrayList<>();
+
         for (Entity entity : world.getEntities()) {
             BoundingBox box = entity.getBoundingBox();
             if (box.getMinX() < minX || box.getMaxX() > maxX || box.getMinY() < minY || box.getMinY() > maxY) {
@@ -105,17 +109,25 @@ public class EntityRenderFacade implements Renderer {
                 continue;
             }
 
-            if (entity instanceof Damageable) {
-                ((Damageable) entity).renderShield(shieldShader, viewPort, tick);
-            }
-            entity.render(shader, viewPort, tick);
             if (entity instanceof Living) {
-                livingThingsOnScreen++;
+                livingThings.add((Living) entity);
 
-                Gun gun = ((Living) entity).getActiveGun();
-                if (gun != null) {
-                    gun.render(shader, viewPort, tick);
+            } else {
+                if (entity instanceof Damageable) {
+                    ((Damageable) entity).renderShield(shieldShader, viewPort, tick);
                 }
+                entity.render(shader, viewPort, tick);
+            }
+        }
+        for (Living living: livingThings) {
+            living.renderShield(shieldShader, viewPort, tick);
+            livingThingsOnScreen++;
+
+            living.render(shader, viewPort, tick);
+
+            Gun gun = living.getActiveGun();
+            if (gun != null) {
+                gun.render(shader, viewPort, tick);
             }
         }
         if (livingThingsOnScreen < 2) {
