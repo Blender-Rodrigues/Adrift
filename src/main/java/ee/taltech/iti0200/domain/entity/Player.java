@@ -13,7 +13,7 @@ public class Player extends Living {
 
     public static final int JUMP_AMOUNT_LIMIT = 2;
 
-    private static final Vector SIZE = new Vector(1.0, 1.0);
+    private static final Vector SIZE = new Vector(0.875, 0.875);
     private static final double MASS = 70.0;
     private static final double ELASTICITY = 0.15;
     private static final double FRICTION_COEFFICIENT = 0.99;
