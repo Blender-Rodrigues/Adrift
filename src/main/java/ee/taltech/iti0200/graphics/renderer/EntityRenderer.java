@@ -1,11 +1,10 @@
 package ee.taltech.iti0200.graphics.renderer;
 
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Model;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.Transform;
-
+import ee.taltech.iti0200.graphics.ViewPort;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -20,21 +19,27 @@ public abstract class EntityRenderer implements Renderer {
         return this;
     }
 
-    @Override
-    public void initialize() {
-        model = createSquare();
+    public void reScale() {
         transform = new Transform();
         transform.scale = new Vector3f((float) entity.getBoundingBox().getSize().getX(), (float) entity.getBoundingBox().getSize().getY(), 1);
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
+    public void initialize() {
+        model = Renderer.square;
+
+        transform = new Transform();
+        transform.scale = new Vector3f((float) entity.getBoundingBox().getSize().getX(), (float) entity.getBoundingBox().getSize().getY(), 1);
+    }
+
+    @Override
+    public void render(Shader shader, ViewPort viewPort, long tick) {
         Vector3f location = getLocation();
         transform.pos.set(location);
 
         shader.bind();
         shader.setUniform("sampler", 0);
-        shader.setUniform("projection", transform.getProjection(camera.getProjection()));
+        shader.setUniform("projection", transform.getProjection(viewPort.getProjection()));
         setShaderRotation(shader);
     }
 

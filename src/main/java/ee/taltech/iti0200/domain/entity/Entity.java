@@ -1,8 +1,8 @@
 package ee.taltech.iti0200.domain.entity;
 
-import ee.taltech.iti0200.graphics.Camera;
-import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
+import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
 
@@ -52,8 +52,8 @@ public class Entity extends Body {
         return this;
     }
 
-    public void render(Shader shader, Camera camera, long tick) {
-        renderers.get(DEFAULT).render(shader, camera, tick);
+    public void render(Shader shader, ViewPort viewPort, long tick) {
+        renderers.get(DEFAULT).render(shader, viewPort, tick);
     }
 
     public boolean hasMoved() {

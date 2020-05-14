@@ -13,9 +13,9 @@ import java.net.InetAddress;
  */
 public class PacketObjectOutputStream extends ObjectOutputStream {
 
-    private DatagramSocket socket;
-    private InetAddress address;
-    private int port;
+    private final DatagramSocket socket;
+    private final InetAddress address;
+    private final int port;
 
     public PacketObjectOutputStream(
         DatagramSocket socket,

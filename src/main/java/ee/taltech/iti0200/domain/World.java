@@ -1,8 +1,8 @@
 package ee.taltech.iti0200.domain;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Entity;
+import ee.taltech.iti0200.domain.entity.Loot;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.Living;
 import ee.taltech.iti0200.domain.entity.Projectile;
@@ -26,7 +26,7 @@ public class World {
     private List<Living> livingEntities = new ArrayList<>();
     private List<Entity> movableBodies = new ArrayList<>();
     private List<Entity> imMovableBodies = new ArrayList<>();
-    private List<Consumable> consumables = new ArrayList<>();
+    private List<Loot> loot = new ArrayList<>();
     private Map<Vector, Terrain> terrainMap;
     private ArrayDeque<Vector> spawnPoints = new ArrayDeque<>();
     private EntityRenderFacade entityRenderer;
@@ -116,8 +116,8 @@ public class World {
         return livingEntities;
     }
 
-    public List<Consumable> getConsumables() {
-        return consumables;
+    public List<Loot> getLoot() {
+        return loot;
     }
 
     public List<Projectile> getProjectiles() {
@@ -142,8 +142,8 @@ public class World {
             entityRenderer.decorate(entity);
         }
 
-        if (entity instanceof Consumable) {
-            consumables.add((Consumable) entity);
+        if (entity instanceof Loot) {
+            loot.add((Loot) entity);
             return;
         }
 
@@ -169,8 +169,8 @@ public class World {
         entities.remove(entity.getId());
         entitiesRemoved++;
 
-        if (entity instanceof Consumable) {
-            consumables.remove(entity);
+        if (entity instanceof Loot) {
+            loot.remove(entity);
         }
 
         if (entity instanceof Living) {

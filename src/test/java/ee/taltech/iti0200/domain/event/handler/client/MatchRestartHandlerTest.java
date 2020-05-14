@@ -1,6 +1,6 @@
 package ee.taltech.iti0200.domain.event.handler.client;
 
-import ee.taltech.iti0200.application.RecreateException;
+import ee.taltech.iti0200.application.RestartGame;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.event.GameWon;
 import org.junit.jupiter.api.Test;
@@ -19,10 +19,9 @@ class MatchRestartHandlerTest {
         Throwable throwable = catchThrowable(() -> handler.handle(event));
 
         assertThat(throwable)
-            .isInstanceOf(RecreateException.class)
+            .isInstanceOf(RestartGame.class)
+            .hasMessageStartingWith("Game won by")
             .hasNoCause();
-
-        assertThat(((RecreateException) throwable).delay).isGreaterThan(0);
     }
 
 }

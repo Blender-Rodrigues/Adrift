@@ -54,7 +54,7 @@ public class Image {
     }
 
     private URL getFile(String path) {
-        URL resource = Texture.class.getClassLoader().getResource(path);
+        URL resource = Image.class.getClassLoader().getResource(path);
         if (resource == null) {
             throw new IllegalArgumentException("Unable to find resource " + path);
         }

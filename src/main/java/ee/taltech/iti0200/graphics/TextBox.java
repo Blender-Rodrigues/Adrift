@@ -20,9 +20,10 @@ public class TextBox {
         this.text = text;
     }
 
-    public void render(Alphabet alphabet, Camera camera) {
+    public void render(Alphabet alphabet, ViewPort viewPort) {
         for (int i = 0; i < text.length(); i++) {
-            alphabet.render(text.charAt(i), camera, (int) (xDistance + i * size), yDistance, size);
+            alphabet.render(text.charAt(i), viewPort, (int) (xDistance + i * size), yDistance, size);
         }
     }
+
 }

@@ -2,10 +2,10 @@ package ee.taltech.iti0200.graphics.renderer;
 
 
 import ee.taltech.iti0200.domain.entity.Damageable;
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.Texture;
 import ee.taltech.iti0200.graphics.Transform;
+import ee.taltech.iti0200.graphics.ViewPort;
 import org.joml.Vector3f;
 
 public class HealthBar extends EntityRenderer {
@@ -49,7 +49,7 @@ public class HealthBar extends EntityRenderer {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
+    public void render(Shader shader, ViewPort viewPort, long tick) {
         float locationX = (float) entity.getBoundingBox().getCentre().getX();
         float locationY = (float) (entity.getBoundingBox().getCentre().getY() + entity.getBoundingBox().getSize().getY() * 1.5f);
 
@@ -63,15 +63,15 @@ public class HealthBar extends EntityRenderer {
         shader.bind();
         shader.setUniform("sampler", 0);
 
-        shader.setUniform("projection", transformEmpty.getProjection(camera.getProjection()));
+        shader.setUniform("projection", transformEmpty.getProjection(viewPort.getProjection()));
         healthBarEmpty.bind(0);
         model.render();
 
-        shader.setUniform("projection", transformFull.getProjection(camera.getProjection()));
+        shader.setUniform("projection", transformFull.getProjection(viewPort.getProjection()));
         healthBarFull.bind(0);
         model.render();
 
-        shader.setUniform("projection", transformGlobe.getProjection(camera.getProjection()));
+        shader.setUniform("projection", transformGlobe.getProjection(viewPort.getProjection()));
         healthBarGlobe.bind(0);
         model.render();
     }

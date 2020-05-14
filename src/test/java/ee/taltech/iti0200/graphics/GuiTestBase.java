@@ -3,14 +3,13 @@ package ee.taltech.iti0200.graphics;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import ee.taltech.iti0200.di.CommonModule;
-import ee.taltech.iti0200.di.GuiModule;
+import ee.taltech.iti0200.di.GlfwModule;
 import ee.taltech.iti0200.di.annotations.WindowId;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.lwjgl.opengl.GL;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
@@ -27,7 +26,7 @@ abstract public class GuiTestBase {
 
     @BeforeAll
     static void beforeAll() {
-        Injector injector = Guice.createInjector(asList(new CommonModule(), new GuiModule()));
+        Injector injector = Guice.createInjector(singletonList(new GlfwModule()));
         window = injector.getInstance(Key.get(Long.class, WindowId.class));
 
         glfwMakeContextCurrent(window);

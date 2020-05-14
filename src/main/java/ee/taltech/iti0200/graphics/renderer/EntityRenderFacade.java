@@ -1,30 +1,32 @@
 package ee.taltech.iti0200.graphics.renderer;
 
 import com.google.inject.Inject;
+import ee.taltech.iti0200.di.annotations.MainShader;
+import ee.taltech.iti0200.di.annotations.ShieldShader;
 import ee.taltech.iti0200.di.factory.RendererFactory;
-
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.BlastProjectile;
 import ee.taltech.iti0200.domain.entity.Bot;
+import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
-import ee.taltech.iti0200.domain.entity.PlasmaProjectile;
-import ee.taltech.iti0200.domain.entity.equipment.FastGun;
-import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.entity.HealthGlobe;
 import ee.taltech.iti0200.domain.entity.Living;
+import ee.taltech.iti0200.domain.entity.PlasmaProjectile;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.entity.Projectile;
-import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
+import ee.taltech.iti0200.domain.entity.Shield;
 import ee.taltech.iti0200.domain.entity.Terrain;
-
-import ee.taltech.iti0200.graphics.Camera;
+import ee.taltech.iti0200.domain.entity.equipment.FastGun;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
+import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
+import ee.taltech.iti0200.graphics.Animation;
 import ee.taltech.iti0200.graphics.Shader;
 import ee.taltech.iti0200.graphics.Texture;
-import ee.taltech.iti0200.graphics.Animation;
+import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.graphics.VisualFactory;
-
 import ee.taltech.iti0200.physics.Body;
 import ee.taltech.iti0200.physics.BoundingBox;
+import ee.taltech.iti0200.physics.Vector;
 import org.joml.Vector3f;
 
 import java.io.IOException;
@@ -43,12 +45,16 @@ public class EntityRenderFacade implements Renderer {
     private final World world;
     private final RendererFactory rendererFactory;
     private final VisualFactory visualFactory;
+    private final CompassRenderer compassRenderer;
+    private Shader shieldShader;
 
     @Inject
-    public EntityRenderFacade(World world, RendererFactory rendererFactory, VisualFactory visualFactory) {
+    public EntityRenderFacade(World world, RendererFactory rendererFactory, VisualFactory visualFactory, CompassRenderer compassRenderer, @ShieldShader Shader shader) {
         this.world = world;
         this.rendererFactory = rendererFactory;
         this.visualFactory = visualFactory;
+        this.compassRenderer = compassRenderer;
+        this.shieldShader = shader;
     }
 
     @Override
@@ -63,6 +69,7 @@ public class EntityRenderFacade implements Renderer {
                 }
             }
         });
+        compassRenderer.initialize();
     }
 
     /**
@@ -71,29 +78,49 @@ public class EntityRenderFacade implements Renderer {
      * Negating camera coordinates as they seem to have opposite values of the world coordinates
      */
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
-        Vector3f pos = new Vector3f(camera.getPosition()).negate();
-        float zoom = camera.getZoom();
+    public void render(Shader shader, ViewPort viewPort, long tick) {
+        Vector3f pos = new Vector3f(viewPort.getPosition()).negate();
+        float zoom = viewPort.getZoom();
 
-        double w = 10 + camera.getWidth() / 2.0 * zoom;
-        double h = 10 + camera.getHeight() / 2.0 * zoom;
+        double w = 10 + viewPort.getWidth() / 2.0 * zoom;
+        double h = 10 + viewPort.getHeight() / 2.0 * zoom;
         double minX = (pos.x - w);
         double maxX = (pos.x + w);
         double minY = (pos.y - h);
         double maxY = (pos.y + h);
 
+        int livingThingsOnScreen = 0;
+        Vector closestDistance = new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+
         for (Entity entity : world.getEntities()) {
             BoundingBox box = entity.getBoundingBox();
             if (box.getMinX() < minX || box.getMaxX() > maxX || box.getMinY() < minY || box.getMinY() > maxY) {
+                if (entity instanceof Living) {
+                    Vector distance = new Vector(entity.getBoundingBox().getCentre());
+                    distance.sub(new Vector(pos.x, pos.y));
+                    if (distance.lengthSquared() < closestDistance.lengthSquared()) {
+                        closestDistance = distance;
+                    }
+                }
                 continue;
             }
-            entity.render(shader, camera, tick);
+
+            if (entity instanceof Damageable) {
+                ((Damageable) entity).renderShield(shieldShader, viewPort, tick);
+            }
+            entity.render(shader, viewPort, tick);
             if (entity instanceof Living) {
+                livingThingsOnScreen++;
+
                 Gun gun = ((Living) entity).getActiveGun();
                 if (gun != null) {
-                    gun.render(shader, camera, tick);
+                    gun.render(shader, viewPort, tick);
                 }
             }
+        }
+        if (livingThingsOnScreen < 2) {
+            compassRenderer.setDirection(closestDistance);
+            compassRenderer.render(shader, viewPort, tick);
         }
     }
 
@@ -154,6 +181,7 @@ public class EntityRenderFacade implements Renderer {
 
         // health
         Texture healthGlobeTexture = visualFactory.create("consumable/", "healthGlobe");
+        Texture shieldTexture = visualFactory.create("consumable/", "shield");
         Texture healthBarEmpty = visualFactory.create("overhead/", "healthBarEmpty");
         Texture healthBarFull = visualFactory.create("overhead/", "healthBarFull");
         Texture healthBarGlobe = visualFactory.create("overhead/", "healthBarGlobe");
@@ -173,8 +201,15 @@ public class EntityRenderFacade implements Renderer {
         Texture botJumpingRight = visualFactory.create("bot/stills/", "bot.jumping.right");
         Texture botJumpingLeft = visualFactory.create("bot/stills/", "bot.jumping.left");
 
+        // compass
+        Texture compassArrow = visualFactory.create("compass/", "arrow");
+        compassRenderer.setTexture(compassArrow);
+
         new Builder(Entity.class)
             .put(DEFAULT, () -> rendererFactory.create(defaultTexture));
+
+        new Builder(Damageable.class)
+            .put("shield", () -> rendererFactory.create(shieldTexture));
 
         new Builder(Gun.class)
             .put(DEFAULT, () -> rendererFactory.create(pistolTexture, RotatingDrawable.class));
@@ -192,13 +227,15 @@ public class EntityRenderFacade implements Renderer {
             .put("IDLE.LEFT", () -> rendererFactory.create(playerIdleLeft))
             .put("JUMPING.RIGHT", () -> rendererFactory.create(playerJumpingRight))
             .put("JUMPING.LEFT", () -> rendererFactory.create(playerJumpingLeft))
-            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
+            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe))
+            .put("shield", () -> rendererFactory.createShield());;
 
         new Builder(Bot.class)
             .put("IDLE", () -> rendererFactory.create(botIdle))
             .put("RIGHT", () -> rendererFactory.create(botMovingRight))
             .put("LEFT", () -> rendererFactory.create(botMovingLeft))
-            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe));
+            .put("healthBar", () -> rendererFactory.create(healthBarEmpty, healthBarFull, healthBarGlobe))
+            .put("shield", () -> rendererFactory.createShield());;
 
         new Builder(Terrain.class)
             .put("healthy_0", () -> rendererFactory.create(terrainHealthy0))
@@ -234,6 +271,9 @@ public class EntityRenderFacade implements Renderer {
 
         new Builder(HealthGlobe.class)
             .put(DEFAULT, () -> rendererFactory.create(healthGlobeTexture));
+
+        new Builder(Shield.class)
+            .put(DEFAULT, () -> rendererFactory.create(shieldTexture));
     }
 
     private static class Builder {

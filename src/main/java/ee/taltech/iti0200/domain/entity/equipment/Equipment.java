@@ -1,13 +1,13 @@
 package ee.taltech.iti0200.domain.entity.equipment;
 
-import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
+import ee.taltech.iti0200.domain.entity.Loot;
 import ee.taltech.iti0200.graphics.renderer.Renderer;
 import ee.taltech.iti0200.physics.BoundingBox;
 
 import static ee.taltech.iti0200.graphics.renderer.EntityRenderFacade.DEFAULT;
 
-public class Equipment extends Entity {
+public class Equipment extends Loot {
 
     protected Living owner;
     protected boolean isActive;

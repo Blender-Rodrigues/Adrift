@@ -2,8 +2,8 @@ package ee.taltech.iti0200.application;
 
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.equipment.FastGun;
 import ee.taltech.iti0200.domain.entity.Player;
+import ee.taltech.iti0200.domain.entity.equipment.Gun;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.handler.client.ClientGunShotHandler;
 import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
@@ -12,12 +12,13 @@ import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
 import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityGiveGunHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
 import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
 import ee.taltech.iti0200.domain.event.handler.client.PlayerRespawnHandler;
-import ee.taltech.iti0200.graphics.Graphics;
-import ee.taltech.iti0200.input.Input;
+import ee.taltech.iti0200.graphics.GameGraphics;
+import ee.taltech.iti0200.input.GameInput;
 import ee.taltech.iti0200.network.Network;
 import ee.taltech.iti0200.physics.Physics;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,14 +38,15 @@ class ClientGameTest {
     EventBus eventBus;
     Timer timer;
     Player player;
-    Graphics graphics;
+    GameGraphics gameGraphics;
     Network network;
-    Input input;
+    GameInput input;
     Physics physics;
     EntityDamageHandler damageHandler;
     EntityHealingHandler healingHandler;
     EntityRemoveHandler entityRemoveHandler;
     EntityCreateHandler entityCreateHandler;
+    EntityGiveGunHandler entityGiveGunHandler;
     MoveBodyHandler moveBodyHandler;
     CollisionHandler collisionHandler;
     PlayerRespawnHandler respawnHandler;
@@ -62,14 +64,15 @@ class ClientGameTest {
         eventBus = mock(EventBus.class);
         timer = mock(Timer.class);
         player = mock(Player.class);
-        graphics = mock(Graphics.class);
+        gameGraphics = mock(GameGraphics.class);
         network = mock(Network.class);
-        input = mock(Input.class);
+        input = mock(GameInput.class);
         physics = mock(Physics.class);
         damageHandler = mock(EntityDamageHandler.class);
         healingHandler = mock(EntityHealingHandler.class);
         entityRemoveHandler = mock(EntityRemoveHandler.class);
         entityCreateHandler = mock(EntityCreateHandler.class);
+        entityGiveGunHandler = mock(EntityGiveGunHandler.class);
         moveBodyHandler = mock(MoveBodyHandler.class);
         collisionHandler = mock(CollisionHandler.class);
         respawnHandler = mock(PlayerRespawnHandler.class);
@@ -84,7 +87,7 @@ class ClientGameTest {
             eventBus,
             timer,
             player,
-            graphics,
+            gameGraphics,
             network,
             input,
             physics,
@@ -92,6 +95,7 @@ class ClientGameTest {
             healingHandler,
             entityRemoveHandler,
             entityCreateHandler,
+            entityGiveGunHandler,
             moveBodyHandler,
             collisionHandler,
             respawnHandler,
@@ -105,14 +109,14 @@ class ClientGameTest {
 
     @Test
     void constructorSubscribesHandlers() {
-        verify(eventBus, times(11)).subscribe(any(), any());
+        verify(eventBus, times(12)).subscribe(any(), any());
     }
 
     @Test
     void initializePreparesPlayerForWorld() {
         game.run();
 
-        verify(player).addWeapon(any(FastGun.class));
+        verify(player).addWeapon(any(Gun.class));
         verify(player).setActiveGun(0);
         verify(world).addEntity(player);
         verify(score).addPlayer(player);
@@ -125,13 +129,13 @@ class ClientGameTest {
         game.run();
 
         verify(network, never()).initialize();
-        verify(graphics, never()).isWindowOpen();
+        verify(gameGraphics, never()).isWindowOpen();
     }
 
     @Test
     void loopDelegatesToNetwork() {
         when(timer.sleep()).thenReturn(1L);
-        when(graphics.isWindowOpen()).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(gameGraphics.isWindowOpen()).thenReturn(true).thenReturn(true).thenReturn(false);
 
         game.run();
 
@@ -145,7 +149,7 @@ class ClientGameTest {
     void isGameRunningDelegatesToGraphics() {
         game.run();
 
-        verify(graphics).isWindowOpen();
+        verify(gameGraphics).isWindowOpen();
     }
 
 }

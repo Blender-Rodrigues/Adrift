@@ -7,19 +7,10 @@ import ee.taltech.iti0200.domain.Layout;
 import ee.taltech.iti0200.domain.Score;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Player;
-import ee.taltech.iti0200.domain.entity.equipment.FastGun;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
-import ee.taltech.iti0200.domain.entity.equipment.SpecialGun;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.UpdateScore;
-import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
-import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
-import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
-import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
-import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
-import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
-import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
-import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
+import ee.taltech.iti0200.domain.event.entity.AddGun;
 import ee.taltech.iti0200.domain.event.entity.ChangeEquipment;
 import ee.taltech.iti0200.domain.event.entity.CreateEntity;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
@@ -29,6 +20,15 @@ import ee.taltech.iti0200.domain.event.entity.GunShot;
 import ee.taltech.iti0200.domain.event.entity.Heal;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
 import ee.taltech.iti0200.domain.event.entity.UpdateVector;
+import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
+import ee.taltech.iti0200.domain.event.handler.client.UpdateScoreHandler;
+import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
+import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityGiveGunHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
+import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
 import ee.taltech.iti0200.domain.event.handler.server.DropLootHandler;
 import ee.taltech.iti0200.domain.event.handler.server.GunShotHandler;
 import ee.taltech.iti0200.graphics.Graphics;
@@ -62,6 +62,7 @@ public class SinglePlayerGame extends Game {
         GunShotHandler gunShotHandler,
         EntityDamageHandler damageHandler,
         EntityHealingHandler healingHandler,
+        EntityGiveGunHandler entityGiveGunHandler,
         EntityRemoveHandler entityRemoveHandler,
         EntityCreateHandler entityCreateHandler,
         DropLootHandler dropLootHandler,
@@ -85,6 +86,7 @@ public class SinglePlayerGame extends Game {
         eventBus.subscribe(GunShot.class, gunShotHandler);
         eventBus.subscribe(DealDamage.class, damageHandler);
         eventBus.subscribe(Heal.class, healingHandler);
+        eventBus.subscribe(AddGun.class, entityGiveGunHandler);
         eventBus.subscribe(RemoveEntity.class, entityRemoveHandler);
         eventBus.subscribe(CreateEntity.class, entityCreateHandler);
         eventBus.subscribe(DropLoot.class, dropLootHandler);
@@ -101,8 +103,6 @@ public class SinglePlayerGame extends Game {
 
         player.setPosition(world.nextSpawnPoint());
         player.addWeapon(new Gun(player.getBoundingBox()));
-        player.addWeapon(new FastGun(player.getBoundingBox()));
-        player.addWeapon(new SpecialGun(player.getBoundingBox()));
         player.setActiveGun(0);
 
         world.addEntity(player);

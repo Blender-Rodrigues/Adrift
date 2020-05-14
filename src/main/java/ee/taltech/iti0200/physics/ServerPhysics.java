@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import ee.taltech.iti0200.di.annotations.GameId;
 import ee.taltech.iti0200.domain.Fall;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.domain.entity.Consumable;
 import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.Living;
+import ee.taltech.iti0200.domain.entity.Loot;
 import ee.taltech.iti0200.domain.event.EventBus;
 import ee.taltech.iti0200.domain.event.entity.DealDamage;
 import ee.taltech.iti0200.domain.event.entity.RemoveEntity;
@@ -33,16 +33,16 @@ public class ServerPhysics extends Physics {
     public void update(long tick) {
         super.update(tick);
         collisions = new HashSet<>();
-        checkForConsumableHits(world.getLivingEntities(), world.getConsumables());
+        checkForLootHits(world.getLivingEntities(), world.getLoot());
         dispatchCollisions();
     }
 
-    private void checkForConsumableHits(List<Living> living, List<Consumable> consumables) {
-        for (Consumable consumable: consumables) {
+    private void checkForLootHits(List<Living> living, List<Loot> loot) {
+        for (Loot lootEntity: loot) {
             living.stream()
-                .filter(consumable::intersects)
+                .filter(lootEntity::intersects)
                 .findAny()
-                .ifPresent(entity -> collisions.add(new ImmutablePair<>(consumable, entity)));
+                .ifPresent(entity -> collisions.add(new ImmutablePair<>(lootEntity, entity)));
         }
     }
 

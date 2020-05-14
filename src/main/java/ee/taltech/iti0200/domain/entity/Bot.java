@@ -3,8 +3,8 @@ package ee.taltech.iti0200.domain.entity;
 import ee.taltech.iti0200.ai.Brain;
 import ee.taltech.iti0200.ai.InertBrain;
 import ee.taltech.iti0200.domain.World;
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.physics.BoundingBox;
 import ee.taltech.iti0200.physics.Vector;
 
@@ -24,6 +24,7 @@ public class Bot extends Living {
     private transient Brain brain;
 
     private Vector acceleration;
+    private Vector lookingAt;
 
     public Bot(Vector position, World world, Brain brain) {
         super(MASS, new BoundingBox(position, SIZE), world, MAX_HEALTH);
@@ -31,6 +32,7 @@ public class Bot extends Living {
         this.elasticity = ELASTICITY;
         this.frictionCoefficient = FRICTION_COEFFICIENT;
         this.acceleration = new Vector(0.0, 0.0);
+        this.lookingAt = new Vector(1.0, 0.0);
         this.movable = true;
     }
 
@@ -40,6 +42,17 @@ public class Bot extends Living {
 
     public boolean canShoot(long tick) {
         return activeGun != null && activeGun.canShoot(tick);
+    }
+
+    public void lookTowards(Vector newDirection, double intensity) {
+        newDirection.scale(intensity);
+        lookingAt.add(newDirection);
+        lookingAt.normalize();
+        activeGun.setRotation(lookingAt);
+    }
+
+    public Vector getLookingAt() {
+        return lookingAt;
     }
 
     @Override
@@ -69,10 +82,10 @@ public class Bot extends Living {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
+    public void render(Shader shader, ViewPort viewPort, long tick) {
         String action = getAcceleration().getX() > 0 ? "LEFT" : "IDLE";
-        renderers.get(action).render(shader, camera, tick);
-        renderers.get("healthBar").render(shader, camera, tick);
+        renderers.get(action).render(shader, viewPort, tick);
+        renderers.get("healthBar").render(shader, viewPort, tick);
     }
 
 }

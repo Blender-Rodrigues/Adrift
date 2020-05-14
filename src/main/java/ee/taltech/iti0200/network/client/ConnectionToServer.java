@@ -1,24 +1,15 @@
 package ee.taltech.iti0200.network.client;
 
 import com.google.inject.Inject;
-import ee.taltech.iti0200.di.annotations.ConcurrentInbox;
-import ee.taltech.iti0200.di.annotations.ConcurrentTcpOutbox;
-import ee.taltech.iti0200.di.annotations.ConcurrentUdpOutbox;
-import ee.taltech.iti0200.di.annotations.ConnectionAlive;
 import ee.taltech.iti0200.di.annotations.LocalPlayer;
 import ee.taltech.iti0200.di.annotations.ServerHost;
 import ee.taltech.iti0200.di.annotations.ServerTcpPort;
 import ee.taltech.iti0200.domain.entity.Player;
 import ee.taltech.iti0200.domain.event.entity.CreatePlayer;
-import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.Connection;
-import ee.taltech.iti0200.network.Listener;
-import ee.taltech.iti0200.network.Messenger;
-import ee.taltech.iti0200.network.PacketObjectInputStream;
-import ee.taltech.iti0200.network.PacketObjectOutputStream;
-import ee.taltech.iti0200.network.Sender;
 import ee.taltech.iti0200.network.message.LoadWorld;
 import ee.taltech.iti0200.network.message.Message;
+import ee.taltech.iti0200.network.message.Receiver;
 import ee.taltech.iti0200.network.message.TcpRegistrationRequest;
 import ee.taltech.iti0200.network.message.TcpRegistrationResponse;
 import ee.taltech.iti0200.network.message.UdpRegistrationRequest;
@@ -28,24 +19,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.String.format;
 
 public class ConnectionToServer extends Connection {
 
     private final Logger logger = LogManager.getLogger(ConnectionToServer.class);
-    private final ConcurrentLinkedQueue<Message> inbox;
-    private final ConcurrentLinkedQueue<Message> tcpOutbox;
-    private final ConcurrentLinkedQueue<Message> udpOutbox;
-    private final AtomicBoolean alive;
     private final Player player;
+    private final ConnectionBuilder factory;
 
     private LoadWorld worldData;
 
@@ -53,18 +36,12 @@ public class ConnectionToServer extends Connection {
     public ConnectionToServer(
         @ServerHost InetAddress address,
         @ServerTcpPort int tcpPort,
-        @ConcurrentInbox ConcurrentLinkedQueue<Message> inbox,
-        @ConcurrentTcpOutbox ConcurrentLinkedQueue<Message> tcpOutbox,
-        @ConcurrentUdpOutbox ConcurrentLinkedQueue<Message> udpOutbox,
-        @ConnectionAlive AtomicBoolean alive,
-        @LocalPlayer Player player
+        @LocalPlayer Player player,
+        ConnectionBuilder factory
     ) {
         super(address, tcpPort);
-        this.inbox = inbox;
-        this.tcpOutbox = tcpOutbox;
-        this.udpOutbox = udpOutbox;
-        this.alive = alive;
         this.player = player;
+        this.factory = factory;
     }
 
     /**
@@ -72,13 +49,12 @@ public class ConnectionToServer extends Connection {
      * Creates separate threads for up and down communications on both protocols.
      */
     public void initialize() throws IOException, ClassNotFoundException {
-        udpSocket = new DatagramSocket();
-
-        tcpSocket = new Socket(address, tcpPort);
-        tcpOutput = new ObjectOutputStream(tcpSocket.getOutputStream());
+        udpSocket = factory.createUdpSocket();
+        tcpSocket = factory.createTcpSocket();
+        tcpOutput = factory.createTcpOutput();
         tcpOutput.flush();
 
-        tcpInput = new ObjectInputStream(tcpSocket.getInputStream());
+        tcpInput = factory.createTcpInput();
 
         tcpSocket.setSoTimeout(RETRY);
 
@@ -89,9 +65,12 @@ public class ConnectionToServer extends Connection {
 
         logger.info("Received UDP port {} from server", response.getUdpPort());
 
-        udpOutput = new PacketObjectOutputStream(udpSocket, address, response.getUdpPort());
+        udpOutput = factory.createUdpOutput(response.getUdpPort());
+        udpInput = factory.createUdpInput();
 
-        retry(UdpRegistrationResponse.class, tcpInput, () -> {
+        udpSocket.setSoTimeout(RETRY);
+
+        retry(UdpRegistrationResponse.class, udpInput, () -> {
             udpOutput.writeObject(new UdpRegistrationRequest());
             logger.debug("Trying to register UDP against port " + response.getUdpPort());
         });
@@ -102,18 +81,9 @@ public class ConnectionToServer extends Connection {
         });
 
         tcpSocket.setSoTimeout(0);
+        udpSocket.setSoTimeout(0);
 
-        udpOutput = new PacketObjectOutputStream(udpSocket, address, response.getUdpPort());
-        udpInput = new PacketObjectInputStream(udpSocket);
-
-        Messenger tcpMessenger = new Messenger(inbox, tcpOutbox, alive);
-        Messenger udpMessenger = new Messenger(inbox, udpOutbox, alive);
-
-        new Sender("Client TCP", tcpOutput, tcpMessenger, this).start();
-        new Sender("Client UDP", udpOutput, udpMessenger, this).start();
-
-        new Listener("Client TCP", tcpInput, tcpMessenger, this).start();
-        new Listener("Client UDP", udpInput, udpMessenger, this).start();
+        factory.createConnectionThreads(this).forEach(Thread::start);
 
         finalized();
         logger.info("Connected to " + address.getHostName());

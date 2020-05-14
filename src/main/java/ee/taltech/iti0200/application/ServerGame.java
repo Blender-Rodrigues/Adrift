@@ -5,10 +5,12 @@ import ee.taltech.iti0200.ai.Intelligence;
 import ee.taltech.iti0200.domain.Layout;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.domain.event.entity.AddGun;
 import ee.taltech.iti0200.domain.event.handler.client.EntityDamageHandler;
 import ee.taltech.iti0200.domain.event.handler.common.ChangeEquipmentHandler;
 import ee.taltech.iti0200.domain.event.handler.common.CollisionHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityCreateHandler;
+import ee.taltech.iti0200.domain.event.handler.common.EntityGiveGunHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityHealingHandler;
 import ee.taltech.iti0200.domain.event.handler.common.EntityRemoveHandler;
 import ee.taltech.iti0200.domain.event.handler.common.MoveBodyHandler;
@@ -46,6 +48,7 @@ public class ServerGame extends Game {
         GunShotHandler gunShotHandler,
         EntityDamageHandler damageHandler,
         EntityHealingHandler healingHandler,
+        EntityGiveGunHandler entityGiveGunHandler,
         EntityRemoveHandler entityRemoveHandler,
         EntityCreateHandler entityCreateHandler,
         DropLootHandler dropLootHandler,
@@ -67,6 +70,7 @@ public class ServerGame extends Game {
         eventBus.subscribe(Heal.class, healingHandler);
         eventBus.subscribe(RemoveEntity.class, entityRemoveHandler);
         eventBus.subscribe(CreateEntity.class, entityCreateHandler);
+        eventBus.subscribe(AddGun.class, entityGiveGunHandler);
         eventBus.subscribe(DropLoot.class, dropLootHandler);
         eventBus.subscribe(UpdateVector.class, moveBodyHandler);
         eventBus.subscribe(CreatePlayer.class, playerJoinHandler);

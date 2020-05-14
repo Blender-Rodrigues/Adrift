@@ -39,9 +39,6 @@ public class ClientModule extends CommonModule {
     public ClientModule(String host, int port, String playerName) {
         this.host = host;
         this.port = port;
-        if (playerName == null) {
-            playerName = id.toString().replaceAll("[^\\d]", "").substring(0, 5);
-        }
         player.setName(playerName);
     }
 

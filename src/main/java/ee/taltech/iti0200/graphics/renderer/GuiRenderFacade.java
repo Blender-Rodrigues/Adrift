@@ -2,8 +2,8 @@ package ee.taltech.iti0200.graphics.renderer;
 
 import com.google.inject.Inject;
 import ee.taltech.iti0200.di.factory.RendererFactory;
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
 
 public class GuiRenderFacade implements Renderer {
 
@@ -28,9 +28,9 @@ public class GuiRenderFacade implements Renderer {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
-        scoreRenderer.render(alphabet, camera);
-        toolbar.render(shader, camera, tick);
+    public void render(Shader shader, ViewPort viewPort, long tick) {
+        scoreRenderer.render(alphabet, viewPort);
+        toolbar.render(shader, viewPort, tick);
     }
 
 }

@@ -5,6 +5,7 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Bot;
 import ee.taltech.iti0200.domain.entity.Terrain;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
+import ee.taltech.iti0200.graphics.renderer.CompassRenderer;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderFacade;
 import ee.taltech.iti0200.graphics.renderer.EntityRenderer;
 import ee.taltech.iti0200.physics.BoundingBox;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -31,6 +33,7 @@ class EntityRenderFacadeTest {
     private EntityRenderer renderer;
     private World world;
     private EntityRenderFacade facade;
+    private Shader shader;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -38,14 +41,18 @@ class EntityRenderFacadeTest {
         terrain = mock(Terrain.class);
         renderer = mock(EntityRenderer.class);
         world = mock(World.class);
+        shader = mock(Shader.class);
 
         Texture texture = mock(Texture.class);
         VisualFactory visualFactory = mock(VisualFactory.class);
         when(visualFactory.create(any(String.class), any(String.class))).thenReturn(texture);
-        RendererFactory rendererFactory = mock(RendererFactory.class);
-        when(rendererFactory.create(texture)).thenReturn(renderer);
 
-        facade = new EntityRenderFacade(world, rendererFactory, visualFactory);
+        RendererFactory rendererFactory = mock(RendererFactory.class, RETURNS_DEEP_STUBS);
+        when(rendererFactory.create(texture)).thenReturn(renderer);
+        when(rendererFactory.create(texture, texture, texture)).thenReturn(renderer);
+        CompassRenderer compassRenderer = mock(CompassRenderer.class);
+
+        facade = new EntityRenderFacade(world, rendererFactory, visualFactory, compassRenderer, shader);
     }
 
     @Test
@@ -54,9 +61,9 @@ class EntityRenderFacadeTest {
 
         facade.initialize();
 
-        verify(renderer).setEntity(bot);
-        verify(renderer).setEntity(terrain);
-        verify(renderer, times(2)).initialize();
+        verify(renderer, times(21)).setEntity(terrain);
+        verify(renderer, times(1)).setEntity(bot);
+        verify(renderer, times(22)).initialize();
     }
 
     @Test

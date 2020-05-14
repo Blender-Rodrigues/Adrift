@@ -3,8 +3,8 @@ package ee.taltech.iti0200.domain.entity;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.equipment.Equipment;
 import ee.taltech.iti0200.domain.entity.equipment.Gun;
-import ee.taltech.iti0200.graphics.Camera;
 import ee.taltech.iti0200.graphics.Shader;
+import ee.taltech.iti0200.graphics.ViewPort;
 import ee.taltech.iti0200.physics.BoundingBox;
 
 import java.util.ArrayList;
@@ -39,6 +39,15 @@ public class Living extends Damageable {
 
     public Gun getActiveGun() {
         return activeGun;
+    }
+
+    public boolean hasGun(Gun gun) {
+        for (Gun ownedGun: weapons) {
+            if (gun.getClass() == ownedGun.getClass()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setActiveGun(int index) {
@@ -84,9 +93,9 @@ public class Living extends Damageable {
     }
 
     @Override
-    public void render(Shader shader, Camera camera, long tick) {
-        super.render(shader, camera, tick);
-        renderers.get("healthBar").render(shader, camera, tick);
+    public void render(Shader shader, ViewPort viewPort, long tick) {
+        super.render(shader, viewPort, tick);
+        renderers.get("healthBar").render(shader, viewPort, tick);
     }
 
 }

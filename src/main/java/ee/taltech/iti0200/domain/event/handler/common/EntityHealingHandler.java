@@ -5,6 +5,8 @@ import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.entity.Damageable;
 import ee.taltech.iti0200.domain.entity.Entity;
 import ee.taltech.iti0200.domain.entity.HealingSource;
+import ee.taltech.iti0200.domain.entity.HealthGlobe;
+import ee.taltech.iti0200.domain.entity.Shield;
 import ee.taltech.iti0200.domain.event.Subscriber;
 import ee.taltech.iti0200.domain.event.entity.Heal;
 import org.apache.logging.log4j.LogManager;
@@ -31,12 +33,22 @@ public class EntityHealingHandler implements Subscriber<Heal> {
 
         HealingSource source = event.getSource();
 
-        target.setHealth(
-            Math.min(
-                target.getHealth() + source.getHealing(),
-                target.getMaxHealth()
-            )
-        );
+        if (source instanceof HealthGlobe) {
+            target.setHealth(
+                Math.min(
+                    target.getHealth() + source.getHealing(),
+                    target.getMaxHealth()
+                )
+            );
+        } else if (source instanceof Shield) {
+            target.setShield(
+                Math.max(
+                    source.getHealing(),
+                    target.getShield()
+                )
+            );
+        }
+
 
         logger.info("{} was healed with {}", target, source);
     }

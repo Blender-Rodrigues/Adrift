@@ -9,6 +9,10 @@ public class SpecialGun extends Gun {
 
     private static final long serialVersionUID = 1L;
 
+    public SpecialGun(Vector position) {
+        this(new BoundingBox(position, SIZE));
+    }
+
     public SpecialGun(BoundingBox boundingBox) {
         super(boundingBox);
         damage = 50;

@@ -10,6 +10,8 @@ import ee.taltech.iti0200.physics.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static ee.taltech.iti0200.ai.Sensor.AUDIO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,7 +61,7 @@ class LookForPlayerTest {
         world.initialize();
 
         // when
-        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class));
+        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class), mock(Memory.class), mock(Random.class));
         long reaction = goal.react(0, AUDIO, playerLocation, direction, gun);
 
         // then
@@ -79,7 +81,7 @@ class LookForPlayerTest {
         world.initialize();
 
         // when
-        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class));
+        LookForPlayer goal = new LookForPlayer(bot, world, mock(EventBus.class), mock(Memory.class), mock(Random.class));
         long reaction = goal.react(0, AUDIO, playerLocation, direction, gun);
 
         // then

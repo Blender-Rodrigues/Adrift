@@ -1,18 +1,11 @@
 package ee.taltech.iti0200.application;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import ee.taltech.iti0200.di.ClientModule;
-import ee.taltech.iti0200.di.GuiModule;
-import ee.taltech.iti0200.di.ServerModule;
-import ee.taltech.iti0200.di.SinglePlayerModule;
 import ee.taltech.iti0200.domain.World;
 import ee.taltech.iti0200.domain.event.EventBus;
+import ee.taltech.iti0200.menu.MenuWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,6 +32,7 @@ abstract public class Game {
     }
 
     public void run() {
+        logger.info("Initializing game");
         try {
             initialize();
             timer.initialize();
@@ -91,42 +85,8 @@ abstract public class Game {
         components.forEach(Component::terminate);
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        List<Module> modules = new ArrayList<>();
-
-        if (args.length == 0) {
-            modules.add(new SinglePlayerModule());
-            modules.add(new GuiModule());
-        } else if (args[0].equalsIgnoreCase("server")) {
-            int port = args.length >= 2 ? Integer.parseInt(args[1]) : 8880;
-
-            modules.add(new ServerModule(port));
-        } else if (args[0].equalsIgnoreCase("client")) {
-            String host = args.length >= 2 ? args[1] : "localhost";
-            int port = args.length >= 3 ? Integer.parseInt(args[2]) : 8880;
-            String playerName = args.length >= 4 ? args[3] : null;
-
-            modules.add(new ClientModule(host, port, playerName));
-            modules.add(new GuiModule());
-        } else {
-            throw new IllegalArgumentException(
-                "Invalid arguments provided, use one of the following: \n"
-                    + "[no arguments] --> single player game\n"
-                    + "server [port:8880] --> server game\n"
-                    + "client [host:localhost] [port:8880] [playername: Unknown] --> client game\n"
-            );
-        }
-
-        Injector injector = Guice.createInjector(modules);
-
-        try {
-            injector.getInstance(Game.class).run();
-        } catch (RecreateException exception) {
-            if (exception.delay > 0) {
-                Thread.sleep(exception.delay);
-            }
-            main(args);
-        }
+    public static void main(String[] args) {
+        MenuWrapper.main(args);
     }
 
 }
