@@ -35,7 +35,8 @@ Gitlab is configured to run tests on every branch, don't merge branches which ha
 
 ## Deploy
 
-Merge to development branch triggers an update for the game server and static web page
+Merge to development branch triggers an update for the test game server (port 8888)
+Merge to master branch triggers an update for the live game server (port 8880) and static web page
 
 ## To see logs or restart game server
 
