@@ -11,7 +11,11 @@
 
 ## Project structure
 
-Package names specified relative to root `ee.taltech.iti0200`.
+[Architectural drawing](overview.png)
+
+[EventBus and Network example drawing](eventbusandnetwork.png) based on mouse-click and gunshot propagation.
+
+Package names below specified relative to root `ee.taltech.iti0200`.
 
 ### Foundation
 
