@@ -45,8 +45,6 @@ both game events and position updates for other moving bodies in the server worl
 
 #### Overview
 
-Initial connection establishing is described on a separate [page](network.md)
-
 * Server has 1 TCP port which is shared by a general `Registrar` thread + 2x per client `Listener` & `Sender` threads.
 * Server has a separate UDP port for each client which is shared by separate `Listener` & `Sender` threads.
 * Client has 1 TCP port shared by separate `Listener` & `Sender` threads.

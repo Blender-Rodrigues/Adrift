@@ -3,7 +3,7 @@
 ## Establishing initial connection
 
 [Client]
-*  `ClientNetwork` initializes `ConnectionToServer` on startup
+* `ClientNetwork` initializes `ConnectionToServer` on startup
 * `ConnectionToServer` crates UDP `DatagramSocket` and TCP `Socket`
 * sends a `TcpRegistrationRequest` with client UUID and UDP port nr to server
 * waits for a response for 30 seconds while retrying every 3 seconds

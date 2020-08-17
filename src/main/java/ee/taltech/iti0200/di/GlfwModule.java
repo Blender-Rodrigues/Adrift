@@ -48,7 +48,7 @@ public class GlfwModule extends AbstractModule {
 
     private static final int INITIAL_SCREEN_WIDTH = 1200;
     private static final int INITIAL_SCREEN_HEIGHT = 800;
-    private static final String WINDOW_GAME_NAME = "Escape From Eros";
+    private static final String WINDOW_GAME_NAME = "Adrift";
 
     private boolean initialized = false;
     private long windowId;

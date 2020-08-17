@@ -27,7 +27,7 @@ sourceSets.test.java.srcDirs = ['src/test/java']
 sourceSets.test.resources.srcDirs = ['src/test/resources']
 
 project.ext.lwjglVersion = "3.2.3"
-archivesBaseName = "escape-from-eros"
+archivesBaseName = "adrift"
 group = "ee.taltech.iti0200"
 
 if (project.hasProperty("jarVersion")) {
