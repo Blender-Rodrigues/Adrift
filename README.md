@@ -40,4 +40,4 @@ In game:
 ## Documentation
 
 * [Technical documentation](docs/technical.md)
-* [Development guidelines](docs/development.md)
+
