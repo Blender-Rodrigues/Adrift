@@ -1,8 +1,8 @@
-# Escape from Eros
+# Adrift
 
 ## Overview
 
-Real time 2D shooter game inspired by Liero video game and loosely themed after The Expanse TV series.
+Real time 2D shooter game inspired by Liero video game.
 Can be played both in single-player and multiplayer mode.
 
 Goal of the game: shoot other bots and players, get 20 kills to win. 
@@ -18,11 +18,7 @@ Goal of the game: shoot other bots and players, get 20 kills to win.
 
 Requirements: java 8+
 
-Download jar from [our static website](http://104.248.243.136/).
-
-Run the jar with `java -jar path-to-file`.
-
-Our game server `104.248.243.136:8880` is already configured as the default connection.
+Build and run jar.
 
 In menu:
 * keyboard arrow kes to navigate
@@ -38,10 +34,10 @@ In game:
 
 ## Optionally the jar accepts either of the following set of arguments
 
-* client [server ip, defaults to 104.248.243.136] [server tcp port, defaults to 8880] [player name, defaults to Unknown]
+* client [server ip, defaults to 127.0.0.1] [server tcp port, defaults to 8880] [player name, defaults to Unknown]
 * server [server tcp port, defaults to 8880]
 
 ## Documentation
 
 * [Technical documentation](docs/technical.md)
-* [Development guidelines](docs/development.md)
+
