@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 public class Image {
@@ -49,7 +50,7 @@ public class Image {
                 pixels.put((byte) ((pixel >> 24) & 0xFF));
             }
         }
-        pixels.flip();
+        ((Buffer)pixels).flip();
         return pixels;
     }
 
